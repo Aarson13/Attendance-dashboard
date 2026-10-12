@@ -111,11 +111,10 @@
       const suffix = el.dataset.suffix || '';
       const dur = 520;
       const start = global.performance ? performance.now() : Date.now();
-      const from = 0;
       const step = (now) => {
         const t = Math.min(1, (now - start) / dur);
         const eased = 1 - Math.pow(1 - t, 3);
-        el.textContent = (from + (target - from) * eased).toFixed(decimals) + suffix;
+        el.textContent = (target * eased).toFixed(decimals) + suffix;
         if (t < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -161,9 +160,10 @@
       const name = el.dataset.act;
       const fn = Ui.actions[name];
       if (!fn) return;
-      if (el.tagName === 'INPUT' || el.tagName === 'SELECT') {
-        if (el.type === 'checkbox' || el.type === 'radio') return; // handled by change
-      }
+      // Form controls are change-driven, never click-driven: running their action on click would
+      // preventDefault the file pickers into never opening and re-render the control under the
+      // user's cursor (native date pickers, sliders and selects all break that way).
+      if (el.tagName === 'INPUT' || el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') return;
       e.preventDefault();
       try {
         fn(el, e);

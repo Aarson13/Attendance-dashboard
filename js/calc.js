@@ -12,8 +12,6 @@
  */
 (function (global) {
   'use strict';
-  const MS_DAY = 86400000;
-
   /* ---------- dates ---------- */
   function toDate(ymd) {
     const [y, m, d] = String(ymd).split('-').map(Number);
@@ -32,10 +30,6 @@
     if (!start || !end || end < start) return out;
     for (let d = start; d <= end; d = addDays(d, 1)) out.push(d);
     return out;
-  }
-  function dayCount(start, end) {
-    if (!start || !end || end < start) return 0;
-    return Math.round((toDate(end) - toDate(start)) / MS_DAY) + 1;
   }
   /** 1 = Monday … 7 = Sunday */
   function weekday(ymd) {
@@ -65,14 +59,13 @@
       const t = e.end || e.start;
       if (t < s) continue;
       for (const d of eachDay(s < start ? start : s, t > end ? end : t)) {
-        const cur = map.get(d) || { off: false, swap: null, titles: [], types: [] };
+        const cur = map.get(d) || { off: false, swap: null, titles: [] };
         if (e.type === 'working-swap') {
           if (e.swapDay) cur.swap = e.swapDay;
         } else {
           cur.off = true;
         }
         if (e.title) cur.titles.push(e.title);
-        cur.types.push(e.type);
         map.set(d, cur);
       }
     }
@@ -95,7 +88,6 @@
       actualWeekday,
       teaching,
       titles: info ? info.titles.slice() : [],
-      types: info ? info.types.slice() : [],
     };
   }
 
@@ -118,7 +110,7 @@
       if (!plan.teaching) continue;
       for (const cell of cellsForDay(ctx.data.timetable, plan.weekday)) {
         if (subjectId && cell.subjectId !== subjectId) continue;
-        out.push({ date: d, periodId: cell.periodId, subjectId: cell.subjectId, lab: cell.lab, key: cell.key, swapped: !!plan.swap });
+        out.push({ date: d, periodId: cell.periodId, subjectId: cell.subjectId, lab: cell.lab, key: cell.key });
       }
     }
     return out;
@@ -192,7 +184,9 @@
     const remaining = Math.max(0, T - t);
     const pct = t ? a / t : null;
     const buffer = t ? Math.max(0, Math.floor(a / p - t)) : null; // safe misses from now
-    const mustAttend = pct != null && pct < p ? Math.ceil((p * t - a) / (1 - p)) : 0;
+    // ceil((p·t − a) / (1 − p)) is undefined at p = 1: once you have missed a class at a 100%
+    // requirement there is no number of classes that gets you back, so report null (not Infinity).
+    const mustAttend = pct != null && pct < p ? (p >= 1 ? null : Math.ceil((p * t - a) / (1 - p))) : 0;
     const maxMissTotal = Math.floor((1 - p) * T);
     return {
       subject,
@@ -223,7 +217,6 @@
     const withData = stats.filter((s) => s.t > 0);
     const A = withData.reduce((n, s) => n + s.a, 0);
     const T = withData.reduce((n, s) => n + s.t, 0);
-    const credits = withData.reduce((n, s) => n + (Number(s.subject.credits) || 0), 0);
     const creditA = withData.reduce((n, s) => n + (Number(s.subject.credits) || 0) * s.a, 0);
     const creditT = withData.reduce((n, s) => n + (Number(s.subject.credits) || 0) * s.t, 0);
     return {
@@ -254,7 +247,8 @@
       const name = s.subject.name;
       if (s.t === 0) continue;
       if (s.pct < p) {
-        out.push({ severity: 'red', subjectId: s.subject.id, text: `${name} is below ${(p * 100).toFixed(0)}% (${(s.pct * 100).toFixed(1)}%) — attend ${s.mustAttend} in a row to recover.` });
+        const recover = s.mustAttend == null ? `you cannot get back to ${(p * 100).toFixed(0)}% from here` : `attend ${s.mustAttend} in a row to recover`;
+        out.push({ severity: 'red', subjectId: s.subject.id, text: `${name} is below ${(p * 100).toFixed(0)}% (${(s.pct * 100).toFixed(1)}%) — ${recover}.` });
       } else if (s.buffer === 0) {
         out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name} is exactly at the line — one more absence drops it below ${(p * 100).toFixed(0)}%.` });
       } else if (s.buffer <= 1) {
@@ -292,7 +286,7 @@
       .filter((c) => !c.record)
       .map((c) => ({ ...c, stats: byId.get(c.subjectId) || null }));
     const safe = list.filter((c) => c.stats && c.stats.buffer > 0);
-    return { total: list.length, safeCount: safe.length, safe, all: list, coursesPerDay: list.length };
+    return { total: list.length, safeCount: safe.length, safe, all: list };
   }
 
   /** Cumulative attendance trend up to `upto` (for the line chart). */
@@ -340,12 +334,8 @@
   }
 
   const api = {
-    MS_DAY,
-    toDate,
-    ymdString,
     addDays,
     eachDay,
-    dayCount,
     weekday,
     DAY_NAMES,
     fmtDate,
@@ -355,9 +345,6 @@
     cellsForDay,
     scheduledSlots,
     countTeachingDays,
-    isHeld,
-    recordsForDate,
-    recordForSlot,
     dayClasses,
     subjectStats,
     allStats,

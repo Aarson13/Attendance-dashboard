@@ -86,7 +86,6 @@
    */
   function heatmap(host, { month, days, today, onPick }) {
     clear(host);
-    const first = month + '-01';
     const [y, m] = month.split('-').map(Number);
     const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
     const firstWeekday = ((new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7) + 1; // 1 = Monday
@@ -115,7 +114,7 @@
     );
   }
 
-  const api = { bars, line, heatmap, pctText, colourFor };
+  const api = { bars, line, heatmap };
   global.AD = global.AD || {};
   global.AD.Charts = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

@@ -58,6 +58,27 @@
   }
 
   /**
+   * The rectangle of the *un-rotated* image that the user's crop selects in the rotated preview.
+   * The crop sliders are read off the preview, so they are authored in rotated space; a quarter
+   * turn maps that rectangle back to the source with swapped axes. Canvas rotation is clockwise
+   * for positive angles, which is what the four cases below assume.
+   * Pure arithmetic — exported so the unit tests can pin down all four rotations.
+   */
+  function sourceRect(nw, nh, rot, crop) {
+    const r = ((rot % 360) + 360) % 360;
+    const rw = r % 180 === 0 ? nw : nh; // dimensions of the rotated preview
+    const rh = r % 180 === 0 ? nh : nw;
+    const x = crop[0] * rw;
+    const y = crop[1] * rh;
+    const w = Math.max(1, (crop[2] - crop[0]) * rw);
+    const h = Math.max(1, (crop[3] - crop[1]) * rh);
+    if (r === 90) return { x: y + (nw - rh) / 2, y: (rw + nh) / 2 - x - w, w: h, h: w };
+    if (r === 180) return { x: rw - x - w, y: rh - y - h, w, h };
+    if (r === 270) return { x: (nw + rh) / 2 - y - h, y: x + (nh - rw) / 2, w: h, h: w };
+    return { x, y, w, h };
+  }
+
+  /**
    * Canvas preprocessing for better OCR: grayscale, contrast stretch, upscale small scans,
    * optional invert (dark timetable photos) and rotation, plus percentage crop.
    * Returns a JPEG data URL (also used, compressed, for the stored reference image).
@@ -65,12 +86,13 @@
   async function preprocess(dataUrl, opts) {
     const o = Object.assign({ grayscale: true, contrast: true, upscale: true, invert: false, rotate: 0, crop: [0, 0, 1, 1], maxWidth: 1600, quality: 0.8 }, opts || {});
     const img = await loadImage(dataUrl);
+    const nw = img.naturalWidth || 1;
+    const nh = img.naturalHeight || 1;
     const rot = ((o.rotate % 360) + 360) % 360;
-    const sw = rot % 180 === 0 ? img.naturalWidth : img.naturalHeight;
-    const sh = rot % 180 === 0 ? img.naturalHeight : img.naturalWidth;
-    const [ct, cl, cr, cb] = o.crop || [0, 0, 1, 1];
-    const cw = Math.max(1, Math.round(sw * (cr - cl)));
-    const ch = Math.max(1, Math.round(sh * (cb - ct)));
+    const src = sourceRect(nw, nh, rot, o.crop || [0, 0, 1, 1]);
+    // Size of the crop as the user sees it (rotated): a quarter turn swaps the axes.
+    const cw = Math.max(1, Math.round(rot % 180 === 0 ? src.w : src.h));
+    const ch = Math.max(1, Math.round(rot % 180 === 0 ? src.h : src.w));
     let scale = 1;
     if (o.upscale && cw < 1200) scale = Math.min(2.5, 1200 / cw);
     if (cw * scale > o.maxWidth) scale = o.maxWidth / cw;
@@ -86,15 +108,15 @@
     ctx.save();
     ctx.translate(outW / 2, outH / 2);
     ctx.rotate((rot * Math.PI) / 180);
-    // draw the cropped source region, scaled, centred after rotation
-    const dw = (rot % 180 === 0 ? cw : ch) * scale;
-    const dh = (rot % 180 === 0 ? ch : cw) * scale;
-    ctx.drawImage(img, cl * sw, ct * sh, cw, ch, -dw / 2, -dh / 2, dw, dh);
+    // The destination rect is given in the pre-rotation frame, so it is the source crop's own size.
+    const dw = src.w * scale;
+    const dh = src.h * scale;
+    ctx.drawImage(img, src.x, src.y, src.w, src.h, -dw / 2, -dh / 2, dw, dh);
     ctx.restore();
 
     const data = ctx.getImageData(0, 0, outW, outH);
     const px = data.data;
-    if (o.grayscale || o.contrast) {
+    if (o.grayscale || o.contrast || o.invert) {
       for (let i = 0; i < px.length; i += 4) {
         let v = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
         if (o.contrast) v = v < 140 ? Math.max(0, v - 28) : Math.min(255, v + 28); // simple level stretch around paper white
@@ -501,7 +523,7 @@
     return out;
   }
 
-  const api = { CDN, loadTesseract, readAsDataURL, loadImage, preprocess, compressForStorage, recognise, gridFromWords, parseTimetable, parseDates, fuzzyMatch, normalise, levenshtein, ratio, dayIndexFromWord };
+  const api = { readAsDataURL, preprocess, sourceRect, compressForStorage, recognise, gridFromWords, parseTimetable, parseDates, fuzzyMatch };
   global.AD = global.AD || {};
   global.AD.Ocr = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

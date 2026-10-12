@@ -111,13 +111,7 @@
     return Store.normalize(data);
   }
 
-  let cache = null;
-  function data() {
-    if (!cache) cache = build();
-    return cache;
-  }
-
-  const api = { SUBJECTS, build, data };
+  const api = { build };
   global.AD = global.AD || {};
   global.AD.Sample = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

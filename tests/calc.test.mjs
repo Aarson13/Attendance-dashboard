@@ -175,6 +175,29 @@ test('what-if simulator and warnings', () => {
   assert.equal(Calc.overallStats(ctx, stats).atRisk, 1);
 });
 
+test('threshold of 100%: nothing is safe and a missed class cannot be recovered', () => {
+  const ctx = makeCtx({ settings: { threshold: 1 } });
+  const rec = (date, status) => ({ id: `p${date}`, date, subjectId: 'sub_a', slotKey: null, kind: 'extra', status, note: '', at: '' });
+  ctx.data.records.push(rec('2026-07-01', 'present'), rec('2026-07-02', 'absent')); // 1 of 2 held
+  const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
+  assert.equal(s.pct, 0.5);
+  assert.equal(s.buffer, 0, 'at a 100% requirement every remaining class is compulsory');
+  assert.equal(s.mustAttend, null, 'recovery is impossible here, not Infinity');
+  assert.equal(s.status, 'red');
+  assert.equal(s.maxMissTotal, 0);
+  const text = JSON.stringify(Calc.warnings(ctx));
+  assert.ok(!/Infinity|NaN/.test(text), `no Infinity or NaN may reach user-facing text: ${text}`);
+  assert.ok(Calc.warnings(ctx).some((w) => /cannot get back to 100%/.test(w.text)));
+
+  // a perfect record at 100% must still divide cleanly and ask for nothing
+  const clean = makeCtx({ settings: { threshold: 1 } });
+  clean.data.records.push(rec('2026-07-03', 'present'));
+  const cleanStats = Calc.subjectStats(clean.data.subjects[0], clean);
+  assert.equal(cleanStats.mustAttend, 0);
+  assert.equal(cleanStats.buffer, 0);
+  assert.equal(cleanStats.pct, 1);
+});
+
 test('bunkable today + unmarked-day reminder', () => {
   const ctx = makeCtx();
   const mono = Calc.dayPlan('2026-07-27', ctx);
@@ -300,6 +323,35 @@ test('OCR fuzzy matching prefers an exact subject code, scores partial names low
   assert.equal(Ocr.fuzzyMatch('CS3002', subjects).confidence, 'good');
   assert.equal(Ocr.fuzzyMatch('Operating System', subjects).subjectId, 's1');
   assert.equal(Ocr.fuzzyMatch('zzzz qqqq', subjects).matched, false);
+});
+
+test('OCR preprocessing: the crop is mapped back through the rotation', () => {
+  // identity: no rotation, no surprises
+  assert.deepEqual(Ocr.sourceRect(200, 100, 0, [0, 0, 1, 1]), { x: 0, y: 0, w: 200, h: 100 });
+  assert.deepEqual(Ocr.sourceRect(200, 100, 0, [0, 0, 0.5, 1]), { x: 0, y: 0, w: 100, h: 100 });
+  assert.deepEqual(Ocr.sourceRect(200, 100, 0, [0.6, 0.5, 1, 1]), { x: 120, y: 50, w: 80, h: 50 });
+
+  // a full-frame crop covers the whole source no matter how it is turned
+  for (const rot of [0, 90, 180, 270, -90, 450]) {
+    assert.deepEqual(Ocr.sourceRect(200, 100, rot, [0, 0, 1, 1]), { x: 0, y: 0, w: 200, h: 100 }, `rot ${rot}`);
+  }
+
+  // the crop sliders are read off the rotated preview, so a quarter turn swaps the axes:
+  // the left half of a 90° clockwise turn is the bottom half of the file, and vice versa at 270°.
+  assert.deepEqual(Ocr.sourceRect(200, 100, 90, [0, 0, 0.5, 1]), { x: 0, y: 50, w: 200, h: 50 });
+  assert.deepEqual(Ocr.sourceRect(200, 100, 270, [0, 0, 0.5, 1]), { x: 0, y: 0, w: 200, h: 50 });
+  // 180° mirrors both axes, so the left half comes from the right half of the source
+  assert.deepEqual(Ocr.sourceRect(200, 100, 180, [0, 0, 0.5, 1]), { x: 100, y: 0, w: 100, h: 100 });
+
+  // whatever the rotation and crop, the mapped rectangle must stay inside the source image
+  for (const rot of [0, 90, 180, 270]) {
+    for (const crop of [[0, 0, 1, 1], [0.25, 0.25, 0.75, 0.75], [0, 0, 0.5, 1], [0.5, 0, 1, 1], [0, 0.5, 1, 1]]) {
+      const r = Ocr.sourceRect(200, 100, rot, crop);
+      const label = `rot ${rot} crop ${crop} -> ${JSON.stringify(r)}`;
+      assert.ok(r.x >= -0.001 && r.y >= -0.001, `escapes the top-left corner: ${label}`);
+      assert.ok(r.x + r.w <= 200.001 && r.y + r.h <= 100.001, `escapes the bottom-right corner: ${label}`);
+    }
+  }
 });
 
 test('OCR calendar dates: many formats, types, and cross-year rollover', () => {

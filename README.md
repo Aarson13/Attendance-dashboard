@@ -40,6 +40,12 @@ Then either press **Settings → Load sample semester** to explore a complete de
 | OCR | Tesseract.js from a CDN, only loaded when you press *Run OCR* | images are processed in your browser, never uploaded |
 | Calendar | `scripts/sync-calendar.mjs` (Node + `pdfjs-dist`) | the calendar is scraped from the official PDF, then imported |
 
+Interaction contract, worth knowing before editing any view: **one `data-act` attribute, two event
+paths.** Buttons, links and images run their action on `click`; `input`/`select`/`textarea` run
+theirs on `change` only. The click delegate deliberately ignores form controls — running their
+action on click would `preventDefault()` the file pickers into never opening and re-render the field
+under your cursor (native date pickers, sliders and dropdowns all break that way).
+
 ---
 
 ## Counting rules (the contract)
@@ -76,6 +82,10 @@ overall %          = Σa / Σt     credit-weighted = Σ(credits·a) / Σ(credits
 
 Colour status per subject: **green** safe (buffer > 3), **yellow** borderline (buffer 1–3),
 **red** below `p` or buffer 0.
+
+The recovery formula divides by `1 - p`, so a threshold of exactly **100%** is a special case: once
+you have missed a single class there is no number of classes that gets you back, and the app says so
+("can't return to 100%") instead of printing `Infinity`. `p` is editable between 0.5 and 1.
 
 ---
 
@@ -232,10 +242,12 @@ flagged rather than guessed. Both orientations are covered by tests.
 npm test
 ```
 
-22 tests cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
-days, holiday-beats-swap), the CSV/ICS/JSON importers, the OCR grid + date parsers and the sample
+25 tests cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
+days, holiday-beats-swap), the CSV/ICS/JSON importers, the OCR grid + date parsers, the crop-to-source
+mapping used when an image is rotated before OCR, the 100%-threshold edge case, and the sample
 dataset's internal consistency. The engine files are dependency-free and DOM-free on purpose, which
-is what makes them testable.
+is what makes them testable; `js/app.js` is the one file that needs a DOM, so its event wiring is
+verified in a browser rather than here.
 
 ## Repository layout
 

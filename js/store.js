@@ -429,13 +429,9 @@
         if (idx < 0) continue;
         const key = line.slice(0, idx).split(';')[0].toUpperCase();
         const value = line.slice(idx + 1).trim();
-        if (key === 'DTSTART') {
-          cur.start = readDate(value.split('/')[0]);
-          cur.startAllDay = /VALUE=DATE/.test(line.toUpperCase());
-        } else if (key === 'DTEND') {
-          cur.end = readDate(value.split('/')[0]);
-          cur.endAllDay = /VALUE=DATE/.test(line.toUpperCase());
-        } else if (key === 'SUMMARY') cur.summary = value.replace(/\\,/g, ',');
+        if (key === 'DTSTART') cur.start = readDate(value.split('/')[0]);
+        else if (key === 'DTEND') cur.end = readDate(value.split('/')[0]);
+        else if (key === 'SUMMARY') cur.summary = value.replace(/\\,/g, ',');
       }
     }
     return { entries, warnings };
@@ -475,7 +471,6 @@
     VERSION,
     uid,
     defaults,
-    defaultSettings,
     load,
     save,
     storageBytes,
@@ -487,7 +482,6 @@
     importJSON,
     snapshotToCalendar,
     parseCSV,
-    parseLooseDate,
     dayNumber,
     timetableFromCSV,
     timetableToCSV,

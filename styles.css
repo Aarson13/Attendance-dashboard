@@ -193,7 +193,6 @@ label.field input, label.field select { color: var(--text); }
 .chip.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
 .chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); }
 .chip.bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, var(--line)); }
-.chip.accent { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
 
 /* ---------- banners ---------- */
 .banner {
@@ -245,7 +244,6 @@ label.field input, label.field select { color: var(--text); }
 .class-row .push { margin-left: auto; }
 
 .date-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.date-nav .date-title { font-weight: 620; }
 .date-nav input[type='date'] { width: 160px; }
 
 /* ---------- timetable grid ---------- */

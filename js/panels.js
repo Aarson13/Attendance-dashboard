@@ -300,7 +300,7 @@
             <button class="primary" data-act="cal-bundled-import" type="button">Import this calendar</button>
           </div>
           <p class="muted">Scraped ${esc(bundled.source.fetchedAt)} from <a href="${attr(bundled.source.url)}" target="_blank" rel="noopener noreferrer">${esc(bundled.source.url)}</a> by <code>scripts/sync-calendar.mjs</code>. Re-run that script when the college publishes a new PDF, then import again here.</p>
-          ${bundled.semesters && bundled.semesters.length > 1 ? `<label class="field">Semester to use<select id="bundledSemester" data-act="bundled-semester">${bundled.semesters.map((s, i) => `<option value="${i}">${esc(s.name)} (${esc(s.start)} → ${esc(s.end)})</option>`).join('')}</select></label>` : ''}
+          ${bundled.semesters && bundled.semesters.length > 1 ? `<label class="field">Semester to use<select id="bundledSemester">${bundled.semesters.map((s, i) => `<option value="${i}">${esc(s.name)} (${esc(s.start)} → ${esc(s.end)})</option>`).join('')}</select></label>` : ''}
           <p class="muted">${bundled.entries.length} entries: ${bundled.entries.filter((e) => e.type === 'holiday').length} holidays, ${bundled.entries.filter((e) => e.type === 'exam').length} exam windows, ${bundled.entries.filter((e) => e.type === 'working-swap').length} swapped-timetable days.</p>
           ${bundled.notes && bundled.notes.length ? `<details><summary class="muted">Scraper notes</summary><ul class="muted">${bundled.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul></details>` : ''}
         </div>`
@@ -632,7 +632,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       o.phase = 'idle';
       o.error = err.message || 'OCR failed.';
       A.App.render();
-      U().toast('OCR failed — see the message in the timetableView; nothing was saved.', 'bad', 8000);
+      U().toast('OCR failed — see the message in the Timetable tab; nothing was saved.', 'bad', 8000);
     }
   }
 
@@ -1132,6 +1132,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'spotlights-set': (el) => {
       U().S.data.settings.spotlights = el.checked;
       U().save();
+      A.App.render(); // the glow is attached per render, so re-render to apply it right away
     },
     'export-json': () => {
       download(`attendance-backup-${U().todayISO()}.json`, Store.exportJSON(U().S.data), 'application/json');
@@ -1149,7 +1150,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
             U().openModal(
               'Replace everything with this backup?',
               `<p>${esc(res.summary || '')}</p><p class="muted">Your current data will be overwritten. Export a backup first if you're unsure.</p>
-               <div class="row"><button class="danger" data-act="import-json-confirm" data-payload="__pending__" type="button">Replace my data</button><button data-act="modal-close" type="button">Cancel</button></div>`,
+               <div class="row"><button class="danger" data-act="import-json-confirm" type="button">Replace my data</button><button data-act="modal-close" type="button">Cancel</button></div>`,
             );
             S.pendingImport = res.data;
           } else {
@@ -1239,6 +1240,4 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
   Object.assign(A.Ui.actions, actions);
   A.Ui.onPanelFieldChange = onFieldChange;
   A.Ui.handleImageFile = handleImageFile;
-  A.Ui.overlayMessage = overlayMessage;
-  A.Ui.confirmTimetableOcr = confirmTimetableOcr;
 })(typeof window !== 'undefined' ? window : globalThis);

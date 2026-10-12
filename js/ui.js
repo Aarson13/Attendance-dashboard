@@ -10,7 +10,6 @@
   const Calc = A.Calc;
   const Store = A.Store;
   const Charts = A.Charts;
-  const Ocr = A.Ocr;
 
   const S = {
     data: null,
@@ -26,7 +25,6 @@
 
   const todayISO = () => new Date().toLocaleDateString('en-CA');
   const $ = (sel, root) => (root || document).querySelector(sel);
-  const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const esc = (v) =>
     String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const attr = (v) => esc(v);
@@ -45,11 +43,6 @@
     return p.end ? `${p.start}–${p.end}` : p.start;
   }
   const p = () => S.data.settings.threshold;
-  function pctClass(v, threshold) {
-    const t = threshold == null ? p() : threshold;
-    if (v == null) return 'none';
-    return v >= t + 0.05 ? 'ok' : v >= t ? 'warn' : 'bad';
-  }
   function statusClass(stats) {
     if (!stats || stats.t === 0) return 'none';
     if (stats.pct < p() || stats.buffer === 0) return 'bad';
@@ -144,7 +137,7 @@
       <div class="bar"><span class="bar-fill ${cls === 'bad' ? 'bad' : cls === 'warn' ? 'warn' : 'ok'}" style="width:${stats.pct == null ? 0 : clamp(stats.pct, 0, 1) * 100}%"></span><span class="bar-mark" style="left:${p() * 100}%"></span></div>
       <div class="chips" style="margin-top:9px">
         ${stats.t === 0 ? '<span class="chip">nothing marked yet</span>' : stats.buffer > 0 ? `<span class="chip ok">can miss ${stats.buffer} more</span>` : `<span class="chip bad">no safe misses left</span>`}
-        ${stats.mustAttend > 0 ? `<span class="chip bad">attend ${stats.mustAttend} in a row</span>` : ''}
+        ${stats.mustAttend == null ? `<span class="chip bad">can't return to ${(p() * 100).toFixed(0)}%</span>` : stats.mustAttend > 0 ? `<span class="chip bad">attend ${stats.mustAttend} in a row</span>` : ''}
         <span class="chip">held ${stats.t} · attended ${stats.a}</span>
         <span class="chip">plan T ${stats.T} <span class="muted">(${esc(sources[stats.TSource] || stats.TSource)})</span></span>
         ${stats.cancelled ? `<span class="chip">${stats.cancelled} cancelled</span>` : ''}
@@ -196,7 +189,7 @@
         return `<div class="class-row ${status ? `marked-${status}` : ''}">
         <div class="class-main">
           <strong>${esc(s ? s.name : 'Unknown subject')}</strong>
-          <small>${esc(s && s.code ? s.code : '')} · ${esc(kindLabel)}</small>
+          <small>${esc(s && s.code ? s.code : '')} · ${esc(kindLabel)}${cl.record && cl.record.note ? ` · ${esc(cl.record.note)}` : ''}</small>
         </div>
         <span class="class-time">${esc(cl.periodId ? periodTime(cl.periodId) : 'unscheduled')}</span>
         <span class="chip ${st ? (statusClass(st) === 'bad' ? 'bad' : statusClass(st) === 'warn' ? 'warn' : 'ok') : ''}">${st ? pctText(st.pct) : 'no data'}</span>
@@ -449,7 +442,7 @@
     let simOut = '<div class="empty">Pick a subject and a number of classes you plan to miss.</div>';
     if (pick) {
       const eff = Calc.missEffect(pick, misses, p());
-      const breakpointNow = pick.t ? Math.max(0, Math.floor(pick.a / p() - pick.t)) : 0;
+      const breakpointNow = pick.buffer == null ? 0 : pick.buffer; // same formula as the dashboard's buffer
       simOut = `<dl class="stat-list">
           <div><dt>Now</dt><b>${pctText(pick.pct)} (${pick.a}/${pick.t})</b></div>
           <div><dt>After missing ${misses} more</dt><b class="${eff.safe ? 'pct ok' : 'pct bad'}">${pctText(eff.pct)} (${pick.a}/${pick.t + misses})</b></div>
@@ -693,7 +686,6 @@
   A.Ui = {
     S,
     ctx,
-    after,
     save,
     toast,
     openModal,
@@ -701,14 +693,9 @@
     esc,
     attr,
     pctText,
-    pctClass,
-    statusClass,
     subjById,
     periodById,
-    periodTime,
     todayISO,
-    go,
-    subjectTag,
     actions,
     onFieldChange,
     views: { today: renderToday, dashboard: renderDashboard, subjects: renderSubjects, tools: renderTools },

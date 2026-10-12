@@ -1,11 +1,15 @@
 # Attendance dashboard
 
-A one-person college attendance tracker. Static HTML/CSS/vanilla JS — no framework, no build step,
-no backend, no account. Everything is stored in your browser's `localStorage`, and it keeps working
-offline after the first load.
+Two pages, one repository:
 
-Built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75% and is
-editable). Every number on screen comes from the same formulas, and the academic calendar is
+- **`/` — the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
+a glass dashboard preview underneath. React 19 + Vite + Tailwind v4, built to `dist/`.
+- **`/app.html` — the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
+build step, no backend, no account. Everything is stored in your browser's `localStorage`, and it
+keeps working offline after the first load.
+
+Both are built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75%
+and is editable). Every number on screen comes from the same formulas, and the academic calendar is
 *scraped* from the college's PDF rather than typed in by hand — with OCR kept as the fallback for
 notice-board photos.
 
@@ -15,16 +19,25 @@ notice-board photos.
 
 ```bash
 cd Attendance-dashboard
-npm install          # only for the calendar scraper + tests; the app itself needs nothing
-npx serve -l 4173 .  # or: python -m http.server 4173
+npm install
+npm run dev          # Vite dev server: the home page at / and the tracker at /app.html
 ```
 
-Open <http://127.0.0.1:4173>.
+To serve the built site exactly as it ships:
+
+```bash
+npm run build        # vite build + copies the tracker into dist/
+npm run serve        # static server for dist/ → home page at /, tracker at /app.html
+```
 
 Then either press **Settings → Load sample semester** to explore a complete demo, or start with
-**Subjects → add a subject**.
+**Subjects → add a subject**. The landing page's *Get started* / *View demo* buttons link to
+`./app.html` and `./app.html?demo=1`; the `?demo=1` URL offers the sample semester on arrival.
 
-> Opening `index.html` straight from disk (`file://`) works for everything except OCR and the
+The tracker alone needs no build at all — `npm run serve:tracker` serves this folder directly, and
+`npx serve -l 4173 .` (or `python -m http.server 4173`) does the same.
+
+> Opening the tracker straight from disk (`file://`) works for everything except OCR and the
 > service worker: browsers block those on `file://`, and `fetch()` of local JSON is blocked too.
 > Serving over localhost is recommended.
 
@@ -34,17 +47,81 @@ Then either press **Settings → Load sample semester** to explore a complete de
 
 | Concern | Choice | Why |
 |---|---|---|
-| UI | plain HTML + CSS + classic `<script>` files | no build step, readable in five years, works offline |
+| Home page | React 19 + Vite + Tailwind v4, no UI kit | one page, componentised, and the tracker beside it stays build-free |
+| Tracker UI | plain HTML + CSS + classic `<script>` files | no build step, readable in five years, works offline |
 | State | one JSON document in `localStorage` | nothing to host; export/import is your backup |
-| Charts | hand-rolled SVG (`js/charts.js`) | one less CDN dependency, still works offline |
+| Charts | hand-rolled SVG (`js/charts.js`, and the preview's own `TrendChart.jsx`) | one less CDN dependency, still works offline |
+| Fonts | Inter Variable, self-hosted via `@fontsource-variable/inter` | no third-party request on first paint |
 | OCR | Tesseract.js from a CDN, only loaded when you press *Run OCR* | images are processed in your browser, never uploaded |
 | Calendar | `scripts/sync-calendar.mjs` (Node + `pdfjs-dist`) | the calendar is scraped from the official PDF, then imported |
+| Post-build | `scripts/copy-tracker.mjs` | the tracker has no build step, so the home page's build copies it into `dist/` |
 
 Interaction contract, worth knowing before editing any view: **one `data-act` attribute, two event
 paths.** Buttons, links and images run their action on `click`; `input`/`select`/`textarea` run
 theirs on `change` only. The click delegate deliberately ignores form controls — running their
 action on click would `preventDefault()` the file pickers into never opening and re-render the field
 under your cursor (native date pickers, sliders and dropdowns all break that way).
+
+---
+
+## The home page (`index.html` + `src/`)
+
+```
+index.html              dev entry; Vite builds it to dist/index.html
+vite.config.js          react() + tailwindcss(), base: './' so the site works from any sub-path
+src/
+  main.jsx              mounts <App/> and imports the design system once
+  App.jsx               Nav → Hero → DashboardPreview → Footer
+  styles/index.css      the design tokens (@theme), keyframes and component classes
+  data/attendance.js    placeholder attendance data + the maths the preview draws
+  lib/hooks.js          useScrolled, useReveal (staggered reveal), usePrefersReducedMotion
+  components/
+    Nav.jsx             logo, centred links, white pill CTA, hamburger under md, blurs on scroll
+    Hero.jsx            the copy (pill tag, headline, subtext, two buttons) over the ribbon
+    HeroRibbon.jsx      the hourglass ribbon: 3 stacked SVG layers + ambient glow + grain + mask
+    GlassCard.jsx       the one card surface (4% fill, hairline border, 20px blur, 18px radius)
+    StatRow.jsx         overall %, attended, missed, classes I can still bunk
+    SubjectRings.jsx    per-subject progress rings (green ≥75%, amber 70–75%, red <70%)
+    Ring.jsx            one SVG ring
+    TrendChart.jsx      12-week line with a violet→lavender gradient and a glow underneath
+    TodayClasses.jsx    today's timetable with Present / Absent / Cancelled / Not-marked chips
+    Alerts.jsx          subjects below the minimum, worst first, with "attend N more"
+    DashboardPreview.jsx  lays the preview out and owns the section ids the nav links to
+    Footer.jsx
+scripts/copy-tracker.mjs  postbuild: app.html + styles.css + sw.js + manifest + js/ data/ samples/ → dist/
+tests/home-data.test.mjs  the preview's maths, in Node
+```
+
+**Colours, blur radii and radius live in one `@theme` block** in
+[`src/styles/index.css`](src/styles/index.css), so each is both a CSS variable and a Tailwind
+utility: `--color-ink`, `--color-violet` (#6D4AFF), `--color-lavender` (#A78BFA), `--color-core`
+(#EFE7FF), `--blur-outer` (24px), `--blur-middle` (35px), `--blur-ambient` (100px), `--blur-glass`
+(20px), `--radius-card` (18px). Green/amber/red appear only as *data* states — attendance bands,
+chips and the low-attendance warning — never as decoration.
+
+**The ribbon** is one closed cubic-Bézier bowtie path drawn three times, widest to narrowest (violet
+`flare 236`, lavender `flare 168 / inset 46`, near-white core `flare 34 / inset 150`), each layer
+blurred with its own token, all compositing with `mix-blend-mode: screen` so the narrow middle where
+they overlap is the brightest point. A blurred violet radial adds the ambient glow, a 5%
+`feTurbulence` layer keeps the large gradients from banding, and a radial `mask-image` on the stage
+melts the flares into the page. Above and below the copy the hero fades to pure black through
+`.hero-bg`, so the ribbon never ends on a hard edge.
+
+| Viewport | Hero text contrast (worst pixel behind the glyphs) |
+|---|---|
+| 390px | white 18.9–20.2:1, muted 7.5–8.0:1 |
+| 768px | white 18.7–20.2:1, muted 7.4–7.9:1 |
+| 1024–1920px | white 15.8–19.9:1, muted 6.2–7.8:1 |
+
+Those numbers come from rendering the page with the glyphs made transparent and measuring the
+brightest pixel inside each text element's own box — the pessimistic reading, i.e. what the letters
+actually sit on. Keeping them above the 4.5:1 floor is the job of `.hero-shield`, a soft radial veil
+over the copy; it is the reason the middle of the ribbon is calmer than its glow either side
+(`min(940px, 150vw)` wide, because on a phone the copy is nearly full-bleed).
+
+**Motion** is CSS-only and honours `prefers-reduced-motion`: the ribbon breathes over 9s (13s for the
+ambient glow), the hero copy rises in on load, the preview cards stagger in as they scroll into
+view, and every animation collapses to nothing when the OS asks for reduced motion.
 
 ---
 
@@ -250,10 +327,11 @@ flagged rather than guessed. Both orientations are covered by tests.
 ## Tests
 
 ```bash
-npm test
+npm test              # 37 tests: the tracker engine + the home page's data layer
+npm run build         # a failure here is a real failure, not a warning to read past
 ```
 
-29 tests cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
+29 of them cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
 days, holiday-beats-swap), the CSV/ICS/JSON importers, the OCR grid + date parsers, the crop-to-source
 mapping used when an image is rotated before OCR, the 100%-threshold edge case, the sample
 dataset's internal consistency, and the existing-attendance maths: carried counts reach `a`/`t`, the
@@ -263,15 +341,24 @@ is repaired on import. The engine files are dependency-free and DOM-free on purp
 is what makes them testable; `js/app.js` is the one file that needs a DOM, so its event wiring is
 verified in a browser rather than here.
 
+`tests/home-data.test.mjs` adds 8 more for the home page's data layer: `attended / total × 100`, the
+configurable minimum moving the three colour bands with it, the `ceil((p·t − a) / (1 − p))` recovery
+formula including the 100%-threshold `null`, safe misses, the pooled overall figures (Σa / Σt, not the
+average of the percentages), the placeholder data's internal consistency, and the alert ordering.
+The React components themselves need a DOM, so they are verified in a browser (see the contrast
+table above) rather than in this suite.
+
 ## Repository layout
 
 ```
-index.html styles.css sw.js manifest.webmanifest icon.svg
+index.html  vite.config.js          # the home page (built by Vite into dist/)
+app.html    styles.css  sw.js  manifest.webmanifest  icon.svg
 js/    calc.js  store.js  charts.js  ocr.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
 data/  muj-2026-27.json  muj-2026-27.days.txt        # scraper output
-scripts/ sync-calendar.mjs  write-samples.mjs
+src/   main.jsx  App.jsx  data/attendance.js  lib/hooks.js  styles/index.css  components/*.jsx
+scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs
 samples/ timetable-sample.csv  calendar-sample.csv  sample-data.json
-tests/  calc.test.mjs
+tests/  calc.test.mjs  home-data.test.mjs
 ```
 
 ---
@@ -286,7 +373,10 @@ tests/  calc.test.mjs
   anything commercial.
 - Calendar data belongs to the college; the bundled file is MUJ's published 2026-27 PDF, included to
   make the demo work out of the box.
-- Known limits: OCR expects a reasonably straight table (photos at an angle need cropping first); the
-  scraper understands Manipal-style month-grid PDFs and falls back to a readable day dump for other
-  layouts; charts are deliberately simple SVG; there is no multi-device sync — export/import is the
-  sync.
+- Known limits: the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
+  at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side — the shape is
+  visible around the text, not through it; OCR expects a reasonably straight table (photos at an angle
+  need cropping first); the scraper understands Manipal-style month-grid PDFs and falls back to a
+  readable day dump for other layouts; charts are deliberately simple SVG; the home page's sample
+  semester is illustrative data in `src/data/attendance.js`, not the tracker's own `localStorage`
+  state, so the two never need to agree; there is no multi-device sync — export/import is the sync.

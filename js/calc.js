@@ -150,6 +150,9 @@
     return out;
   }
 
+  /** Guards ceil() against binary-floating-point noise (see mustAttend below). */
+  const CEIL_EPSILON = 1e-9;
+
   /* ---------- per-subject stats ---------- */
   /**
    * Attendance the user brought with them ("held 40 / attended 36 before I started marking"), in
@@ -206,7 +209,9 @@
     const buffer = t ? Math.max(0, Math.floor(a / p - t)) : null; // safe misses from now
     // ceil((p·t − a) / (1 − p)) is undefined at p = 1: once you have missed a class at a 100%
     // requirement there is no number of classes that gets you back, so report null (not Infinity).
-    const mustAttend = pct != null && pct < p ? (p >= 1 ? null : Math.ceil((p * t - a) / (1 - p))) : 0;
+    // CEIL_EPSILON keeps exact answers exact: 0.9 × 40 − 35 divides out to 10.000000000000036, which
+    // would otherwise tell the user to attend 11 classes when 10 is enough.
+    const mustAttend = pct != null && pct < p ? (p >= 1 ? null : Math.ceil((p * t - a) / (1 - p) - CEIL_EPSILON)) : 0;
     const maxMissTotal = Math.floor((1 - p) * T);
     return {
       subject,

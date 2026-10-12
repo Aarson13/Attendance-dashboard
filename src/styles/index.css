@@ -1,0 +1,229 @@
+/* index.css — the home page's design system.
+ *
+ * Tailwind v4 reads the @theme block below, so every token here is both a CSS variable
+ * (`var(--blur-outer)`) and a utility (`blur-outer`). Palette, blur values, radii and motion are
+ * declared once, which is what makes the ribbon's three layers configurable in one place.
+ */
+@import '@fontsource-variable/inter';
+@import 'tailwindcss';
+
+@theme {
+  /* — palette: black/navy, violet, lavender, white. Green/amber/red exist only as *data* states
+       (attendance bands, chips, the low-attendance alert), never as decoration. — */
+  --color-ink: #05030f;
+  --color-ink-deep: #000000;
+  --color-violet: #6d4aff;
+  --color-lavender: #a78bfa;
+  --color-core: #efe7ff;
+  --color-muted: #9ca3af;
+  --color-glass: rgb(255 255 255 / 0.04);
+  --color-glass-line: rgb(255 255 255 / 0.08);
+  --color-ok: #4ade80;
+  --color-warn: #fbbf24;
+  --color-low: #f87171;
+
+  /* — blur values, per ribbon layer — */
+  --blur-outer: 24px;
+  --blur-middle: 35px;
+  --blur-core: 16px;
+  --blur-ambient: 100px;
+  --blur-glass: 20px;
+
+  /* — radii — */
+  --radius-card: 18px;
+  --radius-pill: 999px;
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* — motion — */
+  --ease-soft: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  --animate-breathe: breathe 9s var(--ease-soft) infinite;
+  --animate-breathe-glow: breathe-glow 13s var(--ease-soft) infinite;
+  --animate-breathe-core: breathe-core 9s var(--ease-soft) infinite;
+  --animate-rise: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-spin-slow: spin 18s linear infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+@keyframes breathe-glow {
+  0%, 100% { opacity: 0.42; transform: scale(1); }
+  50% { opacity: 0.64; transform: scale(1.06); }
+}
+@keyframes breathe-core {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.96; }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+
+@layer base {
+  :root { color-scheme: dark; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--color-violet); color: #fff; }
+  :focus-visible { outline: 2px solid var(--color-lavender); outline-offset: 3px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+}
+
+@layer components {
+  /* ---------- hero shell ---------- */
+  .hero-bg {
+    /* deep navy-black, fading to pure black at the top and bottom edges */
+    background:
+      linear-gradient(180deg, #000 0%, var(--color-ink) 16%, var(--color-ink) 74%, #000 100%);
+  }
+
+  /* The hero ends on black; the preview picks that black up and settles into navy, so the two
+     sections read as one page instead of a seam. */
+  .preview-bg {
+    background: linear-gradient(180deg, #000 0%, var(--color-ink) 10%, var(--color-ink) 100%);
+  }
+  .footer-bg { background: linear-gradient(180deg, var(--color-ink) 0%, #000 100%); }
+
+  /* ---------- ribbon ---------- */
+  .ribbon { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .ribbon-stage {
+    position: absolute; left: 50%; top: 50%;
+    translate: -50% -50%;
+    width: min(1680px, 152vw);
+    aspect-ratio: 1200 / 620;
+    /* the edges melt into the page instead of ending in a hard line */
+    mask-image: radial-gradient(78% 70% at 50% 50%, #000 34%, transparent 86%);
+    -webkit-mask-image: radial-gradient(78% 70% at 50% 50%, #000 34%, transparent 86%);
+    animation: var(--animate-breathe);
+  }
+  .ribbon-ambient {
+    position: absolute; inset: -8% -6%;
+    background: radial-gradient(52% 44% at 50% 50%, color-mix(in srgb, var(--color-violet) 78%, transparent), transparent 72%);
+    filter: blur(var(--blur-ambient));
+    animation: var(--animate-breathe-glow);
+  }
+  .ribbon-layer { position: absolute; inset: 0; width: 100%; height: 100%; mix-blend-mode: screen; }
+  .ribbon-outer { filter: blur(var(--blur-outer)); opacity: 0.85; }
+  .ribbon-middle { filter: blur(var(--blur-middle)); opacity: 0.9; }
+  .ribbon-core { filter: blur(var(--blur-core)); animation: var(--animate-breathe-core); }
+  .ribbon-hot { filter: blur(2px); }
+  .ribbon-grain { position: absolute; inset: 0; opacity: 0.05; mix-blend-mode: soft-light; }
+
+  /* Keeps hero text legible where it crosses the bright ribbon core, while staying tight enough that
+     the ribbon keeps its hourglass read: the veil covers the copy itself (≈940×440) and fades out
+     well before the wings, so the core band stays visible on either side of the text.
+
+     The width is min(940px, 150vw), not a flat 94vw, because on a phone the copy is nearly
+     full-bleed: the gradient's opaque plateau only reaches 33% of the element's width, so a 94vw
+     veil left the first and last characters of every line sitting on bare ribbon — measured at
+     1.89:1 for the muted subtext at 390px wide. 150vw puts the plateau past both screen edges and
+     leaves the desktop value untouched (940px), where the copy is 677px wide. */
+  .hero-shield {
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+    width: min(940px, 150vw); height: min(440px, 60vh);
+    background: radial-gradient(
+      50% 48% at 50% 50%,
+      rgb(5 3 15 / 0.94) 0%,
+      rgb(5 3 15 / 0.93) 66%,
+      rgb(5 3 15 / 0.68) 86%,
+      transparent 100%
+    );
+  }
+
+  /* ---------- nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease;
+  }
+  .nav.is-scrolled {
+    background: rgb(5 3 15 / 0.72);
+    border-bottom-color: var(--color-glass-line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  /* ---------- glass cards ---------- */
+  .glass {
+    background: var(--color-glass);
+    border: 1px solid var(--color-glass-line);
+    border-radius: var(--radius-card);
+    backdrop-filter: blur(var(--blur-glass));
+    -webkit-backdrop-filter: blur(var(--blur-glass));
+    transition: border-color 0.35s ease, background-color 0.35s ease;
+  }
+  .glass:hover { border-color: rgb(255 255 255 / 0.2); background: rgb(255 255 255 / 0.06); }
+
+  /* ---------- pills, buttons, chips ---------- */
+  .pill {
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--color-glass-line);
+    background: var(--color-glass);
+    border-radius: var(--radius-pill);
+    padding: 7px 16px;
+    font-size: 0.8125rem; letter-spacing: 0.01em;
+    color: #fff;
+  }
+  .pill-rule {
+    height: 1px; width: 56px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.42));
+  }
+  .pill-rule.is-right { transform: scaleX(-1); }
+  .pill-dot { width: 4px; height: 4px; border-radius: 50%; background: rgb(255 255 255 / 0.5); }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: var(--radius-pill);
+    padding: 12px 26px; font-size: 0.9375rem; font-weight: 500; line-height: 1; border: 1px solid transparent;
+    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+  .btn-white { background: #fff; color: #05030f; }
+  .btn-white:hover { transform: translateY(-1px); box-shadow: 0 12px 34px -12px rgb(167 139 250 / 0.7); }
+  .btn-ghost { background: rgb(5 3 15 / 0.28); color: #fff; border-color: rgb(255 255 255 / 0.42); backdrop-filter: blur(6px); }
+  .btn-ghost:hover { border-color: #fff; background: rgb(5 3 15 / 0.5); }
+  .btn-link { color: rgb(255 255 255 / 0.72); font-size: 0.875rem; }
+  .btn-link:hover { color: #fff; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: var(--radius-pill); padding: 4px 11px;
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.01em;
+    border: 1px solid var(--color-glass-line); background: rgb(255 255 255 / 0.05); color: #fff;
+  }
+  .chip-ok { color: #bbf7d0; border-color: rgb(74 222 128 / 0.35); background: rgb(74 222 128 / 0.12); }
+  .chip-warn { color: #fde68a; border-color: rgb(251 191 36 / 0.35); background: rgb(251 191 36 / 0.12); }
+  .chip-low { color: #fecaca; border-color: rgb(248 113 113 / 0.35); background: rgb(248 113 113 / 0.12); }
+  .chip-quiet { color: var(--color-muted); }
+  .chip-violet { color: #ddd6fe; border-color: rgb(167 139 250 / 0.4); background: rgb(109 74 255 / 0.18); }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--reveal-i, 0) * 90ms);
+  }
+  .reveal.is-in { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal { opacity: 1 !important; transform: none !important; }
+}
+
+@media (max-width: 640px) {
+  /* keep the wings reaching past the screen edges on phones, where the stage is much narrower */
+  .ribbon-stage { width: 210vw; }
+}

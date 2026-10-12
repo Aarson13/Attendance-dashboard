@@ -82,7 +82,9 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
   max-width: 1080px; margin: 0 auto; padding: 10px 14px;
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
 }
-.brand { display: flex; align-items: center; gap: 9px; margin-right: auto; }
+.brand { display: flex; align-items: center; gap: 9px; margin-right: auto; color: inherit; }
+.brand:hover { text-decoration: none; }
+.brand:hover .brand-mark { background: color-mix(in srgb, var(--accent) 26%, transparent); }
 .brand-mark {
   width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
   background: var(--accent-soft); color: var(--accent); font-weight: 700;

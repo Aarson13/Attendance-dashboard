@@ -2,7 +2,7 @@
   "name": "Attendance dashboard",
   "short_name": "Attendance",
   "description": "Personal college attendance tracker: timetable, academic calendar, daily marking, projections and OCR. Works offline, keeps everything in your browser.",
-  "start_url": "./index.html",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",

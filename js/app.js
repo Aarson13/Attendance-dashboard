@@ -20,7 +20,12 @@
       wire();
       App.render(true);
       registerServiceWorker();
-      if (!S.data.subjects.length && !S.data.records.length) {
+      // The landing page's "View demo" button arrives as app.html?demo=1. Offer the sample semester
+      // through the same confirmation as Settings → Load sample semester: an existing semester is
+      // never replaced just because a link was clicked.
+      if (new URLSearchParams(global.location.search).get('demo') === '1' && Ui.actions['load-sample']) {
+        setTimeout(() => Ui.actions['load-sample'](), 350);
+      } else if (!S.data.subjects.length && !S.data.records.length) {
         setTimeout(
           () => Ui.toast('New here? Open <b>Settings</b> → “Load sample semester” for a full demo, or start by adding subjects.', 'info', 10000),
           700,

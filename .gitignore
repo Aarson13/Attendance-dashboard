@@ -1,5 +1,7 @@
 node_modules/
+dist/
 .tmp-pdf/
+.tmp-home/
 .freebuff/
 *.log
 .DS_Store

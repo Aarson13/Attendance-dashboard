@@ -198,6 +198,19 @@ test('threshold of 100%: nothing is safe and a missed class cannot be recovered'
   assert.equal(cleanStats.pct, 1);
 });
 
+test('recovery rounds down the float noise, never up', () => {
+  const ctx = makeCtx({ settings: { threshold: 0.9 } });
+  // 35/40 = 87.5% at a 90% minimum: exactly 10 more classes are needed.
+  ctx.data.subjects[0].expectedClasses = 40;
+  for (let i = 0; i < 35; i++) ctx.data.records.push({ id: `r${i}`, date: '2026-07-27', subjectId: 'sub_a', slotKey: null, kind: 'extra', status: 'present', note: '', at: '' });
+  for (let i = 0; i < 5; i++) ctx.data.records.push({ id: `m${i}`, date: '2026-07-28', subjectId: 'sub_a', slotKey: null, kind: 'extra', status: 'absent', note: '', at: '' });
+  const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
+  assert.equal(s.a, 35);
+  assert.equal(s.t, 40);
+  // (0.9 × 40 − 35) / 0.1 computes as 10.000000000000036 — ceil() must not report 11
+  assert.equal(s.mustAttend, 10, 'binary floating point must not inflate the recovery target');
+});
+
 test('existing attendance: carried counts join every formula', () => {
   const ctx = makeCtx();
   // The college portal says 18 held / 12 attended for Alpha and 2 held / 1 attended for the lab

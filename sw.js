@@ -3,12 +3,13 @@
  * shell here plus whatever Tesseract.js pulls from its CDN the first time you run OCR.
  * Only active when the page is served over http(s); file:// pages have no service workers.
  */
-const VERSION = 'v1';
+// v2: the app moved from index.html to app.html, so an installed v1 shell has to be replaced rather
+// than reused — the cache name is the only signal the browser gives an existing install.
+const VERSION = 'v2';
 const SHELL = `attendance-shell-${VERSION}`;
 const RUNTIME = `attendance-runtime-${VERSION}`;
 const SHELL_FILES = [
-  './',
-  'index.html',
+  'app.html',
   'styles.css',
   'manifest.webmanifest',
   'icon.svg',
@@ -78,6 +79,6 @@ self.addEventListener('fetch', (event) => {
         }
         return res;
       })
-      .catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' ? caches.match('index.html') : undefined))),
+      .catch(() => caches.match(req).then((hit) => hit || (req.mode === 'navigate' ? caches.match('app.html') : undefined))),
   );
 });

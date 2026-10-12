@@ -1,0 +1,16 @@
+{
+  "name": "attendance-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal college attendance tracker. Static HTML/CSS/vanilla JS, localStorage only, no build step.",
+  "type": "module",
+  "scripts": {
+    "serve": "npx --yes serve -l 4173 .",
+    "sync:calendar": "node scripts/sync-calendar.mjs",
+    "test": "node --test",
+    "samples": "node scripts/write-samples.mjs"
+  },
+  "devDependencies": {
+    "pdfjs-dist": "^6.4.299"
+  }
+}

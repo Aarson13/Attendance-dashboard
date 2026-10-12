@@ -107,21 +107,26 @@ they overlap is the brightest point. A blurred violet radial adds the ambient gl
 melts the flares into the page. Above and below the copy the hero fades to pure black through
 `.hero-bg`, so the ribbon never ends on a hard edge.
 
-| Viewport | Hero text contrast (worst pixel behind the glyphs) |
+| Viewport | Worst hero text contrast (brightest pixel behind the glyphs) |
 |---|---|
-| 390px | white 18.9–20.2:1, muted 7.5–8.0:1 |
-| 768px | white 18.7–20.2:1, muted 7.4–7.9:1 |
-| 1024–1920px | white 15.8–19.9:1, muted 6.2–7.8:1 |
+| 390px | white 18.9:1 · muted 7.4:1 |
+| 768px | white 18.7:1 · muted 7.4:1 |
+| 1024–1440px | white 15.6:1 · muted 6.1:1 |
+| 1920px | white 15.8:1 · muted 6.2:1 |
 
 Those numbers come from rendering the page with the glyphs made transparent and measuring the
 brightest pixel inside each text element's own box — the pessimistic reading, i.e. what the letters
-actually sit on. Keeping them above the 4.5:1 floor is the job of `.hero-shield`, a soft radial veil
+actually sit on. 390px and 1440px were re-measured with every animated ribbon layer pinned at its
+*brightest* frame; the widths between them were measured mid-cycle, inside the same range. Keeping them above the 4.5:1 floor is the job of `.hero-shield`, a soft radial veil
 over the copy; it is the reason the middle of the ribbon is calmer than its glow either side
 (`min(940px, 150vw)` wide, because on a phone the copy is nearly full-bleed).
 
-**Motion** is CSS-only and honours `prefers-reduced-motion`: the ribbon breathes over 9s (13s for the
-ambient glow), the hero copy rises in on load, the preview cards stagger in as they scroll into
-view, and every animation collapses to nothing when the OS asks for reduced motion.
+**Motion** is CSS-only and honours `prefers-reduced-motion`: the ribbon breathes over 9s (the ambient
+glow over 10s, so the two never lock together), the hero copy rises in on load, the preview cards
+stagger in as they scroll into view, and every animation collapses to nothing when the OS asks for
+reduced motion. Because the animated layers change how bright the ribbon is behind the copy, the
+contrast figures above were re-measured with **every layer pinned at its brightest frame**
+(`scale(1.035)`, glow 0.64, core 0.96) — the ceiling of the cycle, not one lucky instant.
 
 ---
 

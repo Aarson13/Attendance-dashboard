@@ -38,8 +38,10 @@
 
   /* — motion — */
   --ease-soft: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+  /* 9s and 10s: both inside the brief's 8–10s band, and deliberately not equal, so the glow and the
+     shape never pulse in lockstep. */
   --animate-breathe: breathe 9s var(--ease-soft) infinite;
-  --animate-breathe-glow: breathe-glow 13s var(--ease-soft) infinite;
+  --animate-breathe-glow: breathe-glow 10s var(--ease-soft) infinite;
   --animate-breathe-core: breathe-core 9s var(--ease-soft) infinite;
   --animate-rise: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
   --animate-spin-slow: spin 18s linear infinite;

@@ -56,8 +56,15 @@ These are implemented once, in [`js/calc.js`](js/calc.js), and unit-tested in
 - **1 timetable cell = 1 class.** A lab occupies two periods on the grid and is drawn as one merged
   block, but it counts as exactly one class.
 - **Classes held** `t` = present + absent (+ medical/duty leave when that setting is *count as
-  absent*).
-- **Classes attended** `a` = present only.
+  absent*), **plus the existing attendance you carried in**.
+- **Classes attended** `a` = present only, plus the carried attendance.
+- **Existing attendance** (`carried: { a, t }` per subject, entered in the *Subjects* tab) is what
+  your portal already knew before you started marking here. It folds into `a` and `t` for every
+  formula below, and it is *dateless*: it never shows up on one day, so it stays out of the heatmap
+  and out of every recorded date — but the trend line is seeded with it, which is why the line's
+  last point always equals the dashboard tiles. If carried classes push `t` past the semester plan
+  `T`, `T` is raised to `t` (and a warning tells you to fix the semester dates or set *Total T*),
+  because more classes can never have been held than the plan contains.
 - **Cancelled classes are not counted anywhere** — they don't add to `t` and don't add to `T`.
 - **Holidays, exam windows and suspended days** are skipped automatically; a day from the calendar
   always beats the weekly timetable.
@@ -105,7 +112,8 @@ One object, exported as `{ app, version, exportedAt, data }`:
     sort: 'risk' | 'credits',
     spotlights: true
   },
-  subjects: [{ id, name, code, credits, faculty, classesPerWeek: null, expectedClasses: null }],
+  subjects: [{ id, name, code, credits, faculty, classesPerWeek: null, expectedClasses: null,
+               carried: { a: 0, t: 0 } }],   // classes attended/held before you started marking
   timetable: { "1": { "p1": { subjectId, lab: false } } },   // day 1=Mon … 6=Sat
   calendar: {
     sources: [{ id, title, url, fetchedAt, kind }],
@@ -126,7 +134,10 @@ One object, exported as `{ app, version, exportedAt, data }`:
 
 1. **Subjects** — add each subject with credits and optional faculty. Classes-per-week defaults to
    the credit count until a timetable exists; *Total T* overrides the semester total if your
-   college publishes one.
+   college publishes one. Joining mid-semester? Type the two numbers your portal already shows into
+   **Existing attendance** (attended / held, per subject) — they count in every figure immediately,
+   and *Clear* wipes a row back to 0. Don't double-count: only enter classes you have not already
+   marked on the Today tab.
 2. **Timetable** — click any cell to assign a subject; tick *Lab* for a lab (it then spans that
    period and the next, and counts once). Periods are editable under *Edit periods*.
    You can also bring a timetable in three ways:
@@ -242,10 +253,13 @@ flagged rather than guessed. Both orientations are covered by tests.
 npm test
 ```
 
-25 tests cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
+29 tests cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
 days, holiday-beats-swap), the CSV/ICS/JSON importers, the OCR grid + date parsers, the crop-to-source
-mapping used when an image is rotated before OCR, the 100%-threshold edge case, and the sample
-dataset's internal consistency. The engine files are dependency-free and DOM-free on purpose, which
+mapping used when an image is rotated before OCR, the 100%-threshold edge case, the sample
+dataset's internal consistency, and the existing-attendance maths: carried counts reach `a`/`t`, the
+buffer, recovery, projections, the overall and credit-weighted totals and the trend baseline;
+impossible pairs (attended > held) are clamped rather than believed, and junk in a hand-edited backup
+is repaired on import. The engine files are dependency-free and DOM-free on purpose, which
 is what makes them testable; `js/app.js` is the one file that needs a DOM, so its event wiring is
 verified in a browser rather than here.
 

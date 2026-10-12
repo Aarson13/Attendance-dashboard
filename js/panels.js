@@ -537,7 +537,7 @@
         <div class="card">
           <h2>How to use it</h2>
           <ol class="muted" style="padding-left:18px">
-            <li><b>Subjects</b> — add each subject with credits (and faculty if you like).</li>
+            <li><b>Subjects</b> — add each subject with credits, and if you are joining mid-semester enter the attendance you already have (attended / held) under <b>Existing attendance</b>.</li>
             <li><b>Timetable</b> — click cells to fill the week, or import CSV / run OCR on a screenshot. Mark a lab; it spans two periods but counts once.</li>
             <li><b>Calendar</b> — import the scraped Manipal calendar (or CSV/ICS/OCR) so holidays, exams and swapped days are skipped automatically. Set your semester dates.</li>
             <li><b>Today</b> — tap Present / Absent / Leave / Cancelled per class. Cancelled and off days vanish from every count.</li>
@@ -939,7 +939,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       if (!row) return;
       if (el.value === '__create__') {
         const name = row.text || 'Imported subject';
-        const created = { id: Store.uid('sub'), name: name, code: '', credits: 3, faculty: '', color: '', classesPerWeek: null, expectedClasses: null };
+        const created = { id: Store.uid('sub'), name: name, code: '', credits: 3, faculty: '', color: '', classesPerWeek: null, expectedClasses: null, carried: { a: 0, t: 0 } };
         S.data.subjects.push(created);
         row.subjectId = created.id;
         U().save();

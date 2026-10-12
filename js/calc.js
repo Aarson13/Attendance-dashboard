@@ -151,13 +151,32 @@
   }
 
   /* ---------- per-subject stats ---------- */
+  /**
+   * Attendance the user brought with them ("held 40 / attended 36 before I started marking"), in
+   * whole classes. Normalised on load by Store.normalize and clamped again here on the way into the
+   * maths, so no hand-edited backup can reach the formulas as a fraction of a class, a negative or
+   * a percentage above 100%.
+   */
+  function carriedOf(subject) {
+    const c = (subject && subject.carried) || {};
+    const count = (v) => {
+      const n = Math.round(Number(v));
+      return isFinite(n) ? Math.max(0, n) : 0;
+    };
+    const t = count(c.t);
+    const a = Math.min(t, count(c.a));
+    return { a, t };
+  }
+
   function subjectStats(subject, ctx) {
     const p = ctx.data.settings.threshold;
     const leaveMode = ctx.data.settings.leaveMode;
+    const carried = carriedOf(subject);
     const recs = ctx.data.records.filter((r) => r.subjectId === subject.id);
     const held = recs.filter((r) => isHeld(r.status, leaveMode));
-    const t = held.length;
-    const a = recs.filter((r) => r.status === 'present').length;
+    // Counted classes = the ones carried in from before + everything marked since.
+    const t = carried.t + held.length;
+    const a = carried.a + recs.filter((r) => r.status === 'present').length;
     const cancellations = recs.filter((r) => r.status === 'cancelled').length;
     const extrasHeld = held.filter((r) => r.kind === 'extra' || !r.slotKey).length;
 
@@ -178,8 +197,9 @@
       T = Math.round((perWeek * countTeachingDays(ctx)) / 6) - cancellations + extrasHeld;
       TSource = 'estimated';
     }
+    const TPlanned = T;
     const TAdjusted = T < t;
-    if (TAdjusted) T = t; // the plan is stale (extra classes happened); never report more held than planned
+    if (TAdjusted) T = t; // the plan is stale (extras happened, or part of t is carried); never report more held than planned
 
     const remaining = Math.max(0, T - t);
     const pct = t ? a / t : null;
@@ -193,8 +213,10 @@
       a,
       t,
       T,
+      TPlanned,
       TSource,
       TAdjusted,
+      carried,
       pct,
       buffer,
       mustAttend,
@@ -254,7 +276,10 @@
       } else if (s.buffer <= 1) {
         out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name} can only take ${s.buffer} more absence${s.buffer === 1 ? '' : 's'}.` });
       }
-      if (s.TAdjusted) out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name}: more classes were held than the semester plan (T) predicts — check the timetable or T.` });
+      if (s.TAdjusted) {
+        const hint = s.carried.t ? ' If part of that is your existing attendance, keep the semester start at the real first day of classes (or set "Total T" by hand).' : '';
+        out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name}: the semester plan predicts ${s.TPlanned} classes but ${s.t} have been held — check the timetable or T.${hint}` });
+      }
     }
     return out;
   }
@@ -289,7 +314,10 @@
     return { total: list.length, safeCount: safe.length, safe, all: list };
   }
 
-  /** Cumulative attendance trend up to `upto` (for the line chart). */
+  /**
+   * Cumulative attendance trend up to `upto` (for the line chart). It starts from the carried
+   * balances so the line's last point agrees with the tiles, which also include them.
+   */
   function trend(ctx, upto) {
     const sem = ctx.data.settings.semester;
     if (!sem.start || !sem.end) return [];
@@ -297,6 +325,11 @@
     const out = [];
     let a = 0;
     let t = 0;
+    for (const s of ctx.data.subjects) {
+      const c = carriedOf(s);
+      a += c.a;
+      t += c.t;
+    }
     for (const d of eachDay(sem.start, end)) {
       const plan = dayPlan(d, ctx);
       const scheduled = plan.teaching ? cellsForDay(ctx.data.timetable, plan.weekday).length : 0;
@@ -345,6 +378,7 @@
     cellsForDay,
     scheduledSlots,
     countTeachingDays,
+    carriedOf,
     dayClasses,
     subjectStats,
     allStats,

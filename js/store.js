@@ -91,6 +91,12 @@
     }
   }
 
+  /** Whole-class count that survives a hand-edited backup: anything that is not a finite number reads as 0. */
+  function countOrZero(v) {
+    const n = Math.round(Number(v));
+    return isFinite(n) ? Math.max(0, n) : 0;
+  }
+
   function normalize(input) {
     const d = Object.assign(defaults(), input || {});
     d.settings = Object.assign(defaultSettings(), d.settings || {});
@@ -110,6 +116,13 @@
       color: s.color || '',
       classesPerWeek: s.classesPerWeek == null || s.classesPerWeek === '' ? null : Number(s.classesPerWeek),
       expectedClasses: s.expectedClasses == null || s.expectedClasses === '' ? null : Number(s.expectedClasses),
+      // Attendance brought in from before the user started marking (see Calc.carriedOf): stored as
+      // whole non-negative classes, with anything unreadable in the file repaired to 0. The engine
+      // clamps attended to held for the maths and the UI flags an impossible pair in the entry table.
+      carried: {
+        a: countOrZero(s.carried && s.carried.a),
+        t: countOrZero(s.carried && s.carried.t),
+      },
     }));
     d.timetable = d.timetable && typeof d.timetable === 'object' ? d.timetable : {};
     d.calendar = d.calendar && typeof d.calendar === 'object' ? d.calendar : { sources: [], entries: [] };
@@ -322,6 +335,7 @@
           color: '',
           classesPerWeek: null,
           expectedClasses: null,
+          carried: { a: 0, t: 0 },
         };
         data.subjects.push(subject);
         warnings.push(`Created new subject "${subject.name}" (3 credits default) — edit it if that's wrong.`);

@@ -29,6 +29,16 @@
     String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const attr = (v) => esc(v);
   const pctText = (v, d) => (v == null || !isFinite(v) ? 'N/A' : `${(v * 100).toFixed(d == null ? 1 : d)}%`);
+
+  /**
+   * The "what happens over the rest of the term" sentence. With nothing left to project the two
+   * projections collapse to the same number, which reads like a bug, so say why instead.
+   */
+  const projectionNote = (st) => {
+    if (st.remaining > 0) return `If you miss all ${st.remaining} classes left this semester: ${pctText(st.projectedWorst)}. If you attend them all: ${pctText(st.projectedBest)}.`;
+    if (st.TAdjusted) return `Nothing left to project: the semester plan (${st.TPlanned} classes) is already smaller than the ${st.t} classes held so far. Extend the semester dates or set Total T to forecast the rest of the term.`;
+    return `Nothing left to project — every one of the ${st.t} planned classes is counted, so the rest of the term just holds your current ${pctText(st.pct)}.`;
+  };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
   function ctx() {
@@ -139,15 +149,15 @@
         ${stats.t === 0 ? '<span class="chip">nothing marked yet</span>' : stats.buffer > 0 ? `<span class="chip ok">can miss ${stats.buffer} more</span>` : `<span class="chip bad">no safe misses left</span>`}
         ${stats.mustAttend == null ? `<span class="chip bad">can't return to ${(p() * 100).toFixed(0)}%</span>` : stats.mustAttend > 0 ? `<span class="chip bad">attend ${stats.mustAttend} in a row</span>` : ''}
         <span class="chip">held ${stats.t} · attended ${stats.a}</span>
-        <span class="chip">plan T ${stats.T} <span class="muted">(${esc(sources[stats.TSource] || stats.TSource)})</span></span>
+        <span class="chip${stats.TAdjusted ? ' warn' : ''}">plan T ${stats.T} <span class="muted">(${stats.TAdjusted ? `raised from ${stats.TPlanned}` : esc(sources[stats.TSource] || stats.TSource)})</span></span>
         ${stats.cancelled ? `<span class="chip">${stats.cancelled} cancelled</span>` : ''}
-        ${stats.TAdjusted ? '<span class="chip warn">T raised to match reality</span>' : ''}
+        ${stats.carried.t ? `<span class="chip">existing ${stats.carried.a}/${stats.carried.t} before tracking</span>` : ''}
       </div>
       <dl class="stat-list">
         <div><dt>Misses used / allowed</dt><b>${stats.usedMisses} / ${stats.maxMissTotal}</b></div>
         <div><dt>Left this semester</dt><b>${stats.remaining}</b></div>
-        <div><dt>Best case (attend all left)</dt><b>${pctText(stats.projectedBest)}</b></div>
-        <div><dt>Worst case (miss all left)</dt><b>${pctText(stats.projectedWorst)}</b></div>
+        ${stats.remaining > 0 ? `<div><dt>Best case (attend all left)</dt><b>${pctText(stats.projectedBest)}</b></div>
+        <div><dt>Worst case (miss all left)</dt><b>${pctText(stats.projectedWorst)}</b></div>` : `<div><dt>Forecast</dt><b><small>nothing left to project</small></b></div>`}
       </dl>
       <div class="row" style="margin-top:10px">
         <button class="small" data-act="whatif-subject" data-id="${attr(s.id)}" type="button">What-if…</button>
@@ -384,6 +394,22 @@
     const c = ctx();
     const stats = Calc.allStats(c);
     const byId = new Map(stats.map((s) => [s.subject.id, s]));
+    const carriedRows = S.data.subjects
+      .map((s) => {
+        const raw = s.carried || { a: 0, t: 0 };
+        const c2 = Calc.carriedOf(s);
+        const impossible = Number(raw.a) > Number(raw.t);
+        const st = byId.get(s.id);
+        const cls = st ? statusClass(st) : 'none';
+        return `<tr data-id="${attr(s.id)}">
+          <td>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</td>
+          <td><input data-act="carried-field" data-field="a" type="number" min="0" step="1" value="${attr(raw.a == null ? 0 : raw.a)}" style="width:84px" aria-label="Classes attended before tracking" /></td>
+          <td><input data-act="carried-field" data-field="t" type="number" min="0" step="1" value="${attr(raw.t == null ? 0 : raw.t)}" style="width:84px" aria-label="Classes held before tracking" /></td>
+          <td class="nowrap"><span class="chip ${cls === 'bad' ? 'bad' : cls === 'warn' ? 'warn' : cls === 'ok' ? 'ok' : ''}">${pctText(st ? st.pct : null)}</span> ${impossible ? '<small class="muted">attended can&rsquo;t exceed held</small>' : ''}</td>
+          <td>${c2.t || c2.a ? `<button class="small ghost" data-act="carried-clear" data-id="${attr(s.id)}" type="button">Clear</button>` : ''}</td>
+        </tr>`;
+      })
+      .join('');
     const rows = S.data.subjects
       .map((s) => {
         const st = byId.get(s.id);
@@ -428,6 +454,22 @@
           <label class="field">Faculty (optional)<input id="newSubjFaculty" placeholder="Dr. Iyer" /></label>
           <button class="primary" data-act="subj-add" type="button">Add subject</button>
         </div>
+      </div>
+      <div class="card">
+        <div class="section-head">
+          <h2>Existing attendance</h2>
+          <span class="spacer"></span>
+          <span class="muted">classes held before you started marking</span>
+        </div>
+        <p class="muted">Your college portal already knows how many classes have been held and how many you attended for each subject. Type those two numbers here and they join <b>every</b> calculation — the percentage, safe misses, recovery, projections, overall and credit-weighted. Leave them at 0 if you are starting fresh.
+        Only count classes you have <b>not</b> already marked in the Today tab: marked days are added on top. Keep the semester dates as the real ones so the semester plan (T) covers the whole term.</p>
+        ${S.data.subjects.length ? `<div class="table-scroll">
+          <table class="list" style="min-width:560px">
+            <thead><tr><th>Subject</th><th>Attended</th><th>Held</th><th>% now</th><th></th></tr></thead>
+            <tbody>${carriedRows}</tbody>
+          </table>
+        </div>
+        <p class="muted">Overall: ${pctText(Calc.overallStats(c, stats).pct)} across ${S.data.subjects.length} subjects, including everything marked since.</p>` : '<div class="empty">Add a subject first, then you can enter the attendance you already have.</div>'}
       </div>`;
   }
 
@@ -438,7 +480,8 @@
     const subjects = S.data.subjects;
     const simSubject = S.sim && S.sim.subjectId ? S.sim.subjectId : subjects.length ? subjects[0].id : '';
     const pick = simSubject ? stats.find((s) => s.subject.id === simSubject) : null;
-    const misses = S.sim ? S.sim.misses : 3;
+    // Reached from a subject card's "What-if…" button, S.sim carries a subject but no miss count yet.
+    const misses = S.sim && isFinite(S.sim.misses) && S.sim.misses >= 0 ? S.sim.misses : 3;
     let simOut = '<div class="empty">Pick a subject and a number of classes you plan to miss.</div>';
     if (pick) {
       const eff = Calc.missEffect(pick, misses, p());
@@ -449,7 +492,7 @@
           <div><dt>Still ≥ ${(p() * 100).toFixed(0)}%?</dt><b>${eff.safe ? `yes — ${eff.buffer} more could go` : 'no, this drops you below'}</b></div>
           <div><dt>Break-even right now</dt><b>${breakpointNow} more miss${breakpointNow === 1 ? '' : 'es'} allowed</b></div>
         </dl>
-        <p class="muted">If you miss all ${pick.remaining} classes left this semester: ${pctText(pick.projectedWorst)}. If you attend them all: ${pctText(pick.projectedBest)}.</p>`;
+        <p class="muted">${projectionNote(pick)}</p>`;
     }
 
     const planDate = (S.plan && S.plan.date) || Calc.addDays(todayISO(), 1);
@@ -619,6 +662,7 @@
         color: '',
         classesPerWeek: null,
         expectedClasses: null,
+        carried: { a: 0, t: 0 },
       });
       save();
       toast('Subject added. Next: put it on the timetable.', 'ok');
@@ -629,7 +673,9 @@
       const s = subjById(id);
       if (!s) return;
       const usage = Store.subjectUsage(S.data, id);
-      const message = usage.records || usage.cells ? `“${esc(s.name)}” is used by ${usage.cells} timetable slot(s) and ${usage.records} attendance record(s). Deleting removes those records everywhere.` : `Delete “${esc(s.name)}”?`;
+      const carried = Calc.carriedOf(s);
+      const carriedNote = carried.t ? ` The ${carried.a}/${carried.t} attendance you entered as existing goes with it.` : '';
+      const message = usage.records || usage.cells ? `“${esc(s.name)}” is used by ${usage.cells} timetable slot(s) and ${usage.records} attendance record(s). Deleting removes those records everywhere.${carriedNote}` : `Delete “${esc(s.name)}”?${carriedNote}`;
       openModal('Delete subject', `<p>${message}</p><div class="row"><button class="danger" data-act="subj-delete-confirm" data-id="${attr(id)}" type="button">Delete it</button><button data-act="modal-close" type="button">Keep it</button></div>`);
     },
     'subj-delete-confirm': (el) => {
@@ -644,6 +690,31 @@
       closeModal();
       toast('Subject deleted.', 'info');
       global.AD.App.render();
+    },
+    /** Commit the attended/held pair the user brought in from their college portal. */
+    'carried-field': (el) => {
+      const row = el.closest('tr');
+      const subject = row && subjById(row.dataset.id);
+      if (!subject) return;
+      const read = (field) => {
+        const input = row.querySelector(`input[data-field="${field}"]`);
+        const n = Number(input && input.value);
+        return isFinite(n) && n > 0 ? Math.round(n) : 0;
+      };
+      const a = read('a');
+      const t = read('t');
+      if (a > t) toast(`${esc(subjectTag(subject))}: attended can&rsquo;t be more than held — counting ${t} attended.`, 'warn', 7000);
+      subject.carried = { a, t };
+      save();
+      global.AD.App.render();
+    },
+    'carried-clear': (el) => {
+      const subject = subjById(el.dataset.id);
+      if (!subject) return;
+      subject.carried = { a: 0, t: 0 };
+      save();
+      global.AD.App.render();
+      toast(`Cleared the existing attendance for ${esc(subjectTag(subject))}.`, 'info');
     },
     'whatif-subject': (el) => {
       S.sim = Object.assign({}, S.sim, { subjectId: el.dataset.id });

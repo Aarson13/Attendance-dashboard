@@ -198,6 +198,90 @@ test('threshold of 100%: nothing is safe and a missed class cannot be recovered'
   assert.equal(cleanStats.pct, 1);
 });
 
+test('existing attendance: carried counts join every formula', () => {
+  const ctx = makeCtx();
+  // The college portal says 18 held / 12 attended for Alpha and 2 held / 1 attended for the lab
+  // before the user started marking anything here.
+  ctx.data.subjects[0].carried = { a: 12, t: 18 };
+  ctx.data.subjects[1].carried = { a: 1, t: 2 };
+  // then four Alpha classes since: three present, one absent (Mon–Thu of week 1)
+  const rec = (date, status) => ({ id: `c${date}`, date, subjectId: 'sub_a', slotKey: null, kind: 'extra', status, note: '', at: '' });
+  ctx.data.records.push(rec('2026-07-27', 'present'), rec('2026-07-28', 'present'), rec('2026-07-29', 'present'), rec('2026-07-30', 'absent'));
+  const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
+  assert.equal(s.a, 15, 'attended = carried 12 + marked 3');
+  assert.equal(s.t, 22, 'held = carried 18 + marked 4');
+  assert.ok(approx(s.pct, 15 / 22));
+  assert.equal(s.usedMisses, 7, 'the carried absences count as misses used');
+  assert.equal(s.buffer, Math.max(0, Math.floor(15 / 0.75 - 22)), 'safe misses are computed on the combined counts');
+  assert.equal(s.remaining, s.T - 22, 'the semester plan is not reset by the carried numbers');
+  assert.equal(s.carried.a, 12);
+
+  // the overall and credit-weighted totals see them too (Alpha 4 credits, lab 1 credit)
+  const stats = Calc.allStats(ctx);
+  const overall = Calc.overallStats(ctx, stats);
+  assert.equal(overall.a, 16, '15 from Alpha + 1 carried in for the lab');
+  assert.equal(overall.t, 24);
+  assert.ok(approx(overall.creditPct, (4 * 15 + 1 * 1) / (4 * 22 + 1 * 2)), 'the credit-weighted figure includes carried classes');
+
+  // the trend line ends exactly where the tiles point, and starts from the carried balance
+  const line = Calc.trend(ctx);
+  const all = Calc.allStats(ctx);
+  assert.ok(line.length > 1);
+  assert.equal(line[line.length - 1].a, all.reduce((n, x) => n + x.a, 0), 'the last point totals the same attended count');
+  assert.equal(line[line.length - 1].t, all.reduce((n, x) => n + x.t, 0), 'and the same held count');
+  assert.equal(line[0].a, 14, "the first point already carries the 12+1 balance plus that day's marked class");
+
+  // the balance has no date, so no single day in the heatmap may claim it
+  const friday = Calc.daySummary(ctx, '2026-07-31', '2026-07-31');
+  assert.equal(friday.present, 0);
+  assert.equal(friday.scheduled, 0);
+  const monday = Calc.daySummary(ctx, '2026-07-27', '2026-07-31');
+  assert.equal(monday.present, 1, 'only the class marked on that day counts on that day');
+});
+
+test('existing attendance: impossible pairs are clamped, never believed', () => {
+  const ctx = makeCtx();
+  ctx.data.subjects[0].carried = { a: 40, t: 12 }; // attended can never exceed held
+  const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
+  assert.equal(s.carried.a, 12, 'attended is clamped to held for the maths');
+  assert.equal(s.carried.t, 12);
+  assert.equal(s.pct, 1);
+  assert.ok(s.pct <= 1, 'a percentage above 100% is impossible');
+
+  // negatives, floats and junk from a pasted backup are all repaired
+  assert.deepEqual(Calc.carriedOf({ carried: { a: -5, t: -2 } }), { a: 0, t: 0 });
+  assert.deepEqual(Calc.carriedOf({ carried: { a: '7.6', t: '9' } }), { a: 8, t: 9 });
+  assert.deepEqual(Calc.carriedOf({ carried: { a: 'abc', t: null } }), { a: 0, t: 0 });
+  assert.deepEqual(Calc.carriedOf({}), { a: 0, t: 0 }, 'a subject with no carried balance is fine');
+  assert.deepEqual(Calc.carriedOf(undefined), { a: 0, t: 0 });
+});
+
+test('existing attendance survives a save/load round trip', () => {
+  const data = Store.defaults();
+  data.subjects.push({ id: 'x', name: 'Carried', code: 'CR1', credits: 3, carried: { a: 8, t: 12 } });
+  const back = Store.normalize(JSON.parse(JSON.stringify(data)));
+  assert.deepEqual(back.subjects[0].carried, { a: 8, t: 12 });
+  // a backup written by an older version has no carried field at all
+  const legacy = Store.normalize({ subjects: [{ name: 'Old', code: 'O1', credits: 4 }] });
+  assert.deepEqual(legacy.subjects[0].carried, { a: 0, t: 0 });
+  // and junk is repaired on the way in
+  const junk = Store.normalize({ subjects: [{ name: 'Junk', carried: { a: 'nonsense', t: -3 } }] });
+  assert.deepEqual(junk.subjects[0].carried, { a: 0, t: 0 });
+});
+
+test('carried attendance larger than the semester plan raises T and says so', () => {
+  const ctx = makeCtx();
+  ctx.data.subjects[0].carried = { a: 3, t: 4 };
+  // the plan for Alpha is 2 slots in this fixture, so 4 carried classes beat it
+  const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
+  assert.equal(s.TAdjusted, true);
+  assert.equal(s.TPlanned, 2, 'the plan that was too small is still reported');
+  assert.equal(s.T, 4, 'T is raised so more classes are never held than planned');
+  const text = Calc.warnings(ctx).map((w) => w.text).join(' ');
+  assert.ok(/semester plan predicts 2 classes but 4 have been held/.test(text), text);
+  assert.ok(/semester start at the real first day/.test(text), 'the warning tells you how to fix it');
+});
+
 test('bunkable today + unmarked-day reminder', () => {
   const ctx = makeCtx();
   const mono = Calc.dayPlan('2026-07-27', ctx);

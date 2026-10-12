@@ -1,6 +1,10 @@
-/* store.js — data model, localStorage persistence, import/export (JSON, CSV, ICS).
- * The whole app is one JSON document under one localStorage key. Everything that touches disk
- * lives here so the UI never has to think about shape or quota.
+/* store.js — the data model plus import/export (JSON, CSV, ICS).
+ *
+ * The whole app is one JSON document, and that document lives in a GitHub repository (js/github.js
+ * reads and writes it, one commit per interaction) — not on this device. What is left here is the
+ * shape: defaults, normalisation that repairs anything hand-edited, and the importers/exporters.
+ * `localSnapshot()` exists only to recover data written by an older version that did store it
+ * locally, so it can be pushed to GitHub once and then deleted here.
  */
 (function (global) {
   'use strict';
@@ -11,6 +15,35 @@
 
   function uid(prefix) {
     return `${prefix || 'id'}_${Math.random().toString(36).slice(2, 9)}${Date.now().toString(36).slice(-4)}`;
+  }
+
+  /** Keys that reach a prototype instead of an own property, and are dropped wherever a file is read. */
+  const UNSAFE_KEYS = ['__proto__', 'constructor', 'prototype'];
+
+  /**
+   * A shallow copy of an untrusted object without anything prototype-shaped in it. `JSON.parse`
+   * leaves `__proto__` as an ordinary own key, but the moment it is folded into another object with
+   * `Object.assign` the setter runs and the target's prototype becomes the attacker's object — so the
+   * key is removed before that can happen. Used on every document the app did not write itself.
+   */
+  function plainObject(input) {
+    const out = {};
+    if (!input || typeof input !== 'object') return out;
+    for (const key of Object.keys(input)) {
+      if (UNSAFE_KEYS.indexOf(key) >= 0) continue;
+      out[key] = input[key];
+    }
+    return out;
+  }
+
+  /**
+   * A URL that is safe to put in an `href`, or '' if it is not one. Escaping cannot make a URL safe —
+   * `javascript:alert(1)` is perfectly valid HTML — the scheme is what has to be checked. Sources come
+   * from the synced document and from imported snapshot files, so they are attacker-reachable.
+   */
+  function safeUrl(value) {
+    const raw = String(value == null ? '' : value).trim();
+    return /^https?:\/\//i.test(raw) ? raw : '';
   }
 
   function defaultSettings() {
@@ -46,40 +79,34 @@
     };
   }
 
-  /* ---------- persistence ---------- */
-  function load() {
+  /* ---------- the legacy on-device snapshot ---------- */
+  /**
+   * Reads — but never writes — the localStorage document older versions kept. Returns null when
+   * there is nothing there, or when it is unreadable. Used once, to offer pushing it to GitHub.
+   */
+  function localSnapshot() {
     let raw = null;
     try {
       raw = localStorage.getItem(KEY);
     } catch (err) {
-      return defaults();
+      return null;
     }
-    if (!raw) return defaults();
+    if (!raw) return null;
     try {
       return normalize(JSON.parse(raw));
     } catch (err) {
-      console.warn('stored data was unreadable, starting fresh', err);
-      return defaults();
+      console.warn('the legacy local snapshot was unreadable, ignoring it', err);
+      return null;
     }
   }
 
-  function save(data) {
+  /** Deletes that snapshot, once its contents are safely in the repository. */
+  function clearLocal() {
     try {
-      localStorage.setItem(KEY, JSON.stringify(data));
-      return { ok: true };
+      localStorage.removeItem(KEY);
+      return true;
     } catch (err) {
-      // Almost always the OCR images filling the quota: drop them and keep the numbers safe.
-      if (data.ocr && data.ocr.images && data.ocr.images.length) {
-        const dropped = data.ocr.images.length;
-        data.ocr.images = [];
-        try {
-          localStorage.setItem(KEY, JSON.stringify(data));
-          return { ok: true, warning: `Storage was full — dropped ${dropped} stored timetable image(s) to save your attendance data.` };
-        } catch (err2) {
-          return { ok: false, error: err2.message };
-        }
-      }
-      return { ok: false, error: err.message };
+      return false;
     }
   }
 
@@ -98,9 +125,9 @@
   }
 
   function normalize(input) {
-    const d = Object.assign(defaults(), input || {});
-    d.settings = Object.assign(defaultSettings(), d.settings || {});
-    d.settings.semester = Object.assign({ name: '', start: '', end: '' }, d.settings.semester || {});
+    const d = Object.assign(defaults(), plainObject(input));
+    d.settings = Object.assign(defaultSettings(), plainObject(d.settings));
+    d.settings.semester = Object.assign({ name: '', start: '', end: '' }, plainObject(d.settings.semester));
     const th = Number(d.settings.threshold);
     d.settings.threshold = isFinite(th) && th > 0 && th <= 1 ? th : 0.75;
     d.settings.leaveMode = d.settings.leaveMode === 'exclude' ? 'exclude' : 'absent';
@@ -137,7 +164,13 @@
         swapDay: e.swapDay ? Number(e.swapDay) : null,
         sourceId: e.sourceId || null,
       }));
-    d.calendar.sources = Array.isArray(d.calendar.sources) ? d.calendar.sources : [];
+    d.calendar.sources = (Array.isArray(d.calendar.sources) ? d.calendar.sources : []).map((s) => ({
+      id: (s && s.id) || uid('src'),
+      title: String((s && s.title) || ''),
+      url: safeUrl(s && s.url), // http(s) only; the Calendar tab renders this one as a link
+      fetchedAt: String((s && s.fetchedAt) || ''),
+      kind: String((s && s.kind) || 'snapshot'),
+    }));
     d.records = (Array.isArray(d.records) ? d.records : [])
       .filter((r) => r && r.date && r.subjectId)
       .map((r) => ({
@@ -147,10 +180,10 @@
         slotKey: r.slotKey || null,
         kind: r.kind === 'lab' ? 'lab' : r.kind === 'extra' ? 'extra' : 'lecture',
         status: ['present', 'absent', 'cancelled', 'leave'].indexOf(r.status) >= 0 ? r.status : 'present',
-        note: r.note || '',
+        note: String(r.note == null ? '' : r.note),
         at: r.at || new Date().toISOString(),
       }));
-    d.ocr = Object.assign({ images: [] }, d.ocr || {});
+    d.ocr = Object.assign({ images: [] }, plainObject(d.ocr));
     if (!Array.isArray(d.ocr.images)) d.ocr.images = [];
     return d;
   }
@@ -210,7 +243,7 @@
     const source = {
       id: uid('src'),
       title: snap.title || snap.id || 'Calendar snapshot',
-      url: (snap.source && snap.source.url) || '',
+      url: safeUrl(snap.source && snap.source.url), // sanitised here too, not only on the way back in
       fetchedAt: (snap.source && snap.source.fetchedAt) || '',
       kind: (snap.source && snap.source.kind) || 'snapshot',
     };
@@ -484,9 +517,11 @@
     KEY,
     VERSION,
     uid,
+    plainObject,
+    safeUrl,
     defaults,
-    load,
-    save,
+    localSnapshot,
+    clearLocal,
     storageBytes,
     normalize,
     setStatus,

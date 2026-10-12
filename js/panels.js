@@ -28,6 +28,19 @@
     setTimeout(() => URL.revokeObjectURL(url), 4000);
   }
 
+  /**
+   * A calendar source URL as HTML: a real link when it is http(s), otherwise the text with a note,
+   * because the value comes from the synced document or an imported snapshot file. Escaping alone
+   * cannot make a URL safe — `javascript:alert(1)` is valid HTML — so the scheme is checked instead.
+   */
+  function sourceUrlHtml(url) {
+    const raw = String(url == null ? '' : url);
+    const safe = A.Store.safeUrl(raw);
+    if (safe) return `<a href="${attr(safe)}" target="_blank" rel="noopener noreferrer">${esc(safe)}</a>`;
+    if (!raw) return '<span class="muted">no link</span>';
+    return `<span title="Not an http(s) link — shown as text">${esc(raw)} <em>(not a link)</em></span>`;
+  }
+
   function overlayMessage(entries) {
     // Show exactly which dates two calendar entries fight over before saving anything.
     const covering = {};
@@ -41,6 +54,149 @@
     }
     const clashes = Object.entries(covering).filter(([, list]) => list.length > 1);
     return clashes.slice(0, 5).map(([date, list]) => `${date} (${list.map((e) => e.title || e.type).join(' vs ')})`);
+  }
+
+  /* ================= Quick add (natural language) =================
+   * One box that reads plain English into timetable cells, in the shape of the quick entry the
+   * expense tracker uses: it parses as you type, shows exactly what it understood (and what it had to
+   * guess), and only the Add button writes anything. Parsing itself is js/magic.js, which is pure —
+   * this part is the live preview and the commit.
+   */
+  let focusMagic = false;
+
+  function magicDraft() {
+    const m = U().S.magic;
+    return m && typeof m.draft === 'string' ? m.draft : '';
+  }
+
+  /** Parse the box into S.magic and hand it back: { draft, rows, warnings, error }. */
+  function magicRun(text) {
+    const S = U().S;
+    const parsed = A.Magic.parse(text, S.data);
+    S.magic = { draft: text, rows: parsed.rows, warnings: parsed.warnings, error: parsed.error };
+    return S.magic;
+  }
+
+  function subjectOptions(selected) {
+    const S = U().S;
+    return (
+      `<option value="" ${selected ? '' : 'selected'}>— pick a subject —</option>` +
+      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('') +
+      `<option value="__create__">＋ create a new subject from this text…</option>`
+    );
+  }
+
+  /** The grammar lighting up as it is recognised, the way the expense tracker's chips do. */
+  function magicDetectChips() {
+    const m = U().S.magic;
+    const rows = m && m.rows ? m.rows : [];
+    const parts = [
+      ['Day', rows.length > 0 && rows.every((r) => r.day)],
+      ['Time', rows.length > 0 && rows.every((r) => r.periodId)],
+      ['Subject', rows.length > 0 && rows.every((r) => r.subjectId)],
+      ['Lab', rows.some((r) => r.lab)],
+    ];
+    return parts.map(([name, on]) => `<span class="chip ${on ? 'ok' : ''}">${on ? '✓' : '·'} ${name}</span>`).join('');
+  }
+
+  function magicPreview() {
+    const m = U().S.magic;
+    if (!m || !m.draft.trim()) {
+      return '<p class="magic-hint">Start typing — every slot it worked out appears here first. Days, times, periods and labs.</p>';
+    }
+    const counts = { matched: 0, low: 0, unmatched: 0 };
+    m.rows.forEach((r) => (counts[r.state] = (counts[r.state] || 0) + 1));
+    const rows = m.rows
+      .map((r, i) => {
+        const per = U().periodById(r.periodId);
+        const when = `${esc(per ? per.label : '?')} · ${esc(per ? per.start : '')}${per && per.end ? `–${esc(per.end)}` : ''}`;
+        const how = {
+          assumed: 'time assumed',
+          same: 'same time as the line before',
+          inside: `your “${r.specText}” falls inside it`,
+          near: `your “${r.specText}” is the closest to it`,
+          end: `your “${r.specText}” ends with it`,
+        }[r.how];
+        return `<tr data-row="${i}">
+          <td class="nowrap">${esc(Calc.DAY_NAMES[r.day - 1])}<br /><small class="muted">${when}</small>${how ? `<br /><small class="muted">${esc(how)}</small>` : ''}</td>
+          <td>${esc(r.text || '(named above)')}${r.reason ? `<br /><small class="muted">${esc(r.reason)}</small>` : ''}</td>
+          <td class="state-${attr(r.state)}"><select data-act="magic-row-subject" data-row="${i}" aria-label="Subject for ${attr(r.text || 'this slot')}">${subjectOptions(r.subjectId)}</select></td>
+          <td><input type="checkbox" data-act="magic-row-lab" data-row="${i}" ${r.lab ? 'checked' : ''} aria-label="Lab" /></td>
+          <td><button class="small ghost" data-act="magic-row-del" data-row="${i}" type="button" title="Drop this slot">×</button></td>
+        </tr>`;
+      })
+      .join('');
+    return `
+      ${m.error ? `<p class="magic-error">${esc(m.error)}</p>` : ''}
+      ${
+        m.rows.length
+          ? `<div class="chips" style="margin:8px 0">
+              <span class="chip ok">${counts.matched || 0} matched</span>
+              ${counts.low ? `<span class="chip warn">${counts.low} unsure</span>` : ''}
+              ${counts.unmatched ? `<span class="chip bad">${counts.unmatched} need a subject</span>` : ''}
+              <span class="chip">${m.rows.length} slot${m.rows.length === 1 ? '' : 's'}</span>
+            </div>
+            <div class="table-scroll">
+              <table class="review-table">
+                <thead><tr><th>When</th><th>Read as</th><th>Subject</th><th>Lab</th><th></th></tr></thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>`
+          : m.error
+            ? ''
+            : '<p class="magic-hint">No slot in that yet — name a day (“Mon”, “Mon-Fri”) and a time or period.</p>'
+      }
+      ${
+        m.warnings.length
+          ? `<div class="banner warn" style="margin-top:10px"><strong>What it had to guess</strong>${m.warnings.map((w) => `<div>${esc(w)}</div>`).join('')}</div>`
+          : ''
+      }`;
+  }
+
+  /** Repaint just the preview, so typing is never interrupted by a re-render of the whole view. */
+  function refreshMagic() {
+    const preview = document.getElementById('magicPreview');
+    if (preview) preview.innerHTML = magicPreview();
+    const chips = document.getElementById('magicDetect');
+    if (chips) chips.innerHTML = magicDetectChips();
+    const m = U().S.magic;
+    const add = document.querySelector('[data-act="magic-add"]');
+    if (add) add.disabled = !(m && m.draft.trim() && m.rows.length && !m.rows.some((r) => !r.subjectId));
+    const clear = document.querySelector('[data-act="magic-clear"]');
+    if (clear) clear.disabled = !(m && m.draft.trim());
+  }
+
+  function magicCard() {
+    const draft = magicDraft();
+    return `<div class="card">
+      <div class="section-head">
+        <h2>Quick add</h2>
+        <span class="spacer"></span>
+        <span class="muted">type it like you'd say it — nothing is saved until you press Add</span>
+      </div>
+      <textarea id="magicInput" class="magic-input" data-act="magic-draft" rows="2" placeholder="Try: CS2001 Mon 9-10, Wed 11-12" aria-label="Natural-language timetable entry" spellcheck="false">${esc(draft)}</textarea>
+      <div class="chips" id="magicDetect" aria-hidden="true" style="margin-top:8px">${magicDetectChips()}</div>
+      <div id="magicPreview">${magicPreview()}</div>
+      <div class="row magic-examples">
+        ${A.Magic.EXAMPLES.map((ex) => `<button class="small ghost" data-act="magic-example" data-text="${attr(ex.text)}" type="button" title="${attr(ex.hint)}">${esc(ex.text)}</button>`).join('')}
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="primary" data-act="magic-add" type="button">Add to timetable</button>
+        <button data-act="magic-clear" type="button">Clear</button>
+        <span class="muted">⌘/Ctrl + Enter adds. Red rows need a subject first.</span>
+      </div>
+      <details style="margin-top:10px">
+        <summary class="muted">What it understands</summary>
+        <ul class="muted" style="margin:8px 0 0 18px; line-height:1.6">
+          <li><b>Days</b> — <code>Mon</code>, <code>Monday</code>, <code>Tue &amp; Thu</code>, <code>Mon-Fri</code>.</li>
+          <li><b>Times</b> — <code>9-10</code>, <code>2-4</code> (afternoon), <code>3:30</code>, <code>9am</code>; or a period: <code>P2</code>, <code>period 3</code>, or a lone <code>3</code>.</li>
+          <li><b>Labs</b> — the word lab / practical / tutorial, or a subject that already says it is one.</li>
+          <li><b>Subjects</b> — a code (<code>CS2001</code>), a full name or part of one. Anything unsure comes back marked, never guessed silently.</li>
+          <li><b>A whole day at once</b> — <code>Mon: CS2001, MA2002, CS2005</code> fills P1, P2, P3 in order and says that it did.</li>
+          <li><b>Several lines or commas</b> — <code>CS2001 Mon 9-10, Wed 11-12</code>; a line that leaves out the time keeps the one before it.</li>
+        </ul>
+      </details>
+    </div>`;
   }
 
   /* ================= Timetable ================= */
@@ -78,7 +234,27 @@
     const ocrCard = S.ocr && S.ocr.phase === 'review' ? '' : ocrUploadCard();
     const review = S.ocr && S.ocr.phase === 'review' ? ocrReviewScreen() : '';
 
+    // Focus is handed back to the box after an example chip or an Add, so several slots can be typed
+    // one after another without reaching for the mouse.
+    U().after((root) => {
+      refreshMagic(); // the buttons exist now, and their state depends on the parse
+      const el = root.querySelector('#magicInput');
+      if (!el) return;
+      if (focusMagic) {
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+        focusMagic = false;
+      }
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+          e.preventDefault();
+          U().actions['magic-add']();
+        }
+      });
+    });
+
     return `
+      ${magicCard()}
       <div class="card">
         <div class="section-head">
           <h2>Weekly timetable</h2>
@@ -299,7 +475,7 @@
             <span class="spacer"></span>
             <button class="primary" data-act="cal-bundled-import" type="button">Import this calendar</button>
           </div>
-          <p class="muted">Scraped ${esc(bundled.source.fetchedAt)} from <a href="${attr(bundled.source.url)}" target="_blank" rel="noopener noreferrer">${esc(bundled.source.url)}</a> by <code>scripts/sync-calendar.mjs</code>. Re-run that script when the college publishes a new PDF, then import again here.</p>
+          <p class="muted">Scraped ${esc(bundled.source.fetchedAt)} from ${sourceUrlHtml(bundled.source.url)} by <code>scripts/sync-calendar.mjs</code>. Re-run that script when the college publishes a new PDF, then import again here.</p>
           ${bundled.semesters && bundled.semesters.length > 1 ? `<label class="field">Semester to use<select id="bundledSemester">${bundled.semesters.map((s, i) => `<option value="${i}">${esc(s.name)} (${esc(s.start)} → ${esc(s.end)})</option>`).join('')}</select></label>` : ''}
           <p class="muted">${bundled.entries.length} entries: ${bundled.entries.filter((e) => e.type === 'holiday').length} holidays, ${bundled.entries.filter((e) => e.type === 'exam').length} exam windows, ${bundled.entries.filter((e) => e.type === 'working-swap').length} swapped-timetable days.</p>
           ${bundled.notes && bundled.notes.length ? `<details><summary class="muted">Scraper notes</summary><ul class="muted">${bundled.notes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul></details>` : ''}
@@ -396,7 +572,7 @@
       ${
         S.data.calendar.sources.length
           ? `<div class="card"><h3>Sources</h3><ul class="muted">${S.data.calendar.sources
-              .map((s) => `<li>${esc(s.title)} — <a href="${attr(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.url)}</a> (fetched ${esc(s.fetchedAt || 'n/a')})</li>`)
+              .map((s) => `<li>${esc(s.title)} — ${sourceUrlHtml(s.url)} (fetched ${esc(s.fetchedAt || 'n/a')})</li>`)
               .join('')}</ul></div>`
           : ''
       }`;
@@ -481,10 +657,47 @@
     const S = U().S;
     const settings = S.data.settings;
     const bytes = Store.storageBytes(S.data);
-    const budget = 5 * 1024 * 1024;
-    const pctUsed = Math.min(1, bytes / budget);
+    const Github = A.Github;
+    const cfg = Github.config();
+    const sync = Github.state();
+    const lastSync = sync.lastSyncAt ? new Date(sync.lastSyncAt).toLocaleString() : 'never';
     return `
       <div class="grid cols-2">
+        <div class="card">
+          <h2>Where your data lives</h2>
+          <p class="muted">Attendance is a JSON file in your own GitHub repository, not in this browser.
+          Every tap pulls the file, applies the change and commits it back, so the repository is the
+          single source of truth, another device sees your marks straight away, and the commit history
+          is your undo.</p>
+          <div class="row">
+            <label class="field" style="flex:1 1 130px">Owner <input data-act="sync-owner" value="${attr(cfg.owner)}" placeholder="your-username" autocomplete="off" spellcheck="false" /></label>
+            <label class="field" style="flex:1 1 150px">Repository <input data-act="sync-repo" value="${attr(cfg.repo)}" placeholder="Attendance-dashboard" autocomplete="off" spellcheck="false" /></label>
+          </div>
+          <div class="row">
+            <label class="field">Branch <input data-act="sync-branch" value="${attr(cfg.branch)}" autocomplete="off" spellcheck="false" style="width:120px" /></label>
+            <label class="field" style="flex:1 1 160px">File path <input data-act="sync-path" value="${attr(cfg.path)}" autocomplete="off" spellcheck="false" /></label>
+          </div>
+          <label class="field">Personal access token
+            <input type="password" data-act="sync-token" value="" placeholder="${Github.hasToken() ? '••••••• (saved)' : 'github_pat_…'}" autocomplete="new-password" spellcheck="false" />
+          </label>
+          <label class="row" style="gap:6px"><input type="checkbox" data-act="sync-remember" ${cfg.rememberToken ? 'checked' : ''} /> remember the token on this device (unticked, it lasts for this tab only)</label>
+          <p class="muted">The token is never committed anywhere. It needs <b>Contents: read and write</b> on this one
+          repository: GitHub → Settings → Developer settings → Personal access tokens → <i>Fine-grained tokens</i>.
+          This is the only thing kept on this device — and only if you tick the box above. Your attendance never is.</p>
+          <div class="row" style="margin-top:8px">
+            <button class="primary" data-act="sync-save" type="button">Save &amp; test</button>
+            <button data-act="sync-pull" type="button">Pull now</button>
+            <button data-act="sync-push" type="button">Push now</button>
+            <button data-act="sync-disconnect" type="button">Disconnect</button>
+          </div>
+          <p class="muted">Status: <b>${esc(sync.status)}</b> · last save: ${esc(lastSync)} · ${esc(Github.describe())}</p>
+          ${sync.error ? `<p class="chip bad">${esc(sync.error.message)}</p>` : ''}
+          <p class="muted">Uploaded timetable screenshots are the only bulky field, so they ride in
+          <code>${esc(Github.imagesPath())}</code> and are only written when they actually change.</p>
+          <div class="banner warn" style="margin-top:10px"><b>Public repository?</b> Then your attendance file is
+          public too, and anyone can read it — commit history included. Keep the data in a private
+          repository (it can be a different one from the code) if that matters.</div>
+        </div>
         <div class="card">
           <h2>Rules</h2>
           <label class="field">Minimum attendance (p)
@@ -530,8 +743,9 @@
             <button data-act="load-sample" type="button">Load sample semester</button>
             <button class="danger" data-act="reset-all" type="button">Erase everything</button>
           </div>
-          <p class="muted">Storage used: ${(bytes / 1024).toFixed(1)} KB of ~5 MB</p>
-          <div class="bar bar-sm"><span class="bar-fill ${pctUsed > 0.8 ? 'bad' : pctUsed > 0.5 ? 'warn' : ''}" style="width:${pctUsed * 100}%"></span></div>
+          <p class="muted">Document size: ${(bytes / 1024).toFixed(1)} KB — committed to
+          <code>${esc(cfg.path)}</code>${cfg.owner && cfg.repo ? ` in ${esc(cfg.owner)}/${esc(cfg.repo)}` : ''}.
+          Screenshots add about ${(Math.max(0, bytes - JSON.stringify(Object.assign({}, S.data, { ocr: { images: [] } })).length) / 1024).toFixed(0)} KB on top.</p>
           ${S.data.ocr.images.length ? `<button class="small" data-act="clear-images" type="button" style="margin-top:8px">Delete ${S.data.ocr.images.length} stored OCR image(s)</button>` : ''}
         </div>
         <div class="card">
@@ -542,7 +756,7 @@
             <li><b>Calendar</b> — import the scraped Manipal calendar (or CSV/ICS/OCR) so holidays, exams and swapped days are skipped automatically. Set your semester dates.</li>
             <li><b>Today</b> — tap Present / Absent / Leave / Cancelled per class. Cancelled and off days vanish from every count.</li>
             <li><b>Dashboard</b> — watch the safety buffer, the 75% marker and the heatmap; use <b>Tools</b> for what-ifs and "can I skip tomorrow?".</li>
-            <li><b>Export</b> a JSON backup now and then; everything lives only in this browser.</li>
+            <li><b>Export</b> a JSON backup now and then — it is the same file that lives in your repository, handy for moving to a different repo or for a manual restore.</li>
           </ol>
         </div>
         <div class="card">
@@ -892,6 +1106,76 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'cal-sample': () => download('calendar-sample.csv', Store.SAMPLE_CALENDAR_CSV, 'text/csv'),
     'cal-export': () => download('calendar.csv', Store.calendarToCSV(U().S.data), 'text/csv'),
 
+    /* quick add (natural language) */
+    'magic-example': (el) => {
+      magicRun(el.dataset.text || '');
+      focusMagic = true;
+      A.App.render();
+    },
+    'magic-clear': () => {
+      U().S.magic = null;
+      A.App.render();
+    },
+    'magic-row-subject': (el) => {
+      const S = U().S;
+      const row = S.magic && S.magic.rows[Number(el.dataset.row)];
+      if (!row) return;
+      if (el.value === '__create__') {
+        // Same deal as the OCR review: the text that was typed becomes the subject, with a default
+        // credit count, and the toast says how to correct it.
+        const name = (row.text || '').trim() || 'New subject';
+        const created = { id: Store.uid('sub'), name, code: '', credits: 3, faculty: '', color: '', classesPerWeek: null, expectedClasses: null, carried: { a: 0, t: 0 } };
+        S.data.subjects.push(created);
+        row.subjectId = created.id;
+        row.state = 'matched';
+        row.reason = 'created from this line';
+        U().save('Add subject from quick add');
+        U().toast(`Created subject “${esc(name)}” with 3 credits — edit it in Subjects.`, 'ok', 7000);
+      } else {
+        row.subjectId = el.value || null;
+        row.state = el.value ? 'matched' : 'unmatched';
+        row.reason = el.value ? 'picked here' : '';
+      }
+      refreshMagic();
+    },
+    'magic-row-lab': (el) => {
+      const S = U().S;
+      const row = S.magic && S.magic.rows[Number(el.dataset.row)];
+      if (!row) return;
+      row.lab = el.checked;
+      refreshMagic();
+    },
+    'magic-row-del': (el) => {
+      const S = U().S;
+      if (!S.magic) return;
+      S.magic.rows.splice(Number(el.dataset.row), 1);
+      refreshMagic();
+    },
+    'magic-add': () => {
+      const S = U().S;
+      const m = S.magic;
+      if (!m || !m.draft.trim()) {
+        U().toast('Type a slot first, for example <b>CS2001 Mon 9-10</b>.', 'info', 6000);
+        return;
+      }
+      if (!m.rows.length) {
+        U().toast(esc(m.error || 'Nothing to add yet — the preview has to show at least one slot.'), 'warn', 7000);
+        return;
+      }
+      const missing = m.rows.filter((r) => !r.subjectId).length;
+      if (missing) {
+        U().toast(`Pick a subject for the ${missing} marked row${missing === 1 ? '' : 's'} first — nothing was added.`, 'warn', 8000);
+        return;
+      }
+      const labs = m.rows.filter((r) => r.lab).length;
+      const res = A.Magic.apply(m.rows, S.data);
+      U().save('Add timetable slots');
+      S.magic = null;
+      focusMagic = true;
+      A.App.render();
+      U().toast(`Added <b>${res.applied}</b> slot${res.applied === 1 ? '' : 's'} to the timetable${labs ? ` (${labs} lab${labs === 1 ? '' : 's'})` : ''}.`, 'ok', 6000);
+    },
+
     /* OCR */
     'ocr-file': (el) => {
       const file = el.files && el.files[0];
@@ -1196,7 +1480,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'load-sample-confirm': () => {
       const S = U().S;
       S.data = A.Sample.build(U().todayISO());
-      Store.save(S.data);
+      U().save('Load the sample semester');
       S.view = 'today';
       S.date = U().todayISO();
       U().closeModal();
@@ -1206,14 +1490,14 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'reset-all': () => {
       U().openModal(
         'Erase everything?',
-        `<p>This wipes every subject, timetable cell, calendar entry and attendance mark from this browser. Export a backup first if there is any chance you want it back.</p>
+        `<p>This empties the document in your repository: every subject, timetable cell, calendar entry and attendance mark goes. The commits before it still hold the old version, so it is recoverable from GitHub's history — but export a backup first if you would rather not go digging there.</p>
          <div class="row"><button class="danger" data-act="reset-all-confirm" type="button">Yes, erase it all</button><button data-act="modal-close" type="button">Cancel</button></div>`,
       );
     },
     'reset-all-confirm': () => {
       const S = U().S;
       S.data = Store.defaults();
-      Store.save(S.data);
+      U().save('Erase everything');
       S.ocr = null;
       S.calOcr = null;
       U().closeModal();
@@ -1222,11 +1506,111 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     },
     'clear-images': () => {
       U().S.data.ocr.images = [];
-      U().save();
+      U().save('Delete stored timetable images');
       A.App.render();
       U().toast('Stored OCR images deleted.', 'info');
     },
   };
+
+  /* ---------- Settings → Sync ---------- */
+  /** Reads the whole sync form at once, so a half-filled form never overwrites a good setting. */
+  function syncForm() {
+    const val = (act) => {
+      const el = document.querySelector(`[data-act="${act}"]`);
+      return el ? el.value : '';
+    };
+    const tokenField = document.querySelector('[data-act="sync-token"]');
+    const remember = document.querySelector('[data-act="sync-remember"]');
+    return {
+      owner: val('sync-owner'),
+      repo: val('sync-repo'),
+      branch: val('sync-branch'),
+      path: val('sync-path'),
+      rememberToken: !!(remember && remember.checked),
+      // An empty box means "keep the token I already have", not "forget it".
+      token: tokenField && tokenField.value ? tokenField.value.trim() : A.Github.hasToken() ? undefined : '',
+    };
+  }
+
+  Object.assign(actions, {
+    'sync-save': async () => {
+      const Github = A.Github;
+      const form = syncForm();
+      const patch = { owner: form.owner, repo: form.repo, branch: form.branch, path: form.path, rememberToken: form.rememberToken };
+      if (form.token !== undefined) patch.token = form.token;
+      Github.configure(patch);
+      if (!Github.isConfigured()) {
+        U().toast('Owner, repository and a token are all needed before anything can be saved.', 'bad', 9000);
+        return;
+      }
+      try {
+        const probe = await Github.test();
+        const S = U().S;
+        if (probe.exists) {
+          // The repository already has a document: pull it, fold in whatever is on screen, commit.
+          const pulled = await Github.pull();
+          const before = S.data.records.length;
+          S.data = Github.merge(pulled.doc ? Store.normalize(pulled.doc.data) : null, S.data);
+          await Github.queueSync(S.data, { message: 'Connect this device' });
+          U().toast(`Connected. ${probe.records} mark(s) were already in ${Github.describe()}, ${Math.max(0, before)} in this tab — merged.`, 'ok', 9000);
+        } else {
+          await Github.queueSync(S.data, { message: 'Initial commit from the attendance dashboard' });
+          U().toast(`Connected. Created ${Github.describe()} on GitHub.`, 'ok', 9000);
+        }
+        Store.clearLocal();
+        S.readOnly = false;
+        A.App.render();
+      } catch (err) {
+        U().toast(`<b>GitHub says no.</b> ${U().esc(err.message)}`, 'bad', 15000);
+      }
+    },
+    'sync-pull': async () => {
+      const Github = A.Github;
+      try {
+        const pulled = await Github.pull();
+        if (!pulled.doc) {
+          U().toast('There is no data file in that repository yet — push once to create it.', 'info', 8000);
+          return;
+        }
+        U().S.data = Store.normalize(pulled.doc.data);
+        U().S.readOnly = false;
+        A.App.render();
+        U().toast(`Pulled ${U().S.data.records.length} mark(s) from GitHub.`, 'ok');
+      } catch (err) {
+        U().toast(`<b>Could not pull.</b> ${U().esc(err.message)}`, 'bad', 12000);
+      }
+    },
+    'sync-push': () => {
+      const Github = A.Github;
+      Github.queueSync(U().S.data, { message: 'Manual push from the attendance dashboard' })
+        .then(() => {
+          U().S.readOnly = false;
+          A.App.render();
+          U().toast('Pushed to GitHub.', 'ok');
+        })
+        .catch((err) => U().toast(`<b>Could not push.</b> ${U().esc(err.message)}`, 'bad', 12000));
+    },
+    'sync-disconnect': () => {
+      U().openModal(
+        'Stop syncing?',
+        `<p>This device will forget the token and stop saving anything. The document stays in your
+         repository — nothing is deleted there, and you can reconnect any time.</p>
+         <div class="row"><button class="danger" data-act="sync-disconnect-confirm" type="button">Disconnect</button><button data-act="modal-close" type="button">Cancel</button></div>`,
+      );
+    },
+    'sync-disconnect-confirm': () => {
+      A.Github.disconnect();
+      U().S.readOnly = true;
+      U().closeModal();
+      A.App.render();
+      U().toast('Disconnected. Nothing is saved while unconnected.', 'info', 8000);
+    },
+    'sync-remember': (el) => {
+      // Only the credential flag changes here — the token value itself is left alone.
+      A.Github.setRemember(el.checked);
+      U().toast(el.checked ? 'The token will be remembered on this device.' : 'The token is kept for this tab only.', 'info');
+    },
+  });
 
   function onFieldChange(el) {
     if (el.dataset.act === 'period-field') {
@@ -1238,6 +1622,13 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
 
   Object.assign(A.Ui.views, { timetable: renderTimetable, calendar: renderCalendar, data: renderData });
   Object.assign(A.Ui.actions, actions);
+  // Live typing: parse and repaint the preview in place, leaving the field and its caret alone.
+  Object.assign(A.Ui.inputs, {
+    'magic-draft': (el) => {
+      magicRun(el.value);
+      refreshMagic();
+    },
+  });
   A.Ui.onPanelFieldChange = onFieldChange;
   A.Ui.handleImageFile = handleImageFile;
 })(typeof window !== 'undefined' ? window : globalThis);

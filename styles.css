@@ -85,6 +85,27 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
 .brand { display: flex; align-items: center; gap: 9px; margin-right: auto; color: inherit; }
 .brand:hover { text-decoration: none; }
 .brand:hover .brand-mark { background: color-mix(in srgb, var(--accent) 26%, transparent); }
+
+/* What the last change did: saved to GitHub, still saving, or not saved. Small, but it is the only
+   honest place to say so — every tap is a commit, and a failed one has to be visible. */
+.sync-chip {
+  display: inline-flex; align-items: center; gap: 6px; margin-right: 4px;
+  border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px;
+  font-size: 0.78rem; color: var(--muted); white-space: nowrap; max-width: 40vw;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.sync-chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--muted); flex: none; }
+.sync-chip.ok { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.sync-chip.ok::before { background: var(--ok); }
+.sync-chip.busy { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+.sync-chip.busy::before { background: var(--accent); animation: sync-pulse 1.1s ease-in-out infinite; }
+.sync-chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.sync-chip.warn::before { background: var(--warn); }
+.sync-chip.bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
+.sync-chip.bad::before { background: var(--bad); }
+@keyframes sync-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@media (prefers-reduced-motion: reduce) { .sync-chip.busy::before { animation: none; } }
+@media (max-width: 720px) { .sync-chip { display: none; } }
 .brand-mark {
   width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
   background: var(--accent-soft); color: var(--accent); font-weight: 700;
@@ -291,6 +312,13 @@ table.review-table td.state-low { background: color-mix(in srgb, var(--warn) 14%
 table.review-table td.state-unmatched { background: color-mix(in srgb, var(--bad) 14%, transparent); }
 table.review-table input, table.review-table select { width: 100%; }
 .ocr-text { font-family: var(--mono); font-size: .78rem; color: var(--muted); display: block; }
+
+/* ---------- quick add (natural language) ---------- */
+.magic-input { width: 100%; font-size: .95rem; resize: vertical; }
+.magic-hint { color: var(--muted); font-size: .88rem; margin: 8px 0 0; }
+.magic-error { color: var(--bad); font-size: .88rem; margin: 8px 0 0; }
+.magic-examples { margin-top: 8px; }
+.magic-examples button { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .thumb-strip { display: flex; gap: 8px; flex-wrap: wrap; }
 .thumb { width: 76px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); cursor: zoom-in; }
 

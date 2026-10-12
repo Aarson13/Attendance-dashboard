@@ -4,6 +4,10 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#05030F" />
+<!-- The landing page has no third-party scripts, so the policy here stays to the parts that cannot
+     fight the dev server the way a strict script-src would: no plugin embedding, no injected <base>,
+     no form posts. (script-src/style-src are left to the host to send as headers.) -->
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'none'; form-action 'none'" />
 <meta name="description" content="College Attendance Dashboard — track every class, predict your bunk limit and stay above 75%. Live per-subject percentages for students, class-level oversight for faculty." />
 <title>College Attendance Dashboard — Smart Attendance Tracking</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2305030F'/%3E%3Cg stroke='%23A78BFA' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M16 6v20M7.3 11l17.4 10M24.7 11L7.3 21'/%3E%3C/g%3E%3C/svg%3E" />

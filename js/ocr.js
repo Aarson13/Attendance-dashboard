@@ -12,6 +12,12 @@
   'use strict';
 
   const CDN = 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js';
+  // Subresource Integrity for that exact file (tesseract.js 6.0.1, dist/tesseract.min.js, 62961 bytes).
+  // Pinning the version decides *which* file arrives; this decides that the bytes are the published
+  // ones — the script runs in the app's origin, where the sync token may be. Recompute it when the
+  // version is bumped, or the loader refuses to run (which is the honest failure for a changed file):
+  //   curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A
+  const CDN_SRI = 'sha384-r1ru3tcf6FhnCFR4B7pIFG+BhFF9LlFtz/P1y4pblWn3AGs9y3lBx5SKLNf4+rED';
   const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
   const DAY_WORDS = [
     ['monday', 'mon', 'm0n'],
@@ -31,6 +37,12 @@
       const s = document.createElement('script');
       s.src = src || CDN;
       s.async = true;
+      if (!src) {
+        // The integrity hash only matches the pinned copy, so it is only applied when that is what
+        // is being loaded. CORS is required for SRI to check a cross-origin script at all.
+        s.integrity = CDN_SRI;
+        s.crossOrigin = 'anonymous';
+      }
       s.onload = () => (global.Tesseract ? resolve(global.Tesseract) : reject(new Error('Tesseract loaded but the global is missing.')));
       s.onerror = () => reject(new Error('Could not load tesseract.js from the CDN. Check your connection — OCR needs one online run, then the service worker caches it.'));
       document.head.appendChild(s);

@@ -5,8 +5,9 @@ Two pages, one repository:
 - **`/` — the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
 a glass dashboard preview underneath. React 19 + Vite + Tailwind v4, built to `dist/`.
 - **`/app.html` — the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
-build step, no backend, no account. Everything is stored in your browser's `localStorage`, and it
-keeps working offline after the first load.
+build step, no backend of ours, no account. Your semester is kept as **one JSON file in your own
+GitHub repository** and every interaction commits to it, so the repository is the source of truth
+and its history is your undo. Nothing about your attendance is stored in the browser.
 
 Both are built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75%
 and is editable). Every number on screen comes from the same formulas, and the academic calendar is
@@ -23,6 +24,16 @@ npm install
 npm run dev          # Vite dev server: the home page at / and the tracker at /app.html
 ```
 
+Then open `/app.html`, go to **Settings → “Where your data lives”**, and paste (once):
+
+1. the **owner** and **repository** the attendance file should live in — the code repository works,
+   or a separate private one if you would rather keep your attendance private,
+2. a **fine-grained personal access token** with *Contents: read and write* on just that repository
+   (GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens).
+
+Press **Save & test** and the tracker writes its first commit. After that, every tap marks a class
+and commits it, and the topbar chip tells you it happened.
+
 To serve the built site exactly as it ships:
 
 ```bash
@@ -35,7 +46,7 @@ Then either press **Settings → Load sample semester** to explore a complete de
 `./app.html` and `./app.html?demo=1`; the `?demo=1` URL offers the sample semester on arrival.
 
 The tracker alone needs no build at all — `npm run serve:tracker` serves this folder directly, and
-`npx serve -l 4173 .` (or `python -m http.server 4173`) does the same.
+`npx -y serve@14 -l 4173 .` (or `python -m http.server 4173`) does the same.
 
 > Opening the tracker straight from disk (`file://`) works for everything except OCR and the
 > service worker: browsers block those on `file://`, and `fetch()` of local JSON is blocked too.
@@ -49,10 +60,12 @@ The tracker alone needs no build at all — `npm run serve:tracker` serves this 
 |---|---|---|
 | Home page | React 19 + Vite + Tailwind v4, no UI kit | one page, componentised, and the tracker beside it stays build-free |
 | Tracker UI | plain HTML + CSS + classic `<script>` files | no build step, readable in five years, works offline |
-| State | one JSON document in `localStorage` | nothing to host; export/import is your backup |
+| State | one JSON document, rendered as plain functions of it | every number on screen comes from `js/calc.js` |
 | Charts | hand-rolled SVG (`js/charts.js`, and the preview's own `TrendChart.jsx`) | one less CDN dependency, still works offline |
 | Fonts | Inter Variable, self-hosted via `@fontsource-variable/inter` | no third-party request on first paint |
 | OCR | Tesseract.js from a CDN, only loaded when you press *Run OCR* | images are processed in your browser, never uploaded |
+| Storage | a JSON file in your GitHub repository | no server to run or pay for; git history is a free audit trail and undo; open the file on any device |
+| Sync | `js/github.js` over the GitHub Contents API | pull-merge-push per interaction, with sha conflict handling and no credentials in the document |
 | Calendar | `scripts/sync-calendar.mjs` (Node + `pdfjs-dist`) | the calendar is scraped from the official PDF, then imported |
 | Post-build | `scripts/copy-tracker.mjs` | the tracker has no build step, so the home page's build copies it into `dist/` |
 
@@ -61,6 +74,46 @@ paths.** Buttons, links and images run their action on `click`; `input`/`select`
 theirs on `change` only. The click delegate deliberately ignores form controls — running their
 action on click would `preventDefault()` the file pickers into never opening and re-render the field
 under your cursor (native date pickers, sliders and dropdowns all break that way).
+
+---
+
+## Where your data lives (GitHub sync)
+
+Attendance is **not** stored on the device. The whole semester is one JSON document — subjects,
+timetable, calendar, marks, settings — and it lives in a file in a repository you own, default
+`attendance.json` on `main`. `js/github.js` is the only code that touches the network:
+
+- **On load** the file is pulled, so a fresh browser (or phone) shows your real semester with no
+  import step and nothing to lose.
+- **On every interaction** the file is pulled again, the change is applied, and the result is
+  committed. The repository is the source of truth, and one commit per interaction means the history
+  reads like a log of the semester (`Mark CS2001 present`, `Import 214 earlier marks from this
+  browser`) and any commit can be reverted in GitHub itself.
+- **If another device wrote in the meantime**, the pull notices the file's `sha` moved, the two
+  documents are merged (subjects and marks are unioned by id, with this device's values winning on a
+  genuine clash) and the write retried once. A write that loses that race is never a silent overwrite.
+- **Uploaded timetable screenshots** are the only bulky field, so they ride in a second file
+  (`attendance-images.json`) and are committed only when the set actually changes — otherwise every
+  tap would push a megabyte into the history for nothing.
+- **Failures are visible, not swallowed.** A rejected token, a missing repository, a rate limit and a
+  lost race each say what they are: the topbar chip turns red, a toast explains, and the change stays
+  in memory marked as unsaved. The tracker never pretends a write succeeded, and it never quietly
+  falls back to storing on the device.
+
+**Credentials.** The token is the one thing that may be kept on this device, and only if you tick
+*remember the token*. Unticked, it lives in the page for that tab and is gone when the tab is. It is
+never written into the JSON document, never logged, and needs *Contents: read and write* on one
+repository — nothing else. **If that repository is public, your attendance file is public too**, its
+history included; use a private repository for the data if that matters to you.
+
+**What “no device storage” costs.** With nothing cached locally, a change that cannot reach GitHub
+lives in memory only: close the tab while offline and that tap is gone, which is why a failed push
+shouts instead of whispering. Migration is handled once — if an older version left data in
+`localStorage`, the app offers to fold it into the repository and, only after that push succeeds,
+deletes it from the browser.
+
+**Trying it without an account:** the home page's *View demo* (`/app.html#demo`) loads the sample
+semester **in memory** — no repository, no token, no writes, and every save says so.
 
 ---
 
@@ -222,7 +275,9 @@ One object, exported as `{ app, version, exportedAt, data }`:
    marked on the Today tab.
 2. **Timetable** — click any cell to assign a subject; tick *Lab* for a lab (it then spans that
    period and the next, and counts once). Periods are editable under *Edit periods*.
-   You can also bring a timetable in three ways:
+   You can also bring a timetable in four ways:
+   - **Quick add** — describe it in English in the box at the top of the tab
+     (`CS2001 Mon 9-10, Wed 11-12`, `Mon: CS2001, MA2002, CS2005`); see below.
    - **CSV** — `day,period,subject_code,subject_name,kind`, sample downloadable in the app
      ([`samples/timetable-sample.csv`](samples/timetable-sample.csv)). Import merges into the grid;
      the file's cells win for the slots it mentions, unknown subjects are created (3 credits) and
@@ -296,6 +351,38 @@ deselectable) and nothing is saved until you press *Confirm*.
 
 ---
 
+## Quick add: describing a timetable in English
+
+The Timetable tab opens with one box that reads plain English:
+
+```
+CS2001 Mon 9-10, Wed 11-12       one subject, twice a week
+Mon-Fri P1 CS2001                every weekday, first period
+Mon: CS2001, MA2002, CS2005      a whole day's column — P1, P2, P3 in order
+DSA Lab Thu 2-4                  an afternoon lab
+Fri 3:30 CS2004                  a time the grid rounds to a period
+```
+
+It parses as you type and shows every slot it worked out — day, period, resolved subject, lab —
+before anything is written. Four chips (Day, Time, Subject, Lab) light up as each part of the
+sentence is recognised, *Add to timetable* stays off while a row still needs a subject, and each row
+can be corrected (subject, lab, drop) right there. Parsing is `js/magic.js`: a pure function of the
+text and the document, with no network and no model, so the box stays instant and offline. Nothing is
+written until you press Add, and then it is one commit like any other edit.
+
+- **Days** — `Mon`, `Monday`, `Tue & Thu`, `Mon-Fri` (Sunday is not a school day).
+- **Times** — `9-10`, `09:00-10:00`, `2-4` (afternoon), `3:30`, `9am`; or a period: `P2`,
+  `period 3`, or a lone `3`. A time that only *rounds* to a period says which one it picked.
+- **Subjects** — by code, full name or a distinctive part of one, through the same fuzzy matcher the
+  OCR review uses. A near-miss is pre-selected but marked *unsure*; anything unplaceable comes back
+  red with a subject picker and *create a new subject from this text* — never a silent guess.
+- **Guesses are named, not hidden.** A day column typed without times fills the periods in order and
+  says it did; a line that leaves out the time keeps the one before it, marked *same time as the line
+  before*; a lab in the last period is flagged because it cannot span two. A line it cannot place at
+  all — no day, no time, a repeated slot, Sunday — is explained instead of dropped.
+
+---
+
 ## OCR for timetables
 
 1. Drop a screenshot/photo (or take one on mobile) in the Timetable tab.
@@ -319,20 +406,50 @@ flagged rather than guessed. Both orientations are covered by tests.
 
 ## Privacy, storage and offline
 
-- Attendance lives in `localStorage` under one key. Nothing is uploaded; the only network traffic is
-  the one-time Tesseract.js download (engine + English model, from a CDN) when you run OCR.
-- OCR images are stored compressed and capped at two; if the storage quota is hit while saving, the
-  app drops the images first and keeps your numbers.
-- A `sw.js` service worker caches the app shell and the OCR CDN assets, so the app opens offline
-  after the first load (http/https only; it prefers the network for local files so edits show up).
+- Attendance lives in **your** repository and nowhere else: no database, no account with us, no
+  analytics, no third-party service. The only origin the app talks to is `api.github.com`, plus the
+  one-time Tesseract.js download (engine + English model, from a CDN) when you run OCR.
+- The app needs `Contents: read and write` on the one repository you name. Nothing else is asked for,
+  and the token is off the document and out of the code.
+- With no local copy, the app is honest about needing the network: the shell and the OCR engine are
+  cached by `sw.js`, so it *opens* offline, but until a save reaches GitHub the topbar chip says it
+  has not been saved.
 - Add it to a phone home screen — `manifest.webmanifest` + `icon.svg` are included.
+
+---
+
+## Security notes
+
+Small app, small attack surface: no backend, no account, no third-party JavaScript at runtime except
+the one OCR engine. The pieces that are not obvious from the code:
+
+- **The policy is in `app.html`** (a meta CSP, since the app is static): the only script origins are
+  the app's own files and `cdn.jsdelivr.net`, no inline script exists, `object-src`/`base-uri`/
+  `form-action` are closed, and `connect-src` lists the GitHub API plus the two OCR hosts. The landing
+  page carries the parts of the policy that cannot fight the Vite dev server
+  (`index.html`), and `_headers` adds the rest for hosts that read it — `X-Content-Type-Options`,
+  `Referrer-Policy`, `X-Frame-Options`/`frame-ancestors` and a real CSP header per page. GitHub Pages
+  and `npx serve` ignore `_headers`, so there the meta policy is what you get.
+- **The CDN script is pinned twice**: `js/ocr.js` loads `tesseract.js@6.0.1` with a `sha384` integrity
+  hash, so a substituted CDN response is refused by the browser instead of executed. Bumping the
+  version means recomputing that hash (the comment above the loader says how).
+- **Source URLs are scheme-checked, never merely escaped.** `escapeHtml` cannot make
+  `javascript:alert(1)` safe — it is valid HTML — so the only place a URL becomes an `href`
+  (`js/panels.js`) goes through `Store.safeUrl`, and `Store.normalize` strips a non-http(s) URL as it
+  reads the document, so a hostile one never reaches the DOM at all.
+- **Files this app did not write are treated as untrusted**: `Store.normalize` and `Github.merge`
+  drop `__proto__`/`constructor`/`prototype` keys before folding a document in, so a repository file
+  or an imported snapshot cannot reach an `Object.prototype`.
+- **The token stays out of the document, the URL and the log.** It lives in memory unless you tick
+  *remember on this device*, in which case it is one `localStorage` key; nothing logs it, and it is
+  never part of the JSON that is committed.
 
 ---
 
 ## Tests
 
 ```bash
-npm test              # 37 tests: the tracker engine + the home page's data layer
+npm test              # 73 tests: engine, home-page data, the sync client and the quick-add parser
 npm run build         # a failure here is a real failure, not a warning to read past
 ```
 
@@ -342,7 +459,10 @@ mapping used when an image is rotated before OCR, the 100%-threshold edge case, 
 dataset's internal consistency, and the existing-attendance maths: carried counts reach `a`/`t`, the
 buffer, recovery, projections, the overall and credit-weighted totals and the trend baseline;
 impossible pairs (attended > held) are clamped rather than believed, and junk in a hand-edited backup
-is repaired on import. The engine files are dependency-free and DOM-free on purpose, which
+is repaired on import. Two of the 32 go at the untrusted edges instead: a document full of
+prototype-shaped keys is normalised without touching `Object.prototype`, and a non-http(s) source URL
+(including a `JaVaScRiPt:` one) is dropped by `Store.safeUrl` — both on import and in a scraped
+snapshot. The engine files are dependency-free and DOM-free on purpose, which
 is what makes them testable; `js/app.js` is the one file that needs a DOM, so its event wiring is
 verified in a browser rather than here.
 
@@ -353,17 +473,39 @@ average of the percentages), the placeholder data's internal consistency, and th
 The React components themselves need a DOM, so they are verified in a browser (see the contrast
 table above) rather than in this suite.
 
+`tests/magic.test.mjs` adds 17 for the quick-add parser: a subject placed on the days and periods it
+names (including a time resolved through a period's *end*), a day range expanded over the week, a day
+column filled in order and flagged as assumed, one time shared across several days, a follow-up line
+inheriting the day and time before it, days and times paired when both are listed, afternoon
+readings (`2-4` is 14:00, and `3:30` says it rounds into P6), a spoken period and a lone number, an
+unknown subject handed back for a decision, a partial name matched against a rough one flagged
+unsure, a bare `lab` keeping the subject from the line before, repeated slots keeping the last one,
+a lab called out in the last period, warnings for the lines it cannot place — and that `Magic.apply`
+writes the same cell shape the grid editor does, which the app's own scheduler then reads back.
+
+`tests/github.test.mjs` adds 17 for the sync client, against a scripted Contents API: a pasted URL
+is cleaned up and a token is required before anything syncs; the token never reaches the document;
+base64 round-trips the real strings in a timetable; a missing file is a first run, not an error; a
+file too large to be inlined is read through the blob endpoint; broken JSON is reported instead of
+half-applied; a write carries the `sha` it read and the commit message it was given; a **409 re-reads,
+merges both devices and writes once more**; simultaneous interactions share one commit while
+sequential ones get one commit each, with the API never seeing two writes at once; a rejected token,
+a permission error and a rate limit are three different messages (and a rate limit stops further
+requests before they are spent); a dead network is a `network` error that leaves the change flagged
+as unsaved; and the merge unions subjects and marks by id without dropping either side — and refuses
+a prototype-shaped remote document rather than adopting its keys.
+
 ## Repository layout
 
 ```
 index.html  vite.config.js          # the home page (built by Vite into dist/)
-app.html    styles.css  sw.js  manifest.webmanifest  icon.svg
-js/    calc.js  store.js  charts.js  ocr.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
+app.html    styles.css  sw.js  manifest.webmanifest  icon.svg  _headers
+js/    calc.js  store.js  github.js  charts.js  ocr.js  magic.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
 data/  muj-2026-27.json  muj-2026-27.days.txt        # scraper output
 src/   main.jsx  App.jsx  data/attendance.js  lib/hooks.js  styles/index.css  components/*.jsx
 scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs
 samples/ timetable-sample.csv  calendar-sample.csv  sample-data.json
-tests/  calc.test.mjs  home-data.test.mjs
+tests/  calc.test.mjs  home-data.test.mjs  github.test.mjs
 ```
 
 ---
@@ -378,7 +520,12 @@ tests/  calc.test.mjs  home-data.test.mjs
   anything commercial.
 - Calendar data belongs to the college; the bundled file is MUJ's published 2026-27 PDF, included to
   make the demo work out of the box.
-- Known limits: the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
+- Known limits: nothing is cached on the device, so an interaction made while GitHub is unreachable
+  survives reload only if the push eventually succeeds — the app says so loudly rather than pretending,
+  and the alternative (a local cache) is exactly what this design avoids; the API allows 5,000
+  authenticated requests an hour per user, which a term's marking never approaches but a stuck retry
+  loop could, so a rate limit pauses syncing until GitHub's own reset time; a public repository makes
+  the attendance file public; the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
   at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side — the shape is
   visible around the text, not through it; OCR expects a reasonably straight table (photos at an angle
   need cropping first); the scraper understands Manipal-style month-grid PDFs and falls back to a

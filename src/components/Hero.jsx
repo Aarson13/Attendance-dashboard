@@ -42,7 +42,9 @@ export default function Hero() {
           <a className="btn btn-white" href="./app.html">
             Get started
           </a>
-          <a className="btn btn-ghost" href="./app.html?demo=1">
+          {/* `#demo` rather than `?demo=1`: a clean-URL static server answers the query form with a
+              301 that drops it, and the tracker reads either. */}
+          <a className="btn btn-ghost" href="./app.html#demo">
             View demo
           </a>
         </div>

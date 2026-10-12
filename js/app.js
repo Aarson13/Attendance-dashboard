@@ -13,24 +13,15 @@
     lastView: null,
 
     init() {
-      S.data = Store.load();
+      S.data = Store.defaults();
       S.date = Ui.todayISO();
       S.month = S.date.slice(0, 7);
+      A.Github.onChange(renderSyncStatus);
       App.applyTheme();
       wire();
       App.render(true);
       registerServiceWorker();
-      // The landing page's "View demo" button arrives as app.html?demo=1. Offer the sample semester
-      // through the same confirmation as Settings → Load sample semester: an existing semester is
-      // never replaced just because a link was clicked.
-      if (new URLSearchParams(global.location.search).get('demo') === '1' && Ui.actions['load-sample']) {
-        setTimeout(() => Ui.actions['load-sample'](), 350);
-      } else if (!S.data.subjects.length && !S.data.records.length) {
-        setTimeout(
-          () => Ui.toast('New here? Open <b>Settings</b> → “Load sample semester” for a full demo, or start by adding subjects.', 'info', 10000),
-          700,
-        );
-      }
+      bootstrap();
     },
 
     applyTheme() {
@@ -150,7 +141,7 @@
     if (theme) {
       theme.addEventListener('click', () => {
         S.data.settings.theme = S.data.settings.theme === 'light' ? 'dark' : 'light';
-        Store.save(S.data);
+        Ui.save('Switch theme');
         App.applyTheme();
         App.render();
       });
@@ -175,6 +166,20 @@
       } catch (err) {
         console.error(`action ${name} failed`, err);
         Ui.toast(`Something went wrong: ${Ui.esc(err.message)}`, 'bad', 8000);
+      }
+    });
+
+    // Typing is its own channel: an input handler updates the DOM in place instead of re-rendering
+    // the view, because re-rendering under the cursor would replace the field the user is typing in.
+    document.addEventListener('input', (e) => {
+      const el = e.target.closest('[data-act]');
+      if (!el) return;
+      const fn = Ui.inputs[el.dataset.act];
+      if (!fn) return;
+      try {
+        fn(el, e);
+      } catch (err) {
+        console.error(`input ${el.dataset.act} failed`, err);
       }
     });
 
@@ -217,12 +222,135 @@
       Ui.handleImageFile(file, zone.id === 'calOcrDrop' ? 'calendar' : 'timetable');
     });
 
-    global.addEventListener('storage', (e) => {
-      if (e.key !== Store.KEY) return;
-      S.data = Store.load();
-      App.render();
-      Ui.toast('Reloaded — another tab changed your attendance data.', 'info');
+    // Coming back to the tab re-pulls, so a change made elsewhere is on screen before you touch
+    // anything. The floor keeps a quick tab-away from spending a request for nothing.
+    document.addEventListener('visibilitychange', () => {
+      if (global.document.hidden) return;
+      if (Date.now() - lastPullAt < 15000) return;
+      App.refresh();
     });
+  }
+
+  /* ---------- the repository is the source of truth ---------- */
+  let lastPullAt = 0;
+
+  /**
+   * Startup order: pull first, then let anything be edited. Nothing is read from this device — the
+   * one exception is a snapshot an older version left in localStorage, which is folded into the
+   * repository once and then deleted here.
+   */
+  async function bootstrap() {
+    const Github = A.Github;
+    const legacy = Store.localSnapshot();
+    // The landing page's "View demo" button. Both forms are accepted because static hosts differ:
+    // `?demo=1` survives on GitHub Pages, while a clean-URL server (the project's own `npm run serve`)
+    // answers /app.html?demo=1 with a 301 to /app and drops the query — the fragment is kept.
+    const wantsDemo = new URLSearchParams(global.location.search).get('demo') === '1' || global.location.hash.replace('#', '') === 'demo';
+
+    if (!Github.isConfigured()) {
+      // Nothing to pull. The sample (if it was asked for) runs in memory and says so on every save.
+      S.readOnly = true;
+      if (legacy && (legacy.subjects.length || legacy.records.length)) S.data = legacy;
+      if (wantsDemo) S.data = A.Sample.build(Ui.todayISO());
+      App.applyTheme();
+      App.render(true);
+      if (legacy && (legacy.subjects.length || legacy.records.length)) {
+        Ui.toast('This browser still holds attendance from an older version. Connect GitHub in <b>Settings → Sync</b> and it is pushed there once, then deleted here.', 'info', 15000);
+      }
+      return;
+    }
+
+    try {
+      const pulled = await Github.pull();
+      lastPullAt = Date.now();
+      S.readOnly = false;
+      if (pulled.doc) S.data = Store.normalize(pulled.doc.data);
+      if (pulled.images && pulled.images.data) S.data.ocr.images = pulled.images.data.slice(0, 2);
+    } catch (err) {
+      S.readOnly = true;
+      Ui.toast(`<b>Could not load your data from GitHub.</b> ${Ui.esc(err.message)}`, 'bad', 15000);
+    }
+
+    if (legacy && (legacy.subjects.length || legacy.records.length)) {
+      // Fold the old device copy into the repository document (union by id, the repo's values win),
+      // push it, and only then drop it from this browser.
+      S.data = Github.merge(legacy, S.data);
+      const count = legacy.records.length;
+      Github.queueSync(S.data, { message: `Import ${count} earlier mark${count === 1 ? '' : 's'} from this browser` })
+        .then(() => {
+          Store.clearLocal();
+          Ui.toast('Data from the previous version is now in GitHub, and has been removed from this browser.', 'ok', 10000);
+        })
+        .catch(() => Ui.toast('Moved the old local data into memory, but pushing it to GitHub failed — it is still on this device until that succeeds.', 'bad', 15000));
+    }
+
+    App.applyTheme();
+    App.render(true);
+
+    if (wantsDemo && !S.readOnly) {
+      setTimeout(() => Ui.actions['load-sample'](), 350);
+    } else if (!S.data.subjects.length && !S.data.records.length && !S.readOnly) {
+      setTimeout(() => Ui.toast('Connected to GitHub. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.', 'info', 9000), 700);
+    }
+  }
+
+  /** Pull (never push) — used when the tab regains focus. */
+  App.refresh = async function refresh() {
+    const Github = A.Github;
+    if (!Github.isConfigured()) return;
+    try {
+      const pulled = await Github.pull();
+      lastPullAt = Date.now();
+      if (pulled.doc) {
+        S.data = Store.normalize(pulled.doc.data);
+        App.applyTheme();
+        App.render();
+      }
+    } catch (err) {
+      /* the status chip carries the error; a failed refresh must not disturb the screen */
+    }
+  };
+
+  /** The topbar chip: what just happened to the last change, in four words or fewer. */
+  function renderSyncStatus(state) {
+    const chip = document.getElementById('syncChip');
+    if (!chip) return;
+    const Github = A.Github;
+    const configured = Github.isConfigured();
+    const when = state.lastSyncAt ? timeAgo(state.lastSyncAt) : '';
+    let kind = '';
+    let label = '';
+    if (!configured) {
+      kind = 'off';
+      label = 'GitHub not connected';
+    } else if (state.status === 'syncing' || state.status === 'pending') {
+      kind = 'busy';
+      label = 'saving…';
+    } else if (state.status === 'saved') {
+      kind = 'ok';
+      label = when ? `saved ${when}` : 'saved';
+    } else if (state.status === 'blocked') {
+      kind = 'warn';
+      label = 'sync paused';
+    } else if (state.status === 'error') {
+      kind = 'bad';
+      label = 'not saved';
+    } else {
+      kind = '';
+      label = when ? `saved ${when}` : 'ready';
+    }
+    chip.className = `sync-chip ${kind}`;
+    chip.textContent = label;
+    chip.title = [Github.describe(), state.error ? state.error.message : '', state.message].filter(Boolean).join(' — ');
+  }
+
+  function timeAgo(iso) {
+    const secs = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 1000));
+    if (secs < 5) return 'just now';
+    if (secs < 60) return `${secs}s ago`;
+    const mins = Math.round(secs / 60);
+    if (mins < 60) return `${mins}m ago`;
+    return `${Math.round(mins / 60)}h ago`;
   }
 
   function registerServiceWorker() {

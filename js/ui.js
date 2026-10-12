@@ -21,6 +21,9 @@
     ocr: null,
     calOcr: null,
     hooks: [],
+    // True while this device has no repository to write to: the sample/demo is then shown in memory
+    // only, and every save explains why it did not happen instead of pretending it did.
+    readOnly: false,
   };
 
   const todayISO = () => new Date().toLocaleDateString('en-CA');
@@ -64,10 +67,30 @@
     S.hooks.push(fn);
   }
 
-  function save() {
-    const res = Store.save(S.data);
-    if (res.warning) toast(res.warning, 'warn', 7000);
-    if (!res.ok) toast(`Could not save to this browser: ${res.error}`, 'bad', 9000);
+  /**
+   * Every action ends here. The document in memory is the working copy; the repository is where it
+   * lives, so saving means pushing — pull (in case another device wrote), merge, commit. Pushing on
+   * every interaction is what makes the repo the single source of truth, and its commit history a
+   * readable log of the semester.
+   */
+  function save(message) {
+    const Github = A.Github;
+    if (S.readOnly) {
+      toast('Nothing is saved here — this is a view-only demo. Connect a GitHub repository in <b>Settings → Sync</b> to start tracking.', 'warn', 8000);
+      return;
+    }
+    if (!Github || !Github.isConfigured()) {
+      toast('Not saved: connect a GitHub repository in <b>Settings → Sync</b>.', 'bad', 9000);
+      return;
+    }
+    Github.queueSync(S.data, { message: message || 'Mark attendance' }).catch((err) => {
+      toast(`<b>Not saved to GitHub.</b> ${esc(err.message)}`, 'bad', 15000);
+    });
+    // Screenshot references are the one bulky field: they ride in their own file, written only when
+    // the set actually changed, so a tap costs one small commit rather than a megabyte.
+    if (S.data.ocr && S.data.ocr.images && S.data.ocr.images.length) {
+      Github.syncImages(S.data.ocr.images, { message: 'Update timetable images' }).catch(() => undefined);
+    }
   }
 
   function toast(msg, kind, ms) {
@@ -104,6 +127,18 @@
   /* ---------- shared fragments ---------- */
   function welcomeBanner() {
     if (S.data.subjects.length || S.data.records.length) return '';
+    const Github = A.Github;
+    if (S.readOnly) {
+      return `<div class="banner info"><strong>View-only demo</strong>
+        This sample semester is held in memory for this visit and is not saved anywhere — no repository
+        is connected yet. Open <b>Settings → Sync</b> to point the tracker at your own GitHub repository.</div>`;
+    }
+    if (!Github || !Github.isConfigured()) {
+      return `<div class="banner warn"><strong>No repository connected</strong>
+        Attendance is kept in a JSON file in your own GitHub repository, so nothing can be saved yet.
+        Open <b>Settings → Sync</b>, paste a token and the repository name (one time), and every tap
+        after that is committed straight away.</div>`;
+    }
     return `<div class="banner info"><strong>Nothing set up yet</strong>
       Add your subjects in the <b>Subjects</b> tab, then fill the week in <b>Timetable</b> (click any cell) or import a CSV / screenshot.
       Want to look around first? Settings → “Load sample semester” loads a complete demo you can wipe later.</div>`;
@@ -768,6 +803,10 @@
     periodById,
     todayISO,
     actions,
+    // Live "as you type" fields (the timetable quick add parses on every keystroke) register here
+    // rather than in actions, because actions are click/change driven and re-render the view.
+    inputs: {},
+    after,
     onFieldChange,
     views: { today: renderToday, dashboard: renderDashboard, subjects: renderSubjects, tools: renderTools },
   };

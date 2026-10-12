@@ -1,0 +1,31 @@
+# _headers — the headers a <meta> tag cannot set, for hosts that read this file (Netlify, Cloudflare
+# Pages). GitHub Pages and `npx serve` ignore it: there, app.html's meta CSP is still the policy, and
+# clickjacking protection comes from nowhere, which is why this file exists at all.
+#
+#   X-Content-Type-Options — a meta tag cannot set it
+#   X-Frame-Options / frame-ancestors — ignored in a meta tag, so framing could only be stopped here
+#   Content-Security-Policy — sent as a real header, which also lets the landing page get a strict
+#     script-src (its meta policy stops short of that so it cannot fight the Vite dev server)
+#
+# `npm run build` copies this file into dist/ beside the pages it describes.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+
+# The landing page: one module script, one stylesheet, self-hosted font, no third-party origin.
+/
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
+  X-Frame-Options: DENY
+
+/index.html
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
+  X-Frame-Options: DENY
+
+# The tracker: its own files plus the one pinned CDN copy of tesseract.js (SRI in js/ocr.js), the
+# GitHub API, and the OCR engine + language model hosts plus the data:/blob: URLs the wasm core is
+# fetched through. Keep in step with the meta policy in app.html.
+/app.html
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'
+  X-Frame-Options: DENY

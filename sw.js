@@ -3,9 +3,11 @@
  * shell here plus whatever Tesseract.js pulls from its CDN the first time you run OCR.
  * Only active when the page is served over http(s); file:// pages have no service workers.
  */
-// v2: the app moved from index.html to app.html, so an installed v1 shell has to be replaced rather
-// than reused — the cache name is the only signal the browser gives an existing install.
-const VERSION = 'v2';
+// v2: the app moved from index.html to app.html, so an installed shell has to be replaced rather than
+// reused — the cache name is the only signal the browser gives an existing install.
+// v3: the sync client joined the shell.
+// v4: quick add (the natural-language timetable entry) joined the shell.
+const VERSION = 'v4';
 const SHELL = `attendance-shell-${VERSION}`;
 const RUNTIME = `attendance-runtime-${VERSION}`;
 const SHELL_FILES = [
@@ -16,8 +18,10 @@ const SHELL_FILES = [
   'js/manipal-calendar.js',
   'js/calc.js',
   'js/store.js',
+  'js/github.js',
   'js/charts.js',
   'js/ocr.js',
+  'js/magic.js',
   'js/sample-data.js',
   'js/ui.js',
   'js/panels.js',

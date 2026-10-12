@@ -371,6 +371,48 @@ test('JSON import understands both backups and scraper snapshots', () => {
   assert.equal(snap.snapshot.semester.start, '2026-07-23');
 });
 
+test('normalize refuses prototype-shaped keys and non-http source URLs', () => {
+  // A document can come from a repo someone else can write to, or from an imported snapshot file, so
+  // nothing in it is trusted: `__proto__` must not reach an Object.prototype, and a source URL that is
+  // not http(s) must not survive to be rendered as a link.
+  const d = Store.normalize(
+    JSON.parse(
+      '{"__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}},"settings":{"__proto__":{"theme":"x"}},"subjects":[{"id":"sub_a","name":"A","__proto__":{"junk":1}}],"calendar":{"sources":[' +
+        '{"id":"s1","title":"Evil","url":"javascript:alert(1)","fetchedAt":"2026-01-01"},' +
+        '{"id":"s2","title":"Evil too","url":"JaVaScRiPt:alert(1)","fetchedAt":""},' +
+        '{"id":"s3","title":"Data","url":"data:text/html,<script>1</script>","fetchedAt":""},' +
+        '{"id":"s4","title":"Good","url":"https://example.edu/cal.pdf","fetchedAt":"2026-01-02"}' +
+        '],"entries":[]}}',
+    ),
+  );
+  assert.equal({}.polluted, undefined, 'Object.prototype is untouched');
+  assert.equal(Object.getPrototypeOf(d), Object.prototype, 'the document itself keeps a clean prototype');
+  d.calendar.sources.forEach((s) => assert.equal(Object.getPrototypeOf(s), Object.prototype));
+  assert.deepEqual(d.calendar.sources.map((s) => s.url), ['', '', '', 'https://example.edu/cal.pdf']);
+  assert.equal(d.calendar.sources[0].title, 'Evil', 'the rest of the source is kept, only the URL is dropped');
+  assert.equal(d.calendar.sources[3].fetchedAt, '2026-01-02');
+  assert.equal(d.subjects[0].name, 'A');
+
+  assert.equal(Store.safeUrl('  https://x.edu/y  '), 'https://x.edu/y', 'whitespace is trimmed, https kept');
+  assert.equal(Store.safeUrl('http://x.edu'), 'http://x.edu');
+  assert.equal(Store.safeUrl('javascript:alert(1)'), '');
+  assert.equal(Store.safeUrl('JaVaScRiPt:alert(1)'), '', 'scheme matching is case-insensitive');
+  assert.equal(Store.safeUrl('data:text/html,<script>'), '');
+  assert.equal(Store.safeUrl('file:///etc/passwd'), '');
+  assert.equal(Store.safeUrl(' //x.edu'), '', 'protocol-relative is not an http(s) URL');
+  assert.equal(Store.safeUrl(''), '');
+  assert.equal(Store.safeUrl(null), '');
+});
+
+test('a scraped snapshot cannot smuggle a javascript: source URL', () => {
+  const conv = Store.snapshotToCalendar({ title: 'snap', source: { url: 'javascript:alert(1)', fetchedAt: '2026-01-01' }, entries: [{ start: '2026-08-01', type: 'holiday', title: 'Holiday' }] });
+  assert.equal(conv.source.url, '', 'sanitised on the way in, not just on the way back out');
+  assert.equal(conv.source.fetchedAt, '2026-01-01');
+  assert.equal(conv.entries.length, 1);
+  const ok = Store.snapshotToCalendar({ title: 'snap', source: { url: 'https://example.edu/2026.pdf', fetchedAt: '2026-01-01' }, entries: [] });
+  assert.equal(ok.source.url, 'https://example.edu/2026.pdf');
+});
+
 test('normalize repairs junk input instead of losing data', () => {
   const d = Store.normalize({ settings: { threshold: 'nonsense' }, subjects: [{ name: 'X' }], records: [{ date: '2026-01-01' }, { bad: true }] });
   assert.equal(d.settings.threshold, 0.75);

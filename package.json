@@ -2,14 +2,14 @@
   "name": "attendance-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "College attendance dashboard: a React + Tailwind home page and a no-build plain-JS tracker that keeps everything in localStorage.",
+  "description": "College attendance dashboard: a React + Tailwind home page and a no-build plain-JS tracker whose semester is one JSON file in your own GitHub repository.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/copy-tracker.mjs",
     "preview": "vite preview",
-    "serve": "npx --yes serve -l 4173 dist",
-    "serve:tracker": "npx --yes serve -l 4174 .",
+    "serve": "npx --yes serve@14 -l 4173 dist",
+    "serve:tracker": "npx --yes serve@14 -l 4174 .",
     "sync:calendar": "node scripts/sync-calendar.mjs",
     "test": "node --test",
     "samples": "node scripts/write-samples.mjs"

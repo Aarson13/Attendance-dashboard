@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 
-const FILES = ['app.html', 'styles.css', 'sw.js', 'manifest.webmanifest', 'icon.svg'];
+const FILES = ['app.html', 'styles.css', 'sw.js', 'manifest.webmanifest', 'icon.svg', '_headers'];
 const DIRS = ['js', 'data', 'samples'];
 
 async function exists(target) {

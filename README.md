@@ -441,11 +441,13 @@ flagged rather than guessed. Both orientations are covered by tests.
 
 ## Privacy, storage and offline
 
-- Attendance lives in **your** sync target and nowhere else: no analytics, no third-party service,
-  no account with us. With the built-in database that is this site's own D1 (a space protected by
-  its key); with GitHub as the target, the only origin the app talks to is `api.github.com`. The one
-  other origin in either case is the one-time Tesseract.js download (engine + English model, from a
-  CDN) when you run OCR.
+- Attendance lives in **your** sync target and nowhere else: no account with us. With the built-in
+  database that is this site's own D1 (a space protected by its key); with GitHub as the target, the
+  only origin the app talks to is `api.github.com`. The other origins the browser is allowed to touch
+  are the one-time Tesseract.js download (engine + English model, from a CDN) when you run OCR, and
+  the hosting platform's own usage beacon (`static.cloudflareinsights.com`, cookieless, injected into
+  every page it serves — blocking it made the host unable to account for the site and it suspended
+  serving, which is why it is allowed).
 - The app needs nothing else: the built-in target asks for no token, and the GitHub target needs
   *Contents: read and write* on the one repository you name.
 - With no local copy, the app is honest about needing the network: the shell and the OCR engine are

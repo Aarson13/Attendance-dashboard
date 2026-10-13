@@ -8,6 +8,11 @@
 #     script-src (its meta policy stops short of that so it cannot fight the Vite dev server)
 #
 # `npm run build` copies this file into dist/ beside the pages it describes.
+#
+# `static.cloudflareinsights.com` / `cloudflareinsights.com` are the host platform's own usage
+# beacon, injected into served pages by Cloudflare to meter the site. It is the only third-party
+# origin allowed here; blocking it made the platform unable to account for the site, and it
+# suspended serving until it could. Keep this in step with the meta policy in app.html.
 
 /*
   X-Content-Type-Options: nosniff
@@ -16,23 +21,23 @@
 
 # The landing page: one module script, one stylesheet, self-hosted font, no third-party origin.
 /
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
   X-Frame-Options: DENY
 
 /index.html
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'
   X-Frame-Options: DENY
 
 # The tracker: its own files plus the one pinned CDN copy of tesseract.js (SRI in js/ocr.js), the
 # GitHub API, and the OCR engine + language model hosts plus the data:/blob: URLs the wasm core is
 # fetched through. Keep in step with the meta policy in app.html.
 /app.html
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'
   X-Frame-Options: DENY
 
 # The clean-URL form of the tracker. A rule for /app.html does not follow the redirect to /app
 # (Cloudflare's asset layer answers /app.html with a 307 here), so the tracker needs its policy
 # stated twice — once for each spelling of the same page.
 /app
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'
   X-Frame-Options: DENY

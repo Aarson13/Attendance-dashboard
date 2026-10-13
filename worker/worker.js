@@ -9,8 +9,11 @@
 
 import { handleApi } from './api.js';
 
-const TRACKER_CSP = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
-const LANDING_CSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'";
+// The one third-party origin in either policy is the host's own Cloudflare Insights beacon: the
+// platform injects it into served pages to meter usage, so blocking it (as an earlier, stricter
+// policy did) leaves the platform unable to account for the site and it suspends serving.
+const TRACKER_CSP = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'";
+const LANDING_CSP = "default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; frame-src 'none'; worker-src 'self'";
 
 function securityHeaders(pathname, res) {
   const headers = new Headers(res.headers);

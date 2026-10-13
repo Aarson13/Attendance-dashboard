@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/copy-tracker.mjs",
+    "build:deploy": "npm run build && node scripts/build-deploy.mjs",
+    "dev:api": "wrangler dev --port 8787",
     "preview": "vite preview",
     "serve": "npx --yes serve@14 -l 4173 dist",
     "serve:tracker": "npx --yes serve@14 -l 4174 .",
@@ -22,6 +24,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.2",
+    "wrangler": "^4.20.0",
     "pdfjs-dist": "^6.4.299",
     "tailwindcss": "^4.3.3",
     "vite": "^8.3.4"

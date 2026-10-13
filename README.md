@@ -5,9 +5,11 @@ Two pages, one repository:
 - **`/` — the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
 a glass dashboard preview underneath. React 19 + Vite + Tailwind v4, built to `dist/`.
 - **`/app.html` — the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
-build step, no backend of ours, no account. Your semester is kept as **one JSON file in your own
-GitHub repository** and every interaction commits to it, so the repository is the source of truth
-and its history is your undo. Nothing about your attendance is stored in the browser.
+build step, no account. Your semester is kept as **one JSON document in a sync target** you choose:
+this site's own Cloudflare database by default (nothing to set up — the first visit claims a space
+and keeps its key), or a file in a GitHub repository you own. Every interaction pulls the document,
+applies the change and writes it back, so the target is the source of truth. Nothing about your
+attendance is stored in the browser.
 
 Both are built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75%
 and is editable). Every number on screen comes from the same formulas, and the academic calendar is
@@ -24,15 +26,18 @@ npm install
 npm run dev          # Vite dev server: the home page at / and the tracker at /app.html
 ```
 
-Then open `/app.html`, go to **Settings → “Where your data lives”**, and paste (once):
+Then open `/app.html`, go to **Settings → “Where your data lives”**, and pick a target:
 
-1. the **owner** and **repository** the attendance file should live in — the code repository works,
-   or a separate private one if you would rather keep your attendance private,
-2. a **fine-grained personal access token** with *Contents: read and write* on just that repository
-   (GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens).
+1. **this site's database** (the default whenever the page is served over http) — nothing to fill in.
+   The first save claims a *space* and keeps its key in that browser; **Show space id & key** is what
+   you paste into a second device to carry the semester over.
+2. **a GitHub repository** — the owner and repository (the code repository works, or a separate
+   private one), plus a **fine-grained personal access token** with *Contents: read and write* on just
+   that repository (GitHub → Settings → Developer settings → Personal access tokens → *Fine-grained
+   tokens*).
 
-Press **Save & test** and the tracker writes its first commit. After that, every tap marks a class
-and commits it, and the topbar chip tells you it happened.
+Press **Save & test** and the tracker writes its first document. After that, every tap marks a class
+and writes it, and the topbar chip tells you it happened.
 
 To serve the built site exactly as it ships:
 
@@ -77,11 +82,41 @@ under your cursor (native date pickers, sliders and dropdowns all break that way
 
 ---
 
+## Where your data lives (the built-in database, the default)
+
+The tracker's document — subjects, timetable, calendar, marks, settings — is one JSON object, and by
+default it lives as a row in the site's own Cloudflare D1 database (`worker/api.js`, served by the
+same Worker that serves the static files):
+
+- **First use claims a space.** `POST /api/spaces` mints a 12-character space id and a 32-character
+  key; the server stores only the SHA-256 of the key, and the browser keeps the pair. That is the
+  whole credential model — no account, no token, nothing typed.
+- **Every read and write carries the key**, so a space is readable and writable only by devices that
+  hold it. `Settings → Sync → Show space id & key` is how a phone joins the same semester; a write
+  with a foreign `Origin` is refused as well.
+- **`rev` replaces the file's sha.** A write states the rev it was based on, and the server updates
+  conditionally (`WHERE rev = ?`), so two devices that read the same rev cannot both win: the loser
+  gets `409` with the winner's document attached, merges, and retries once.
+- **Screenshots ride in their own kind** (`images` vs `doc`, separate revisions) and are written only
+  when the set changes — same trick, second file.
+
+Local development runs the identical stack in workerd:
+
+```bash
+npm run build:deploy   # dist/ + deploy/manifest.json (the Cloudflare Sites upload)
+npm run dev:api        # wrangler dev on http://127.0.0.1:8787, local D1 included
+```
+
+The Vite dev server proxies `/api` to that port, so `npm run dev` syncs too. Deployment itself is a
+prebuilt Worker plus static assets: `wrangler.jsonc` is the local twin of `deploy/manifest.json`,
+which binds the `DB` (D1) and `ASSETS` and points the Worker at `index.js` / `api.js`.
+
 ## Where your data lives (GitHub sync)
 
-Attendance is **not** stored on the device. The whole semester is one JSON document — subjects,
-timetable, calendar, marks, settings — and it lives in a file in a repository you own, default
-`attendance.json` on `main`. `js/github.js` is the only code that touches the network:
+Attendance is **not** stored on the device, whichever target you choose. The whole semester is one
+JSON document — subjects, timetable, calendar, marks, settings — and with GitHub as the target it
+lives in a file in a repository you own, default `attendance.json` on `main`. `js/github.js` is the
+only code that touches the network (both targets go through it):
 
 - **On load** the file is pulled, so a fresh browser (or phone) shows your real semester with no
   import step and nothing to lose.
@@ -406,11 +441,13 @@ flagged rather than guessed. Both orientations are covered by tests.
 
 ## Privacy, storage and offline
 
-- Attendance lives in **your** repository and nowhere else: no database, no account with us, no
-  analytics, no third-party service. The only origin the app talks to is `api.github.com`, plus the
-  one-time Tesseract.js download (engine + English model, from a CDN) when you run OCR.
-- The app needs `Contents: read and write` on the one repository you name. Nothing else is asked for,
-  and the token is off the document and out of the code.
+- Attendance lives in **your** sync target and nowhere else: no analytics, no third-party service,
+  no account with us. With the built-in database that is this site's own D1 (a space protected by
+  its key); with GitHub as the target, the only origin the app talks to is `api.github.com`. The one
+  other origin in either case is the one-time Tesseract.js download (engine + English model, from a
+  CDN) when you run OCR.
+- The app needs nothing else: the built-in target asks for no token, and the GitHub target needs
+  *Contents: read and write* on the one repository you name.
 - With no local copy, the app is honest about needing the network: the shell and the OCR engine are
   cached by `sw.js`, so it *opens* offline, but until a save reaches GitHub the topbar chip says it
   has not been saved.
@@ -420,8 +457,10 @@ flagged rather than guessed. Both orientations are covered by tests.
 
 ## Security notes
 
-Small app, small attack surface: no backend, no account, no third-party JavaScript at runtime except
-the one OCR engine. The pieces that are not obvious from the code:
+Small app, small attack surface: no account, no third-party JavaScript at runtime except the one OCR
+engine, and a backend of one Worker whose API is a space claim plus a conditional write
+(`worker/api.js`) — the only state it holds is the document and a hash of the key that guards it.
+The pieces that are not obvious from the code:
 
 - **The policy is in `app.html`** (a meta CSP, since the app is static): the only script origins are
   the app's own files and `cdn.jsdelivr.net`, no inline script exists, `object-src`/`base-uri`/
@@ -503,9 +542,10 @@ app.html    styles.css  sw.js  manifest.webmanifest  icon.svg  _headers
 js/    calc.js  store.js  github.js  charts.js  ocr.js  magic.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
 data/  muj-2026-27.json  muj-2026-27.days.txt        # scraper output
 src/   main.jsx  App.jsx  data/attendance.js  lib/hooks.js  styles/index.css  components/*.jsx
-scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs
+scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs  build-deploy.mjs
+worker/  worker.js  api.js                  # the sync API + security headers; wrangler.jsonc runs it locally
 samples/ timetable-sample.csv  calendar-sample.csv  sample-data.json
-tests/  calc.test.mjs  home-data.test.mjs  github.test.mjs
+tests/  calc.test.mjs  home-data.test.mjs  github.test.mjs  cloud-sync.test.mjs  worker-api.test.mjs
 ```
 
 ---

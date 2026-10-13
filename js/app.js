@@ -268,7 +268,7 @@
       if (pulled.images && pulled.images.data) S.data.ocr.images = pulled.images.data.slice(0, 2);
     } catch (err) {
       S.readOnly = true;
-      Ui.toast(`<b>Could not load your data from GitHub.</b> ${Ui.esc(err.message)}`, 'bad', 15000);
+      Ui.toast(`<b>Could not load your data.</b> ${Ui.esc(err.message)}`, 'bad', 15000);
     }
 
     if (legacy && (legacy.subjects.length || legacy.records.length)) {
@@ -290,7 +290,7 @@
     if (wantsDemo && !S.readOnly) {
       setTimeout(() => Ui.actions['load-sample'](), 350);
     } else if (!S.data.subjects.length && !S.data.records.length && !S.readOnly) {
-      setTimeout(() => Ui.toast('Connected to GitHub. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.', 'info', 9000), 700);
+      setTimeout(() => Ui.toast(`Sync is live — ${Github.describe()}. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.`, 'info', 9000), 700);
     }
   }
 
@@ -322,7 +322,7 @@
     let label = '';
     if (!configured) {
       kind = 'off';
-      label = 'GitHub not connected';
+      label = Github.mode() === 'github' ? 'GitHub not connected' : 'Sync not connected';
     } else if (state.status === 'syncing' || state.status === 'pending') {
       kind = 'busy';
       label = 'saving…';

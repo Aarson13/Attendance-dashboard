@@ -1,17 +1,27 @@
 /* github.js — the only place that talks to the network.
  *
- * Attendance is not kept on this device. The document lives as a JSON file in a GitHub repository and
- * every interaction pulls the file, applies the change and pushes it back, so the repository is the
- * single source of truth (and its history is your undo). This module owns the GitHub Contents API:
- * reading the file with its sha, writing it back with that sha, and doing the pull-merge-push cycle
- * that makes an edit from one device visible on the next.
+ * Attendance is not kept on this device. The document lives as one JSON file in a sync target and
+ * every interaction pulls the file, applies the change and pushes it back, so that target is the
+ * single source of truth (and its history is your undo). This module owns both targets:
+ *
+ *  - **This site's database (the default).** When the tracker is served over http(s) it provisions a
+ *    "space" in the site's own Cloudflare D1 database on first use — no account, no token, nothing
+ *    pasted. The document is a row there whose `rev` column plays the part a file's sha plays, and
+ *    the space's key (kept in this browser, hashed on the server) is the credential. See worker/api.js.
+ *  - **A GitHub repository.** The original transport: the Contents API, one commit per interaction,
+ *    needing an owner, a repository and a fine-grained token in Settings. Still there for anyone who
+ *    wants their attendance as a file they own, and the only option from file://.
+ *
+ * Both speak the same contract — read by sha, write with the sha the edit was based on, and on a
+ * lost race (HTTP 409/422: the sha/rev moved) re-read, merge and retry once — which is why the rest
+ * of the app never asks which one it is talking to.
  *
  * Two deliberate details:
  *  - `ocr.images` (base64 screenshot references, the only bulky field) travels in a second file and
- *    is pushed only when it actually changed. Paying for that on every tap would fill the repository
- *    history with megabytes for no reason.
- *  - a push that loses the race (HTTP 409/422: the file's sha moved) re-pulls, merges and retries
- *    once, instead of overwriting the other device's edit.
+ *    is pushed only when it actually changed. Paying for that on every tap would fill the history
+ *    with megabytes for no reason.
+ *  - a push that loses the race re-pulls, merges and retries once, instead of overwriting the other
+ *    device's edit.
  */
 (function (global) {
   'use strict';
@@ -23,7 +33,11 @@
   const CONFIG_KEY = 'attendance-github/config';
   const TOKEN_KEY = 'attendance-github/token';
 
-  const DEFAULTS = { owner: '', repo: '', branch: 'main', path: 'attendance.json', rememberToken: false };
+  const DEFAULTS = { owner: '', repo: '', branch: 'main', path: 'attendance.json', rememberToken: false, mode: '' };
+  // Non-secret, per-browser: which space of this site's own database this device writes to, and the
+  // key that proves it belongs there. The server keeps only a hash of the key.
+  const CLOUD_KEY = 'attendance-github/cloud';
+  const API_BASE = ''; // the database is on this origin, so a sub-path deployment still finds it
 
   class SyncError extends Error {
     constructor(kind, message, detail) {
@@ -41,6 +55,8 @@
   let imagesSha = null;
   let rateLimitedUntil = 0;
   let rateLimitNote = '';
+  let cloud = { space: '', key: '' };
+  let provisioning = null;
 
   const state = { status: 'idle', error: null, pulled: false, lastSyncAt: null, pending: false, message: '' };
   const listeners = new Set();
@@ -69,7 +85,19 @@
       cfg = Object.assign({}, DEFAULTS);
     }
     if (cfg.rememberToken) token = readStore(TOKEN_KEY) || '';
+    loadCloud();
     emit({});
+  }
+
+  /**
+   * Which target this device writes to. An explicit choice always wins; otherwise a configured
+   * repository keeps GitHub, and a served page defaults to the built-in database. file:// has no
+   * same-origin API to talk to, so it is always GitHub there.
+   */
+  function mode() {
+    if (cfg.mode === 'github' || cfg.mode === 'cloud') return cfg.mode;
+    if (cfg.owner && cfg.repo) return 'github';
+    return typeof global.location !== 'undefined' && /^https?:$/.test(global.location.protocol) ? 'cloud' : 'github';
   }
 
   function configure(patch) {
@@ -79,6 +107,8 @@
     next.branch = String(next.branch || 'main').trim() || 'main';
     next.path = String(next.path || 'attendance.json').trim().replace(/^\/+/, '') || 'attendance.json';
     next.rememberToken = !!next.rememberToken;
+    const previousMode = cfg.mode || '';
+    next.mode = patch && (patch.mode === 'cloud' || patch.mode === 'github') ? patch.mode : previousMode;
     cfg = next;
     writeStore(CONFIG_KEY, JSON.stringify({ owner: cfg.owner, repo: cfg.repo, branch: cfg.branch, path: cfg.path, rememberToken: cfg.rememberToken }));
     if (!cfg.rememberToken) writeStore(TOKEN_KEY, null);
@@ -114,12 +144,102 @@
   }
 
   const hasToken = () => !!token;
-  const isConfigured = () => !!(cfg.owner && cfg.repo && cfg.path && token);
+  const isConfigured = () => (mode() === 'cloud' ? true : !!(cfg.owner && cfg.repo && cfg.path && token));
   function imagesPath() {
     return cfg.path.replace(/(\.json)?$/i, '') + '-images.json';
   }
   function describe() {
+    if (mode() === 'cloud') {
+      return cloud.space ? `this site's database · space ${cloud.space}` : "this site's database (provisioning…)";
+    }
     return cfg.owner && cfg.repo ? `${cfg.owner}/${cfg.repo} · ${cfg.path} (${cfg.branch})` : 'not connected';
+  }
+
+  /* ---------- this site's database (the built-in target) ---------- */
+  function loadCloud() {
+    try {
+      const raw = readStore(CLOUD_KEY);
+      if (raw) cloud = Object.assign({ space: '', key: '' }, JSON.parse(raw));
+    } catch (err) {
+      cloud = { space: '', key: '' };
+    }
+  }
+
+  function persistCloud() {
+    writeStore(CLOUD_KEY, cloud.space && cloud.key ? JSON.stringify(cloud) : null);
+  }
+
+  /** Points this device at a space it was given (space id + key, copied from another device). */
+  function setCloud(space, key) {
+    cloud = { space: String(space || '').trim().toLowerCase(), key: String(key || '').trim() };
+    persistCloud();
+    emit({});
+    return cloud;
+  }
+
+  const cloudInfo = () => Object.assign({}, cloud);
+
+  /** Claims a space on the server — the first visit, or after the key was forgotten. */
+  async function provisionSpace() {
+    let res;
+    try {
+      res = await global.fetch(`${API_BASE}/api/spaces`, {
+        method: 'POST',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        body: '{}',
+      });
+    } catch (err) {
+      throw new SyncError('network', 'Could not reach this site\u2019s database \u2014 check the connection.', err.message);
+    }
+    if (!res.ok) throw new SyncError('bad-response', `The database answered ${res.status} while claiming a space.`);
+    const body = await res.json();
+    cloud = { space: body.space, key: body.key };
+    persistCloud();
+    emit({});
+    return cloud;
+  }
+
+  /** One claim at a time: two taps in the same tick must not ask for two different spaces. */
+  async function ensureCloud() {
+    if (cloud.space && cloud.key) return cloud;
+    if (!provisioning) {
+      provisioning = provisionSpace().finally(() => {
+        provisioning = null;
+      });
+    }
+    return provisioning;
+  }
+
+  /** `attendance.json` is the document, `attendance-images.json` the bulky second file. */
+  function kindOf(path) {
+    return path && path.indexOf('-images.json') >= 0 ? 'images' : 'doc';
+  }
+
+  async function cloudCall(method, target, body) {
+    const creds = await ensureCloud();
+    const headers = { Accept: 'application/json', 'X-Sync-Key': creds.key };
+    if (body) headers['Content-Type'] = 'application/json';
+    let res;
+    try {
+      res = await global.fetch(`${API_BASE}${target}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+    } catch (err) {
+      throw new SyncError('network', 'Could not reach this site\u2019s database \u2014 check the connection.', err.message);
+    }
+    if (res.status === 404) return { status: 404, res: null };
+    if (res.status === 409) return { status: 409, res: await res.json() };
+    if (res.status === 200 || res.status === 201) return { status: res.status, res: await res.json() };
+
+    let detail = '';
+    try {
+      detail = (await res.json()).message || '';
+    } catch (err) {
+      detail = res.statusText || '';
+    }
+    if (res.status === 401 || res.status === 403) {
+      throw new SyncError('auth', 'The database refused this device\u2019s sync key. Paste the space id and key from Settings \u2192 Sync to rejoin that space.', detail);
+    }
+    if (res.status === 429) throw new SyncError('rate-limit', 'The database is limiting this device for a moment \u2014 syncing resumes shortly.', detail);
+    throw new SyncError('bad-response', `The database answered ${res.status}${detail ? ` \u2014 ${detail}` : ''}.`, detail);
   }
 
   /* ---------- base64 (UTF-8 safe, chunked so large documents cannot blow the call stack) ---------- */
@@ -204,7 +324,14 @@
 
   /** Reads one JSON file. Returns null when the file does not exist yet (the first push creates it). */
   async function readFile(path) {
-    if (!isConfigured()) throw new SyncError('not-configured', 'Connect a GitHub repository first (Settings → Sync).');
+    if (!isConfigured()) throw new SyncError('not-configured', 'Choose a sync target in Settings \u2192 Sync first.');
+    if (mode() === 'cloud') {
+      const creds = await ensureCloud();
+      const got = await cloudCall('GET', `/api/doc?space=${encodeURIComponent(creds.space)}&kind=${kindOf(path)}`);
+      if (got.status === 404 || !got.res || !got.res.data) return null;
+      // The rev stands in for the file's sha: it is what the next write has to quote.
+      return { data: got.res.data, sha: String(got.res.rev), path, updatedAt: got.res.updatedAt || new Date().toISOString() };
+    }
     const first = await call('GET', url(path, `?ref=${encodeURIComponent(cfg.branch)}`));
     if (first.status === 404) return null;
     const meta = first.res;
@@ -229,6 +356,18 @@
   }
 
   async function writeFile(path, data, sha, message) {
+    if (mode() === 'cloud') {
+      const creds = await ensureCloud();
+      const baseRev = Number(sha);
+      const got = await cloudCall('PUT', '/api/doc', {
+        space: creds.space,
+        kind: kindOf(path),
+        data,
+        baseRev: Number.isInteger(baseRev) && baseRev >= 0 ? baseRev : 0,
+      });
+      if (got.status === 409) throw new SyncError('conflict', 'The database was saved by another device while this one was editing.', message || '');
+      return String(got.res && got.res.rev != null ? got.res.rev : '');
+    }
     const body = { message: message || 'Update attendance data', content: encode(JSON.stringify(data, null, 2)), branch: cfg.branch };
     if (sha) body.sha = sha;
     const res = await call('PUT', url(path), body);
@@ -290,7 +429,7 @@
 
   async function runSync(data, opts) {
     const options = opts || {};
-    if (!isConfigured()) throw new SyncError('not-configured', 'Connect a GitHub repository first (Settings → Sync).');
+    if (!isConfigured()) throw new SyncError('not-configured', 'Choose a sync target in Settings \u2192 Sync first.');
     if (Date.now() < rateLimitedUntil) {
       emit({ status: 'blocked', message: rateLimitNote });
       throw new SyncError('rate-limit', rateLimitNote);
@@ -372,6 +511,10 @@
 
   /** Cheap liveness check for the "Test connection" button. */
   async function test() {
+    if (mode() === 'cloud') {
+      const doc = await readFile(cfg.path);
+      return { exists: !!doc, sha: doc ? doc.sha : null, records: doc && doc.data && doc.data.records ? doc.data.records.length : 0 };
+    }
     if (!cfg.owner || !cfg.repo) throw new SyncError('not-configured', 'Fill in the repository first.');
     if (!token) throw new SyncError('auth', 'Paste a token first.');
     const doc = await readFile(cfg.path);
@@ -394,6 +537,14 @@
     });
   }
   function disconnect() {
+    if (mode() === 'cloud') {
+      // The space and its key stay on this device, so switching the mode back to cloud resumes
+      // exactly where this left off. What stops here is the syncing, not the data.
+      cfg.mode = 'github';
+      persistConfig();
+      emit({ status: 'idle', error: null, lastSyncAt: null, pending: false, message: '' });
+      return;
+    }
     setToken('', false, true);
     baseSha = null;
     imagesSha = null;
@@ -411,6 +562,10 @@
     SyncError,
     CONFIG_KEY,
     TOKEN_KEY,
+    CLOUD_KEY,
+    mode,
+    cloudInfo,
+    setCloud,
     configure,
     config: () => Object.assign({}, cfg, { token: token ? '***' : '' }),
     setToken: (value, remember) => setToken(value, remember),

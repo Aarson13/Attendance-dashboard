@@ -1,0 +1,22 @@
+{
+  // Local twin of the deployed site: `npm run dev:api` serves the built site from workerd with a
+  // local D1 database, which is the only way to exercise the sync API (and the security headers)
+  // before it goes up. The real deployment is prepared by `npm run build:deploy`, which writes
+  // deploy/manifest.json — the Cloudflare Sites manifest that binds the same `DB` and `ASSETS`.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "attendance-tracker-local",
+  "main": "worker/worker.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./deploy/public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "attendance-tracker-local",
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+}

@@ -52,7 +52,7 @@ const okWrite = (sha) => reply(200, { content: { sha } });
 /** Every test starts from a clean connection: no token, no remembered sha. */
 function connect(extra) {
   Github.disconnect();
-  Github.configure(Object.assign({ owner: 'Aarson13', repo: 'Attendance-dashboard', branch: 'main', path: 'attendance.json', token: 'github_pat_test' }, extra));
+  Github.configure(Object.assign({ owner: 'Aarson13', repo: 'Attendance-dashboard', branch: 'main', path: 'attendance.json', token: 'github_pat_test', mode: 'github' }, extra));
 }
 const docWith = (overrides) => Object.assign(Store.defaults(), overrides || {});
 

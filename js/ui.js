@@ -84,7 +84,7 @@
       return;
     }
     Github.queueSync(S.data, { message: message || 'Mark attendance' }).catch((err) => {
-      toast(`<b>Not saved to GitHub.</b> ${esc(err.message)}`, 'bad', 15000);
+      toast(`<b>Not saved.</b> ${esc(err.message)}`, 'bad', 15000);
     });
     // Screenshot references are the one bulky field: they ride in their own file, written only when
     // the set actually changed, so a tap costs one small commit rather than a megabyte.

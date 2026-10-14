@@ -648,6 +648,18 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
   }
 
   /* ================= actions ================= */
+  /** Shared by one-click load (empty semester) and the confirm dialog (existing data). */
+  function applySample() {
+    const S = U().S;
+    S.data = A.Sample.build(U().todayISO());
+    U().save('Load the sample semester');
+    S.view = 'today';
+    S.date = U().todayISO();
+    U().closeModal();
+    A.App.render();
+    U().toast('Sample semester loaded — start on the Today tab.', 'ok', 6000);
+  }
+
   const actions = {
     /* timetable */
     'cell-edit': (el) => {
@@ -1028,6 +1040,13 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       }
     },
     'load-sample': () => {
+      const S = U().S;
+      // Empty semester: there is nothing to lose, so load straight away with no popup.
+      // With existing data the confirm dialog stays — one tap must never silently wipe a semester.
+      if (!S.data.subjects.length && !S.data.records.length) {
+        applySample();
+        return;
+      }
       U().openModal(
         'Load the sample semester?',
         `<p>This replaces your current data with a demo of 7 subjects, a Mon–Sat timetable, two labs, the scraper's Manipal calendar (holidays, MTE/ETE windows, two swapped "Friday timetable" days) and about two and a half months of marked attendance.</p>
@@ -1035,14 +1054,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       );
     },
     'load-sample-confirm': () => {
-      const S = U().S;
-      S.data = A.Sample.build(U().todayISO());
-      U().save('Load the sample semester');
-      S.view = 'today';
-      S.date = U().todayISO();
-      U().closeModal();
-      A.App.render();
-      U().toast('Sample semester loaded — start on the Today tab.', 'ok', 6000);
+      applySample();
     },
     'reset-all': () => {
       U().openModal(

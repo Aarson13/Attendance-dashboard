@@ -1,12 +1,13 @@
-/* ocr.js — in-browser OCR for timetables and academic-calendar notices.
+/* ocr.js — in-browser OCR for academic-calendar notices, plus the fuzzy subject matcher
+ * the timetable quick-add uses.
  *
  * Privacy: images are read with FileReader, preprocessed on a <canvas> and sent to a Tesseract
  * worker that runs in this browser. Nothing is uploaded; the only network traffic is the one-time
  * download of tesseract.js + its english model from a CDN.
  *
- * The parsers below never guess silently: every cell keeps a confidence and an "unmatched" state so
- * the Review & Fix screen can colour it yellow/red. Nothing is written to the timetable until the
- * user presses Confirm (the UI enforces that; this module only produces candidates).
+ * The date parser never guesses silently: every row keeps its source text so the Review screen can
+ * be fixed before anything is saved. Nothing is written to the calendar until the user presses
+ * Confirm (the UI enforces that; this module only produces candidates).
  */
 (function (global) {
   'use strict';
@@ -146,18 +147,6 @@
     return { dataUrl: canvas.toDataURL('image/jpeg', o.quality), width: outW, height: outH };
   }
 
-  /** Downscale for storage in localStorage (keeps the side-by-side reference without blowing the quota). */
-  async function compressForStorage(dataUrl, maxWidth, quality) {
-    const img = await loadImage(dataUrl);
-    const scale = Math.min(1, (maxWidth || 900) / img.naturalWidth);
-    if (scale >= 1) return dataUrl;
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.round(img.naturalWidth * scale);
-    canvas.height = Math.round(img.naturalHeight * scale);
-    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL('image/jpeg', quality || 0.7);
-  }
-
   /* ---------- tesseract ---------- */
   /** Returns {text, words:[{text, confidence, bbox}], lines:[string]} */
   async function recognise(dataUrl, opts) {
@@ -278,160 +267,6 @@
     return best;
   }
 
-  /* ---------- timetable grid ---------- */
-  /**
-   * Turn word boxes into grid cells.
-   * Detects the orientation from the day headers: a timetable can list days across the top
-   * (days = columns) or down the side (days = rows); both are common in college hand-outs.
-   */
-  function gridFromWords(words) {
-    const dayWords = [];
-    const headerWordIds = new Set();
-    for (const w of words) {
-      const di = dayIndexFromWord(w.text);
-      if (di) {
-        dayWords.push({ index: di, word: w, cx: (w.bbox.x0 + w.bbox.x1) / 2, cy: (w.bbox.y0 + w.bbox.y1) / 2, confidence: w.confidence });
-        headerWordIds.add(w);
-      }
-    }
-    if (dayWords.length < 2) return { ok: false, reason: 'Could not find at least two day names (Mon…Sat) in the image.' };
-
-    // pick the best word per weekday (highest confidence), then decide orientation
-    const bestPerDay = new Map();
-    for (const d of dayWords) {
-      const cur = bestPerDay.get(d.index);
-      if (!cur || d.confidence > cur.confidence) bestPerDay.set(d.index, d);
-    }
-    const picks = [...bestPerDay.values()];
-    const spreadY = Math.max.apply(null, picks.map((p) => p.cy)) - Math.min.apply(null, picks.map((p) => p.cy));
-    const spreadX = Math.max.apply(null, picks.map((p) => p.cx)) - Math.min.apply(null, picks.map((p) => p.cx));
-    const daysAreColumns = spreadX >= spreadY;
-
-    // time tokens: single ("09:00") or grouped ("9:00 - 10:00")
-    const byLine = new Map();
-    for (const w of words) {
-      const key = Math.round(((w.bbox.y0 + w.bbox.y1) / 2) / 8);
-      if (!byLine.has(key)) byLine.set(key, []);
-      byLine.get(key).push(w);
-    }
-    const single = /^\d{1,2}\s*[:.]\s*\d{2}$/;
-    const range = /^\d{1,2}\s*[:.]\s*\d{2}\s*[-–—]\s*\d{1,2}\s*[:.]\s*\d{2}$/;
-    const dash = /^(?:[-–—.]{1,3}|to)$/i;
-    // (kept as a comment for future tuning: OCR sometimes reads "9.00" and "9 00")
-    const hm = (s) => {
-      const m = String(s).match(/(\d{1,2})\s*[:.]\s*(\d{2})/);
-      const h = m ? parseInt(m[1], 10) : NaN;
-      const mm = m ? parseInt(m[2], 10) : NaN;
-      if (!(h <= 23) || !(mm <= 59)) return null;
-      return `${String(h).padStart(2, '0')}:${String(mm).padStart(2, '0')}`;
-    };
-    const times = [];
-    const timeWordIds = new Set();
-    for (const [, lineWords] of byLine) {
-      const sorted = lineWords.slice().sort((a, b) => a.bbox.x0 - b.bbox.x0);
-      for (let i = 0; i < sorted.length; i++) {
-        const w = sorted[i];
-        const text = w.text.trim();
-        let group = null;
-        if (range.test(text)) {
-          const [a, b] = text.split(/[-–—]/);
-          group = { words: [w], label: `${hm(a)}-${hm(b)}` };
-        } else if (single.test(text)) {
-          // "9:00 - 10:00" often arrives as three tokens; merge when the dash sits between them.
-          const sep = sorted[i + 1];
-          const nxt = sorted[i + 2];
-          if (sep && nxt && dash.test(sep.text.trim()) && single.test(nxt.text.trim())) {
-            group = { words: [w, nxt], label: `${hm(text)}-${hm(nxt.text)}`, skip: sep };
-            i += 2;
-          } else {
-            group = { words: [w], label: hm(text) };
-          }
-        }
-        if (!group || !group.label || /null/.test(group.label)) continue;
-        const cx = group.words.reduce((n, x) => n + (x.bbox.x0 + x.bbox.x1) / 2, 0) / group.words.length;
-        const cy = group.words.reduce((n, x) => n + (x.bbox.y0 + x.bbox.y1) / 2, 0) / group.words.length;
-        times.push({ label: group.label, cx, cy });
-        group.words.forEach((x) => timeWordIds.add(x));
-        if (group.skip) timeWordIds.add(group.skip);
-      }
-    }
-    if (!times.length) return { ok: false, reason: 'Could not find any time ranges (e.g. "9:00-10:00") in the image. Try the crop tool to cut off everything above the table.' };
-
-    const axis = daysAreColumns
-      ? { cellAxis: 'columns', labels: picks.map((p) => ({ day: p.index, pos: p.cx })), slots: times.map((t) => ({ label: t.label, pos: t.cy })) }
-      : { cellAxis: 'rows', labels: picks.map((p) => ({ day: p.index, pos: p.cy })), slots: times.map((t) => ({ label: t.label, pos: t.cx })) };
-
-    const sortedLabels = axis.labels.slice().sort((a, b) => a.pos - b.pos);
-    const sortedSlots = axis.slots.slice().sort((a, b) => a.pos - b.pos);
-    const gap = (arr) => {
-      const gaps = [];
-      for (let i = 1; i < arr.length; i++) gaps.push(arr[i].pos - arr[i - 1].pos);
-      gaps.sort((a, b) => a - b);
-      return gaps.length ? gaps[Math.floor(gaps.length / 2)] : 120;
-    };
-    const labelGap = gap(sortedLabels);
-    const slotGap = gap(sortedSlots);
-    const nearest = (arr, pos) => {
-      let best = null;
-      for (const item of arr) {
-        const d = Math.abs(item.pos - pos);
-        if (!best || d < best.d) best = { item, d };
-      }
-      return best;
-    };
-
-    const cells = new Map();
-    for (const w of words) {
-      if (headerWordIds.has(w) || timeWordIds.has(w)) continue;
-      const cx = (w.bbox.x0 + w.bbox.x1) / 2;
-      const cy = (w.bbox.y0 + w.bbox.y1) / 2;
-      const labelPick = nearest(sortedLabels, daysAreColumns ? cx : cy);
-      const slotPick = nearest(sortedSlots, daysAreColumns ? cy : cx);
-      if (!labelPick || labelPick.d > labelGap * 0.75) continue;
-      if (!slotPick || slotPick.d > slotGap * 0.75) continue;
-      const key = `${labelPick.item.day}|${slotPick.item.label}`;
-      const cell = cells.get(key) || { day: labelPick.item.day, time: slotPick.item.label, words: [] };
-      cell.words.push(w);
-      cells.set(key, cell);
-    }
-
-    const out = [];
-    for (const cell of cells.values()) {
-      const words2 = cell.words.sort((a, b) => a.bbox.y0 - b.bbox.y0 || a.bbox.x0 - b.bbox.x0);
-      const text = words2.map((w) => w.text).join(' ').replace(/\s+/g, ' ').trim();
-      const confidence = words2.reduce((n, w) => n + (w.confidence || 0), 0) / (words2.length || 1);
-      out.push({
-        day: cell.day,
-        time: cell.time,
-        text,
-        confidence,
-        lab: /\blab\b|laboratory|practical|lab\./i.test(text),
-      });
-    }
-    out.sort((a, b) => a.day - b.day || a.time.localeCompare(b.time));
-    return {
-      ok: true,
-      orientation: daysAreColumns ? 'days-as-columns' : 'days-as-rows',
-      days: sortedLabels.map((l) => l.day),
-      times: sortedSlots.map((s) => s.label),
-      cells: out,
-    };
-  }
-
-  /** Grid + subject matching in one step, ready for the Review & Fix screen. */
-  function parseTimetable(words, subjects) {
-    const grid = gridFromWords(words);
-    if (!grid.ok) return grid;
-    const rows = grid.cells.map((cell) => {
-      const match = fuzzyMatch(cell.text, subjects);
-      // Pre-fill the subject only when the match is confident; anything else is left for the
-      // Review & Fix screen to decide, and unmatched cells are never guessed at.
-      const subjectId = match && match.matched ? match.subjectId : null;
-      return Object.assign({}, cell, { match, subjectId, state: !match || match.confidence === 'none' ? 'unmatched' : match.matched ? 'matched' : 'low' });
-    });
-    return Object.assign({}, grid, { rows });
-  }
-
   /* ---------- academic-calendar dates ---------- */
   /**
    * Pull date ranges out of OCR text. Returns candidate rows for review — always editable, never
@@ -535,7 +370,7 @@
     return out;
   }
 
-  const api = { readAsDataURL, preprocess, sourceRect, compressForStorage, recognise, gridFromWords, parseTimetable, parseDates, fuzzyMatch };
+  const api = { readAsDataURL, preprocess, sourceRect, recognise, parseDates, fuzzyMatch };
   global.AD = global.AD || {};
   global.AD.Ocr = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

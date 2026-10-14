@@ -312,28 +312,8 @@ test('CSV parser handles quotes and CRLF', () => {
   assert.deepEqual(rows[0], { a: 'x,1', b: 'say "hi"' });
 });
 
-test('timetable CSV import maps days/periods, flags labs, creates unknown subjects', () => {
-  const data = Store.defaults();
-  const csv = ['day,period,subject_code,subject_name,kind', 'Mon,P1,CS2001,Data Structures,lecture', 'Wed,P5,CS9999,Robotics Lab,lab', 'Funday,P1,CS2001,Data Structures,'].join('\n');
-  const { cells, warnings } = Store.timetableFromCSV(csv, data);
-  assert.equal(cells.length, 2);
-  assert.deepEqual(cells[0], { day: 1, periodId: 'p1', subjectId: data.subjects[0].id, lab: false });
-  assert.equal(cells[1].lab, true);
-  assert.equal(data.subjects.length, 2, 'unknown subject was created');
-  assert.ok(warnings.some((w) => /Funday/.test(w)));
-});
-
-test('CSV exports round-trip back through the importers', () => {
+test('calendar CSV export round-trips back through the importer', () => {
   const data = Sample.build('2026-10-12');
-  const csv = Store.timetableToCSV(data);
-  assert.ok(csv.split('\n').length > 8, 'one row per assigned cell');
-  const fresh = Store.defaults();
-  fresh.subjects = data.subjects.map((s) => ({ ...s }));
-  const res = Store.timetableFromCSV(csv, fresh);
-  assert.equal(res.warnings.length, 0, 'exported CSV re-imports without complaints');
-  assert.equal(res.cells.length, Object.values(data.timetable).reduce((n, day) => n + Object.keys(day).length, 0));
-  assert.equal(res.cells.filter((c) => c.lab).length, 3, 'the three lab slots keep their lab flag');
-
   const calCsv = Store.calendarToCSV(data);
   const back = Store.calendarFromCSV(calCsv, 2026);
   assert.equal(back.entries.length, data.calendar.entries.length);
@@ -422,39 +402,6 @@ test('normalize repairs junk input instead of losing data', () => {
 
 /* ---------- OCR parsers ---------- */
 const word = (text, x0, y0, x1, y1, confidence = 90) => ({ text, bbox: { x0, y0, x1, y1 }, confidence });
-
-test('OCR grid: days as columns, cells matched to subjects', () => {
-  const words = [
-    word('Mon', 90, 5, 130, 25), word('Tue', 190, 5, 230, 25), word('Wed', 290, 5, 330, 25),
-    word('09:00-10:00', 20, 45, 80, 60), word('10:00-11:00', 20, 95, 80, 110),
-    word('CS2001', 95, 48, 150, 62), word('MA 2002', 195, 98, 250, 112), word('DBMS', 295, 98, 340, 112),
-  ];
-  const grid = Ocr.gridFromWords(words);
-  assert.equal(grid.ok, true);
-  assert.equal(grid.orientation, 'days-as-columns');
-  assert.equal(grid.cells.length, 3);
-  const mon = grid.cells.find((c) => c.day === 1 && c.time === '09:00-10:00');
-  assert.equal(mon.text, 'CS2001');
-  const subjects = [{ id: 's1', name: 'Data Structures', code: 'CS2001', faculty: '' }, { id: 's2', name: 'Discrete Mathematics', code: 'MA2002', faculty: '' }];
-  const parsed = Ocr.parseTimetable(words, subjects);
-  const r1 = parsed.rows.find((r) => r.day === 1 && r.time === '09:00-10:00');
-  assert.equal(r1.match.subjectId, 's1');
-  assert.equal(r1.state, 'matched');
-  const r3 = parsed.rows.find((r) => r.day === 3);
-  assert.equal(r3.state, 'unmatched', 'unmatched text is flagged, never guessed');
-});
-
-test('OCR grid: days as rows works too', () => {
-  const words = [
-    word('Mon', 5, 45, 45, 60), word('Tue', 5, 95, 45, 110),
-    word('9:00', 90, 10, 130, 25), word('10:00', 190, 10, 235, 25),
-    word('DSA', 95, 48, 130, 62), word('DBMS', 195, 98, 235, 112),
-  ];
-  const grid = Ocr.gridFromWords(words);
-  assert.equal(grid.ok, true);
-  assert.equal(grid.orientation, 'days-as-rows');
-  assert.equal(grid.cells.find((c) => c.day === 2 && c.time === '10:00').text, 'DBMS');
-});
 
 test('OCR fuzzy matching prefers an exact subject code, scores partial names lower', () => {
   const subjects = [{ id: 's1', name: 'Operating Systems', code: 'CS3002', faculty: 'Dr. Iyer' }];

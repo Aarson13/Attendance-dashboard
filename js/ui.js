@@ -18,7 +18,6 @@
     month: null,
     sim: null,
     plan: null,
-    ocr: null,
     calOcr: null,
     hooks: [],
     // True while this device has no repository to write to: the sample/demo is then shown in memory

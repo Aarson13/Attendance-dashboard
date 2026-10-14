@@ -313,88 +313,6 @@
     return n >= 1 && n <= 6 ? n : null;
   }
 
-  function findPeriod(settings, { period, start }) {
-    const pl = String(period || '').trim().toLowerCase();
-    if (pl) {
-      const byLabel = settings.periods.find((p) => p.label.toLowerCase() === pl || p.id.toLowerCase() === pl);
-      if (byLabel) return byLabel;
-    }
-    const st = String(start || '').trim();
-    if (st) {
-      const byTime = settings.periods.find((p) => p.start === st);
-      if (byTime) return byTime;
-      const np = { id: uid('p'), label: `P${settings.periods.length + 1}`, start: st, end: '' };
-      settings.periods.push(np);
-      return np;
-    }
-    return null;
-  }
-
-  /** Timetable CSV → cells. Missing subjects are created (flagged in warnings, never silent). */
-  function timetableFromCSV(text, data) {
-    const { headers, rows } = parseCSV(text);
-    const warnings = [];
-    if (!rows.length) return { cells: [], warnings: ['No data rows found.'] };
-    if (headers.indexOf('day') < 0) warnings.push('No "day" column found — expected day,period,subject[,kind].');
-    const cells = [];
-    const findSubject = (value) => {
-      const v = String(value || '').trim().toLowerCase();
-      if (!v) return null;
-      return data.subjects.find((s) => (s.code || '').toLowerCase() === v || s.name.toLowerCase() === v) ||
-        data.subjects.find((s) => (s.code || '').toLowerCase().replace(/[^a-z0-9]/g, '') === v.replace(/[^a-z0-9]/g, '')) ||
-        data.subjects.find((s) => s.name.toLowerCase().indexOf(v) >= 0 || v.indexOf(s.name.toLowerCase()) >= 0);
-    };
-    for (const r of rows) {
-      const day = dayNumber(r.day);
-      if (!day) {
-        warnings.push(`Skipped row with unrecognised day "${r.day || ''}".`);
-        continue;
-      }
-      const period = findPeriod(data.settings, r);
-      if (!period) {
-        warnings.push(`Skipped row for ${r.subject || 'subject'} on ${r.day}: no period or start time.`);
-        continue;
-      }
-      const label = r.subject || r.subject_name || r.name || r.course || '';
-      let subject = findSubject(r.subject_code || r.code || label);
-      if (r.subject_code && r.subject_name) subject = findSubject(r.subject_code) || findSubject(r.subject_name);
-      if (!subject) {
-        subject = {
-          id: uid('sub'),
-          name: r.subject_name || label || 'Imported subject',
-          code: r.subject_code || r.code || '',
-          credits: 3,
-          faculty: '',
-          color: '',
-          classesPerWeek: null,
-          expectedClasses: null,
-          carried: { a: 0, t: 0 },
-        };
-        data.subjects.push(subject);
-        warnings.push(`Created new subject "${subject.name}" (3 credits default) — edit it if that's wrong.`);
-      }
-      const lab = /lab|practical/i.test(r.kind || r.type || '') || /lab/i.test(subject.name);
-      cells.push({ day, periodId: period.id, subjectId: subject.id, lab });
-    }
-    return { cells, warnings };
-  }
-
-  function timetableToCSV(data) {
-    const lines = ['day,period,start,end,subject_code,subject_name,kind'];
-    const names = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    for (const day of Object.keys(data.timetable).map(Number).sort()) {
-      const cells = data.timetable[String(day)] || {};
-      for (const pid of Object.keys(cells).sort()) {
-        const c = cells[pid];
-        if (!c || !c.subjectId) continue;
-        const s = data.subjects.find((x) => x.id === c.subjectId) || { name: '', code: '' };
-        const p = data.settings.periods.find((x) => x.id === pid) || { label: pid, start: '', end: '' };
-        lines.push([names[day] || day, p.label, p.start, p.end, s.code, s.name, c.lab ? 'lab' : 'lecture'].map(csvCell).join(','));
-      }
-    }
-    return lines.join('\n');
-  }
-
   function calendarToCSV(data) {
     const lines = ['type,start,end,title,swap_day'];
     for (const e of data.calendar.entries) lines.push([e.type, e.start, e.end, e.title, e.swapDay || ''].map(csvCell).join(','));
@@ -484,21 +402,6 @@
     return { entries, warnings };
   }
 
-  const SAMPLE_TIMETABLE_CSV = [
-    'day,period,subject_code,subject_name,kind',
-    'Mon,P1,CS2001,Data Structures and Algorithms,lecture',
-    'Mon,P2,MA2002,Discrete Mathematics,lecture',
-    'Tue,P1,CS2001,Data Structures and Algorithms,lecture',
-    'Tue,P3,CS2005,Database Systems,lecture',
-    'Wed,P5,CS2001L,DSA Lab,lab',
-    'Thu,P2,EC2003,Digital Design,lecture',
-    'Fri,P4,CS2004,Object Oriented Programming,lecture',
-    '',
-    '# A lab row occupies two consecutive periods on the grid but counts as ONE class;',
-    '# write it only on its first period (the grid merges the two).',
-    '# Days: Mon-Sat (Sun is never a working day). Periods: P1-P6 by default.',
-  ].join('\n');
-
   const SAMPLE_CALENDAR_CSV = [
     'type,start,end,title,swap_day',
     'holiday,2026-08-15,2026-08-15,Independence Day,',
@@ -532,12 +435,9 @@
     snapshotToCalendar,
     parseCSV,
     dayNumber,
-    timetableFromCSV,
-    timetableToCSV,
     calendarFromCSV,
     calendarToCSV,
     calendarFromICS,
-    SAMPLE_TIMETABLE_CSV,
     SAMPLE_CALENDAR_CSV,
   };
   global.AD = global.AD || {};

@@ -231,9 +231,6 @@
       )
       .join('');
 
-    const ocrCard = S.ocr && S.ocr.phase === 'review' ? '' : ocrUploadCard();
-    const review = S.ocr && S.ocr.phase === 'review' ? ocrReviewScreen() : '';
-
     // Focus is handed back to the box after an example chip or an Add, so several slots can be typed
     // one after another without reaching for the mouse.
     U().after((root) => {
@@ -277,179 +274,7 @@
           </div>
           <button class="small" data-act="period-add" type="button" style="margin-top:8px">Add a period</button>
         </details>
-      </div>
-      <div class="card">
-        <h3>Bring in a timetable</h3>
-        <div class="row">
-          <label class="btn" style="cursor:pointer">
-            Upload CSV / JSON
-            <input type="file" accept=".csv,.json,text/csv,application/json" data-act="csv-import" hidden />
-          </label>
-          <button data-act="csv-sample" type="button">Download sample CSV</button>
-          <button data-act="csv-export" type="button">Export this timetable as CSV</button>
-        </div>
-        <p class="muted" style="margin-top:8px">CSV columns: <code>day,period,subject_code,subject_name,kind</code>. Unknown subjects are created (3 credits) and every guess is reported back to you.</p>
-        ${S.csv && S.csv.warnings && S.csv.warnings.length ? `<div class="banner warn"><strong>Import notes</strong>${S.csv.warnings.map((w) => `<div>${esc(w)}</div>`).join('')}</div>` : ''}
-      </div>
-      ${review}
-      ${ocrCard}`;
-  }
-
-  function ocrUploadCard() {
-    const S = U().S;
-    const o = S.ocr || {};
-    const busy = o.phase === 'running' || o.phase === 'prepping';
-    const settings = o.settings || {};
-    return `<div class="card">
-      <h3>Screenshot or photo of your timetable (OCR)</h3>
-      <p class="muted">Processed in your browser with Tesseract.js — no image ever leaves your device. First run downloads the OCR engine (~15 MB) once.</p>
-      <div class="dropzone" id="ocrDrop">
-        <strong>Drop an image here</strong> or
-        <div class="row" style="justify-content:center;margin-top:8px">
-          <label class="btn" style="cursor:pointer">Choose a file<input type="file" accept="image/*" data-act="ocr-file" hidden /></label>
-          <label class="btn" style="cursor:pointer">Take a photo<input type="file" accept="image/*" capture="environment" data-act="ocr-file" hidden /></label>
-        </div>
-        <p>PNG or JPG. A straight, well-lit screenshot works best; crop it to just the table if the result is noisy.</p>
-      </div>
-      ${
-        o.throughput
-          ? `<p class="muted">${esc(o.throughput)}</p>`
-          : ''
-      }
-      <div class="field-row" style="margin-top:10px">
-        <label class="field">Contrast
-          <select data-act="ocr-setting" data-key="contrast">
-            <option value="1" ${settings.contrast ? 'selected' : ''}>boost (default)</option>
-            <option value="0" ${!settings.contrast ? 'selected' : ''}>off</option>
-          </select>
-        </label>
-        <label class="field">Colours
-          <select data-act="ocr-setting" data-key="invert">
-            <option value="0" ${!settings.invert ? 'selected' : ''}>dark text on light</option>
-            <option value="1" ${settings.invert ? 'selected' : ''}>light text on dark (photo of a screen)</option>
-          </select>
-        </label>
-        <label class="field">Rotate
-          <select data-act="ocr-setting" data-key="rotate">
-            <option value="0" ${settings.rotate === 0 ? 'selected' : ''}>0°</option>
-            <option value="90" ${settings.rotate === 90 ? 'selected' : ''}>90°</option>
-            <option value="180" ${settings.rotate === 180 ? 'selected' : ''}>180°</option>
-            <option value="270" ${settings.rotate === 270 ? 'selected' : ''}>270°</option>
-          </select>
-        </label>
-        <label class="field">Page mode
-          <select data-act="ocr-setting" data-key="psm">
-            <option value="3" ${settings.psm === '3' ? 'selected' : ''}>auto</option>
-            <option value="6" ${settings.psm === '6' ? 'selected' : ''}>one block of text</option>
-            <option value="11" ${settings.psm === '11' ? 'selected' : ''}>sparse text</option>
-          </select>
-        </label>
-        <label class="field">Language
-          <input data-act="ocr-setting" data-key="lang" value="${attr(settings.lang || 'eng')}" size="8" title="eng, or eng+hin etc." />
-        </label>
-      </div>
-      <div class="field-row" style="margin-top:8px">
-        <label class="field">Crop left<input data-act="ocr-crop" data-key="0" type="range" min="0" max="40" value="${Math.round((settings.crop ? settings.crop[0] : 0) * 100)}" /></label>
-        <label class="field">Crop top<input data-act="ocr-crop" data-key="1" type="range" min="0" max="40" value="${Math.round((settings.crop ? settings.crop[1] : 0) * 100)}" /></label>
-        <label class="field">Crop right<input data-act="ocr-crop" data-key="2" type="range" min="0" max="40" value="${Math.round((settings.crop ? settings.crop[2] : 1) * 100)}" /></label>
-        <label class="field">Crop bottom<input data-act="ocr-crop" data-key="3" type="range" min="0" max="40" value="${Math.round((settings.crop ? settings.crop[3] : 1) * 100)}" /></label>
-      </div>
-      ${
-        o.original
-          ? `<div class="row" style="margin-top:10px">
-              <img src="${attr(o.processed || o.original)}" alt="Timetable being processed" style="max-width:220px;border:1px solid var(--line);border-radius:8px" />
-              <div class="stack-tight">
-                <button class="primary" data-act="ocr-run" type="button" ${busy ? 'disabled' : ''}>${busy ? 'Working…' : 'Run OCR'}</button>
-                <button data-act="ocr-repreview" type="button" ${busy ? 'disabled' : ''}>Apply preprocessing only</button>
-                <button class="ghost" data-act="ocr-clear" type="button">Remove image</button>
-              </div>
-            </div>`
-          : ''
-      }
-      ${
-        busy
-          ? `<div class="progress-track"><div class="progress-fill" id="ocrProgress" style="width:${Math.round((o.progress || 0) * 100)}%"></div></div>
-             <p class="muted" id="ocrStatus">${esc(o.statusText || 'starting…')}</p>`
-          : ''
-      }
-      ${
-        o.error
-          ? `<div class="banner bad"><strong>OCR did not work on that image</strong>${esc(o.error)} You can still fill the timetable in by hand above — the image stays on this screen as a reference.</div>`
-          : ''
-      }
-      ${
-        o.original && o.error
-          ? `<div class="review-layout" style="margin-top:10px"><div class="review-image"><img src="${attr(o.original)}" alt="Reference timetable" /></div><div class="empty">Type the slots into the grid above while looking at this image, or try again with cropping / higher contrast.</div></div>`
-          : ''
-      }
-      ${
-        (S.data.ocr.images || []).length
-          ? `<hr /><h4>Saved timetable images (kept in this browser)</h4><div class="thumb-strip">
-              ${S.data.ocr.images
-                .map(
-                  (img) => `<figure style="margin:0">
-                    <img class="thumb" src="${attr(img.dataUrl)}" alt="${attr(img.name)}" data-act="ocr-view" data-id="${attr(img.id)}" />
-                    <figcaption class="muted" style="font-size:.72rem">${esc(img.name)}<br /><button class="small ghost" data-act="ocr-del" data-id="${attr(img.id)}" type="button">delete</button></figcaption>
-                  </figure>`,
-                )
-                .join('')}
-            </div>`
-          : ''
-      }
-    </div>`;
-  }
-
-  function ocrReviewScreen() {
-    const S = U().S;
-    const o = S.ocr;
-    const counts = { matched: 0, low: 0, unmatched: 0 };
-    o.rows.forEach((r) => (counts[r.state] = (counts[r.state] || 0) + 1));
-    const options = (selected) =>
-      `<option value="">— skip this cell —</option>` +
-      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('') +
-      `<option value="__create__" ${selected === '__create__' ? 'selected' : ''}>＋ create a new subject from this text…</option>`;
-    return `<div class="card">
-      <div class="section-head">
-        <h2>Review &amp; fix before saving</h2>
-        <span class="spacer"></span>
-        <span class="chips">
-          <span class="chip ok">${counts.matched || 0} matched</span>
-          <span class="chip warn">${counts.low || 0} unsure</span>
-          <span class="chip bad">${counts.unmatched || 0} unmatched</span>
-        </span>
-      </div>
-      <p class="muted">Nothing is saved until you press Confirm. Yellow rows were a rough match, red rows were not recognised — pick a subject for them, or skip the cell.</p>
-      <div class="review-layout">
-        <div class="review-image">
-          <img src="${attr(o.processed || o.original)}" alt="Timetable image used for OCR" />
-          <p class="muted" style="margin:6px 0 0">${esc(o.meta || '')}</p>
-        </div>
-        <div>
-          <div class="table-scroll">
-            <table class="review-table">
-              <thead><tr><th>Slot</th><th>Text found</th><th>Subject</th><th>Lab</th></tr></thead>
-              <tbody>
-                ${o.rows
-                  .map(
-                    (r, i) => `<tr data-row="${i}">
-                    <td class="nowrap">${esc(Calc.DAY_NAMES[r.day - 1])}<br /><small class="muted">${esc(r.time)}</small></td>
-                    <td class="state-${attr(r.state)}"><span class="ocr-text">${esc(r.text || '(nothing)')}</span><small class="muted">${Math.round(r.confidence || 0)}% img-confidence${r.match && r.match.reason ? ` · ${esc(r.match.reason)}` : ''}</small></td>
-                    <td><select data-act="ocr-row-subject" data-row="${i}">${options(r.subjectId || (r.match && r.match.matched ? r.match.subjectId : ''))}</select></td>
-                    <td><input type="checkbox" data-act="ocr-row-lab" data-row="${i}" ${r.lab ? 'checked' : ''} aria-label="Lab" /></td>
-                  </tr>`,
-                  )
-                  .join('')}
-              </tbody>
-            </table>
-          </div>
-          <div class="row" style="margin-top:12px">
-            <button class="primary" data-act="ocr-confirm" type="button">Confirm and save timetable</button>
-            <button data-act="ocr-cancel" type="button">Cancel</button>
-            <button data-act="ocr-repreview" type="button">Re-run with different settings</button>
-          </div>
-        </div>
-      </div>
-    </div>`;
+      </div>`;
   }
 
   /* ================= Calendar ================= */
@@ -715,7 +540,6 @@
           ${sync.error ? `<p class="chip bad">${esc(sync.error.message)}</p>` : ''}
           <p class="muted">Document size: ${(bytes / 1024).toFixed(1)} KB, saved to the cloud database.
           Screenshots add about ${(Math.max(0, bytes - JSON.stringify(Object.assign({}, S.data, { ocr: { images: [] } })).length) / 1024).toFixed(0)} KB on top.</p>
-          ${S.data.ocr.images.length ? `<button class="small" data-act="clear-images" type="button" style="margin-top:8px">Delete ${S.data.ocr.images.length} stored OCR image(s)</button>` : ''}
         </div>
         <div class="card">
           <h2>How to use it</h2>
@@ -741,135 +565,17 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
   /* ================= OCR flows ================= */
   async function handleImageFile(file, which) {
     const S = U().S;
+    if (which !== 'calendar') return;
     try {
       const dataUrl = await Ocr.readAsDataURL(file);
       const base = { grayscale: true, contrast: true, upscale: true, invert: false, rotate: 0, crop: [0, 0, 1, 1], psm: '3', lang: 'eng' };
-      if (which === 'timetable') {
-        S.ocr = { original: dataUrl, processed: dataUrl, settings: base, phase: 'idle', progress: 0, statusText: '', error: '', rows: [], meta: file.name || 'image' };
-        const pre = await Ocr.preprocess(dataUrl, base);
-        S.ocr.processed = pre.dataUrl;
-        const small = await Ocr.compressForStorage(dataUrl, 900, 0.7);
-        S.data.ocr.images.unshift({ id: Store.uid('img'), name: file.name || 'timetable.jpg', dataUrl: small, addedAt: new Date().toISOString() });
-        S.data.ocr.images = S.data.ocr.images.slice(0, 2);
-        U().save();
-        U().toast('Image ready. Check the preview, then run OCR.', 'ok');
-      } else {
-        S.calOcr = { image: dataUrl, phase: 'idle', progress: 0, statusText: '', error: '', rows: [] };
-        const pre = await Ocr.preprocess(dataUrl, Object.assign({}, base, { psm: '6' }));
-        S.calOcr.processed = pre.dataUrl;
-      }
+      S.calOcr = { image: dataUrl, phase: 'idle', progress: 0, statusText: '', error: '', rows: [] };
+      const pre = await Ocr.preprocess(dataUrl, Object.assign({}, base, { psm: '6' }));
+      S.calOcr.processed = pre.dataUrl;
       A.App.render();
     } catch (err) {
       U().toast(err.message || 'Could not read that image.', 'bad');
     }
-  }
-
-  async function runTimetableOcr() {
-    const S = U().S;
-    const o = S.ocr;
-    if (!o || !o.original) return;
-    o.phase = 'prepping';
-    o.error = '';
-    o.progress = 0;
-    o.statusText = 'preparing image…';
-    A.App.render();
-    const tick = () => {
-      const fill = document.getElementById('ocrProgress');
-      const label = document.getElementById('ocrStatus');
-      if (fill) fill.style.width = `${Math.round((o.progress || 0) * 100)}%`;
-      if (label) label.textContent = o.statusText || '';
-    };
-    try {
-      const pre = await Ocr.preprocess(o.original, o.settings);
-      o.processed = pre.dataUrl;
-      o.phase = 'running';
-      o.statusText = 'starting OCR engine…';
-      A.App.render();
-      tick();
-      const started = Date.now();
-      const res = await Ocr.recognise(pre.dataUrl, {
-        lang: o.settings.lang || 'eng',
-        psm: o.settings.psm || '3',
-        onProgress: (m) => {
-          o.progress = m.progress;
-          o.statusText = `${m.status}${m.progress ? ` — ${Math.round(m.progress * 100)}%` : ''}`;
-          tick();
-        },
-      });
-      const parsed = Ocr.parseTimetable(res.words, S.data.subjects);
-      o.meta = `${res.words.length} words recognised in ${((Date.now() - started) / 1000).toFixed(1)}s · orientation: ${parsed.orientation || 'unknown'}`;
-      if (!parsed.ok) {
-        o.phase = 'idle';
-        o.error = parsed.reason;
-        U().save();
-        A.App.render();
-        U().toast('OCR could not find a table in that image — the image stays on screen so you can fill the grid by hand.', 'warn', 8000);
-        return;
-      }
-      o.rows = parsed.rows;
-      o.phase = 'review';
-      o.progress = 1;
-      A.App.render();
-      U().toast(`OCR finished: ${o.rows.length} cells found. Review them before saving.`, 'ok');
-    } catch (err) {
-      o.phase = 'idle';
-      o.error = err.message || 'OCR failed.';
-      A.App.render();
-      U().toast('OCR failed — see the message in the Timetable tab; nothing was saved.', 'bad', 8000);
-    }
-  }
-
-  async function rePreview() {
-    const S = U().S;
-    const o = S.ocr;
-    if (!o || !o.original) return;
-    try {
-      const pre = await Ocr.preprocess(o.original, o.settings);
-      o.processed = pre.dataUrl;
-      o.phase = o.rows && o.rows.length ? o.phase : 'idle';
-      A.App.render();
-      U().toast('Preprocessing applied. Run OCR again when it looks clean.', 'info');
-    } catch (err) {
-      U().toast(err.message, 'bad');
-    }
-  }
-
-  function confirmTimetableOcr() {
-    const S = U().S;
-    const o = S.ocr;
-    const periods = S.data.settings.periods;
-    const created = [];
-    const warnings = [];
-    let applied = 0;
-    o.rows.forEach((row) => {
-      if (!row.subjectId) return;
-      const start = (row.time || '').slice(0, 5);
-      let period = periods.find((p2) => p2.start === start);
-      if (!period) {
-        const m = String(row.time || '').match(/^(\d{2}):(\d{2})-(\d{2}):(\d{2})$/);
-        period = { id: Store.uid('p'), label: `P${periods.length + 1}`, start: start, end: m ? `${m[3]}:${m[4]}` : '' };
-        periods.push(period);
-        created.push(`${period.label} ${period.start}${period.end ? `–${period.end}` : ''}`);
-      }
-      const day = String(row.day);
-      if (!S.data.timetable[day]) S.data.timetable[day] = {};
-      S.data.timetable[day][period.id] = { subjectId: row.subjectId, lab: !!row.lab };
-      applied++;
-      if (row.lab) {
-        const ordered = periods.slice().sort((a, b) => String(a.start).localeCompare(String(b.start)));
-        const next = ordered[ordered.indexOf(period) + 1];
-        if (next && S.data.timetable[day][next.id]) {
-          delete S.data.timetable[day][next.id];
-          warnings.push(`${Calc.DAY_NAMES[row.day - 1]} ${period.label}: the period after the lab was cleared because a lab occupies two periods.`);
-        }
-      }
-    });
-    if (created.length) warnings.push(`New periods created: ${created.join(', ')}. Rename them in "Edit periods" if needed.`);
-    U().save();
-    S.ocr = null;
-    A.App.render();
-    U().toast(`Timetable saved from OCR: ${applied} slot${applied === 1 ? '' : 's'} applied.`, 'ok', 6000);
-    if (warnings.length) U().toast(warnings.map((w) => `<div>${esc(w)}</div>`).join(''), 'warn', 9000);
   }
 
   async function runCalendarOcr() {
@@ -1029,49 +735,6 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       per[el.dataset.field] = el.value.trim();
       U().save();
     },
-    'csv-import': (el) => {
-      const file = el.files && el.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const S = U().S;
-        try {
-          const text = String(reader.result);
-          if (/\.json$/i.test(file.name) || text.trim().startsWith('{')) {
-            const payload = JSON.parse(text);
-            const cells = payload.cells || payload.timetable || [];
-            let applied = 0;
-            for (const c of cells) {
-              const day = Store.dayNumber(c.day);
-              const per = c.period ? S.data.settings.periods.find((p2) => p2.label === c.period || p2.id === c.period) : S.data.settings.periods.find((p2) => p2.start === c.start);
-              if (!day || !per || !c.subjectId) continue;
-              if (!S.data.timetable[String(day)]) S.data.timetable[String(day)] = {};
-              S.data.timetable[String(day)][per.id] = { subjectId: c.subjectId, lab: !!c.lab };
-              applied++;
-            }
-            U().save();
-            A.App.render();
-            U().toast(`Imported ${applied} slots from JSON.`, 'ok');
-            return;
-          }
-          const res = Store.timetableFromCSV(text, S.data);
-          for (const cell of res.cells) {
-            if (!S.data.timetable[String(cell.day)]) S.data.timetable[String(cell.day)] = {};
-            S.data.timetable[String(cell.day)][cell.periodId] = { subjectId: cell.subjectId, lab: cell.lab };
-          }
-          S.csv = { warnings: res.warnings };
-          U().save();
-          A.App.render();
-          U().toast(`Timetable imported: ${res.cells.length} slots${res.warnings.length ? `, ${res.warnings.length} note(s) to check` : ''}.`, res.warnings.length ? 'warn' : 'ok', 7000);
-        } catch (err) {
-          U().toast(`Import failed: ${esc(err.message)}`, 'bad', 8000);
-        }
-      };
-      reader.readAsText(file);
-      el.value = '';
-    },
-    'csv-sample': () => download('timetable-sample.csv', Store.SAMPLE_TIMETABLE_CSV, 'text/csv'),
-    'csv-export': () => download('timetable.csv', Store.timetableToCSV(U().S.data), 'text/csv'),
     'cal-sample': () => download('calendar-sample.csv', Store.SAMPLE_CALENDAR_CSV, 'text/csv'),
     'cal-export': () => download('calendar.csv', Store.calendarToCSV(U().S.data), 'text/csv'),
 
@@ -1143,81 +806,6 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       focusMagic = true;
       A.App.render();
       U().toast(`Added <b>${res.applied}</b> slot${res.applied === 1 ? '' : 's'} to the timetable${labs ? ` (${labs} lab${labs === 1 ? '' : 's'})` : ''}.`, 'ok', 6000);
-    },
-
-    /* OCR */
-    'ocr-file': (el) => {
-      const file = el.files && el.files[0];
-      if (file) handleImageFile(file, 'timetable');
-      el.value = '';
-    },
-    'ocr-setting': (el) => {
-      const S = U().S;
-      if (!S.ocr) return;
-      const key = el.dataset.key;
-      S.ocr.settings = S.ocr.settings || {};
-      S.ocr.settings[key] = el.value === '1' ? true : el.value === '0' ? false : isNaN(Number(el.value)) ? el.value : Number(el.value);
-      S.ocr.error = '';
-    },
-    'ocr-crop': (el) => {
-      const S = U().S;
-      if (!S.ocr) return;
-      const key = Number(el.dataset.key);
-      S.ocr.settings = S.ocr.settings || {};
-      const crop = (S.ocr.settings.crop || [0, 0, 1, 1]).slice();
-      const v = Number(el.value) / 100;
-      if (key === 0) crop[0] = v;
-      if (key === 1) crop[1] = v;
-      if (key === 2) crop[2] = v;
-      if (key === 3) crop[3] = v;
-      if (crop[0] >= crop[2] - 0.05) crop[2] = Math.min(1, crop[0] + 0.05);
-      if (crop[1] >= crop[3] - 0.05) crop[3] = Math.min(1, crop[1] + 0.05);
-      S.ocr.settings.crop = crop;
-    },
-    'ocr-run': () => runTimetableOcr(),
-    'ocr-repreview': () => rePreview(),
-    'ocr-clear': () => {
-      U().S.ocr = null;
-      A.App.render();
-    },
-    'ocr-cancel': () => {
-      U().S.ocr = null;
-      A.App.render();
-      U().toast('OCR result discarded — the timetable was not changed.', 'info');
-    },
-    'ocr-confirm': () => confirmTimetableOcr(),
-    'ocr-row-subject': (el) => {
-      const S = U().S;
-      const row = S.ocr.rows[Number(el.dataset.row)];
-      if (!row) return;
-      if (el.value === '__create__') {
-        const name = row.text || 'Imported subject';
-        const created = { id: Store.uid('sub'), name: name, code: '', credits: 3, faculty: '', color: '', classesPerWeek: null, expectedClasses: null, carried: { a: 0, t: 0 } };
-        S.data.subjects.push(created);
-        row.subjectId = created.id;
-        U().save();
-        A.App.render();
-        U().toast(`Created subject “${esc(name)}” with 3 credits — edit it in Subjects.`, 'ok', 7000);
-        return;
-      }
-      row.subjectId = el.value || null;
-      row.state = el.value ? 'matched' : 'unmatched';
-    },
-    'ocr-row-lab': (el) => {
-      const S = U().S;
-      const row = S.ocr.rows[Number(el.dataset.row)];
-      if (row) row.lab = el.checked;
-    },
-    'ocr-view': (el) => {
-      const S = U().S;
-      const img = S.data.ocr.images.find((i2) => i2.id === el.dataset.id);
-      if (img) U().openModal(img.name || 'Timetable image', `<img src="${attr(img.dataUrl)}" alt="${attr(img.name)}" style="width:100%" />`);
-    },
-    'ocr-del': (el) => {
-      const S = U().S;
-      S.data.ocr.images = S.data.ocr.images.filter((i2) => i2.id !== el.dataset.id);
-      U().save();
-      A.App.render();
     },
 
     /* calendar */
@@ -1467,17 +1055,10 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       const S = U().S;
       S.data = Store.defaults();
       U().save('Erase everything');
-      S.ocr = null;
       S.calOcr = null;
       U().closeModal();
       A.App.render();
       U().toast('Everything erased. Fresh start.', 'info');
-    },
-    'clear-images': () => {
-      U().S.data.ocr.images = [];
-      U().save('Delete stored timetable images');
-      A.App.render();
-      U().toast('Stored OCR images deleted.', 'info');
     },
   };
 

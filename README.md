@@ -274,15 +274,8 @@ One object, exported as `{ app, version, exportedAt, data }`:
    marked on the Today tab.
 2. **Timetable** — click any cell to assign a subject; tick *Lab* for a lab (it then spans that
    period and the next, and counts once). Periods are editable under *Edit periods*.
-   You can also bring a timetable in four ways:
-   - **Quick add** — describe it in English in the box at the top of the tab
-     (`CS2001 Mon 9-10, Wed 11-12`, `Mon: CS2001, MA2002, CS2005`); see below.
-   - **CSV** — `day,period,subject_code,subject_name,kind`, sample downloadable in the app
-     ([`samples/timetable-sample.csv`](samples/timetable-sample.csv)). Import merges into the grid;
-     the file's cells win for the slots it mentions, unknown subjects are created (3 credits) and
-     every guess is reported back.
-   - **JSON** — the same shape as `timetable` in the data model.
-   - **OCR** — see below.
+   For bulk entry, describe the week in English in the **Quick add** box at the top of the tab
+   (`CS2001 Mon 9-10, Wed 11-12`, `Mon: CS2001, MA2002, CS2005`); see below.
 3. **Calendar** — set the semester dates, press **Import this calendar** to load the scraped
    Manipal snapshot, or add/import entries yourself (CSV/ICS/OCR). Types: holiday, exam period
    (no classes), classes suspended, and *extra working day / swapped timetable* (with the weekday it
@@ -307,9 +300,8 @@ One object, exported as `{ app, version, exportedAt, data }`:
   borderline, cancelled classes, a medical-leave mark and two extra classes.
 - **On disk:** [`samples/sample-data.json`](samples/sample-data.json) is the same dataset as a
   backup file — import it via Settings → *Import backup / calendar JSON*.
-  Regenerate all three files with `npm run samples`.
-- [`samples/timetable-sample.csv`](samples/timetable-sample.csv) and
-  [`samples/calendar-sample.csv`](samples/calendar-sample.csv) are the CSV templates.
+  Regenerate both files with `npm run samples`.
+- [`samples/calendar-sample.csv`](samples/calendar-sample.csv) is the calendar CSV template.
 
 ---
 
@@ -372,34 +364,13 @@ written until you press Add, and then it is one commit like any other edit.
 - **Days** — `Mon`, `Monday`, `Tue & Thu`, `Mon-Fri` (Sunday is not a school day).
 - **Times** — `9-10`, `09:00-10:00`, `2-4` (afternoon), `3:30`, `9am`; or a period: `P2`,
   `period 3`, or a lone `3`. A time that only *rounds* to a period says which one it picked.
-- **Subjects** — by code, full name or a distinctive part of one, through the same fuzzy matcher the
-  OCR review uses. A near-miss is pre-selected but marked *unsure*; anything unplaceable comes back
+- **Subjects** — by code, full name or a distinctive part of one, through a fuzzy matcher.
+  A near-miss is pre-selected but marked *unsure*; anything unplaceable comes back
   red with a subject picker and *create a new subject from this text* — never a silent guess.
 - **Guesses are named, not hidden.** A day column typed without times fills the periods in order and
   says it did; a line that leaves out the time keeps the one before it, marked *same time as the line
   before*; a lab in the last period is flagged because it cannot span two. A line it cannot place at
   all — no day, no time, a repeated slot, Sunday — is explained instead of dropped.
-
----
-
-## OCR for timetables
-
-1. Drop a screenshot/photo (or take one on mobile) in the Timetable tab.
-2. The image is preprocessed on a canvas: grayscale, contrast stretch, upscaling of small scans,
-   optional invert (dark-mode screenshots), 90° rotation and crop sliders. The preview updates when
-   you press *Apply preprocessing only*; stored in `localStorage` (compressed, newest two kept) so
-   you can compare later.
-3. **Run OCR** shows a progress bar with the recogniser's own status text.
-4. **Review & Fix** — the processed image sits next to an editable grid. Every detected cell has a
-   subject dropdown (plus *create a new subject from this text*), a Lab checkbox, the raw recognised
-   text and its confidence. Matched rows are green, unsure matches yellow, unmatched red. Nothing is
-   written until **Confirm and save timetable**.
-5. If the layout is too complex, the app says so, keeps the image on screen as a reference, and you
-   fill the grid in by hand. Re-running with different contrast / page mode / language is one click.
-
-Layout detection: day names decide whether days are columns or rows, clock times (single or ranges)
-build the other axis, and each text word is assigned to the nearest cell — so unmatched text is
-flagged rather than guessed. Both orientations are covered by tests.
 
 ---
 
@@ -449,17 +420,17 @@ The pieces that are not obvious from the code:
 ## Tests
 
 ```bash
-npm test              # 78 tests: engine, home-page data, the sync client, the API and the quick-add parser
+npm test              # 75 tests: engine, home-page data, the sync client, the API and the quick-add parser
 npm run build         # a failure here is a real failure, not a warning to read past
 ```
 
 29 of them cover the counting rules, the semester scheduler (labs, holidays, exam windows, swapped
-days, holiday-beats-swap), the CSV/ICS/JSON importers, the OCR grid + date parsers, the crop-to-source
+days, holiday-beats-swap), the calendar CSV/ICS/JSON importers, the OCR date parser, the crop-to-source
 mapping used when an image is rotated before OCR, the 100%-threshold edge case, the sample
 dataset's internal consistency, and the existing-attendance maths: carried counts reach `a`/`t`, the
 buffer, recovery, projections, the overall and credit-weighted totals and the trend baseline;
 impossible pairs (attended > held) are clamped rather than believed, and junk in a hand-edited backup
-is repaired on import. Two of the 32 go at the untrusted edges instead: a document full of
+is repaired on import. Two of the 29 go at the untrusted edges instead: a document full of
 prototype-shaped keys is normalised without touching `Object.prototype`, and a non-http(s) source URL
 (including a `JaVaScRiPt:` one) is dropped by `Store.safeUrl` — both on import and in a scraped
 snapshot. The engine files are dependency-free and DOM-free on purpose, which
@@ -503,7 +474,7 @@ data/  muj-2026-27.json  muj-2026-27.days.txt        # scraper output
 src/   main.jsx  App.jsx  data/attendance.js  lib/hooks.js  styles/index.css  components/*.jsx
 scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs  build-deploy.mjs
 worker/  worker.js  api.js                  # the sync API + security headers; wrangler.jsonc runs it locally
-samples/ timetable-sample.csv  calendar-sample.csv  sample-data.json
+samples/ calendar-sample.csv  sample-data.json
 tests/  calc.test.mjs  home-data.test.mjs  sync.test.mjs  magic.test.mjs  worker-api.test.js
 ```
 
@@ -524,8 +495,8 @@ tests/  calc.test.mjs  home-data.test.mjs  sync.test.mjs  magic.test.mjs  worker
   than pretending, and the alternative (a local cache) is exactly what this design avoids; export a
   JSON backup now and then, since it is also the way to move semesters; the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
   at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side — the shape is
-  visible around the text, not through it; OCR expects a reasonably straight table (photos at an angle
-  need cropping first); the scraper understands Manipal-style month-grid PDFs and falls back to a
+  visible around the text, not through it; calendar-notice OCR expects reasonably straight photos;
+  the scraper understands Manipal-style month-grid PDFs and falls back to a
   readable day dump for other layouts; charts are deliberately simple SVG; the home page's sample
   semester is illustrative data in `src/data/attendance.js`, not the tracker's own `localStorage`
   state, so the two never need to agree; there is no multi-device sync — export/import is the sync.

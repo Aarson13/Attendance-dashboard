@@ -1,7 +1,7 @@
 {
   "app": "attendance-dashboard",
   "version": 1,
-  "exportedAt": "2026-10-12T11:53:14.925Z",
+  "exportedAt": "2026-10-14T09:38:53.308Z",
   "data": {
     "app": "attendance-dashboard",
     "version": 1,
@@ -65,174 +65,202 @@
     },
     "subjects": [
       {
-        "id": "sub_islz4ao0y3u",
+        "id": "sub_g7u31813v20",
         "name": "Data Structures and Algorithms",
         "code": "CS2001",
         "credits": 4,
         "faculty": "Dr. Anitha Rao",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_1wko1560y3u",
+        "id": "sub_5pxgr843v20",
         "name": "Discrete Mathematics",
         "code": "MA2002",
         "credits": 3,
         "faculty": "Dr. S. Nair",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_i5t7wh50y3u",
+        "id": "sub_jpg4zm73v20",
         "name": "Digital Design",
         "code": "EC2003",
         "credits": 3,
         "faculty": "Dr. K. Iyer",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_k51ftbd0y3u",
+        "id": "sub_l41p0si3v20",
         "name": "Object Oriented Programming",
         "code": "CS2004",
         "credits": 3,
         "faculty": "Prof. R. Menon",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_4vs9dur0y3u",
+        "id": "sub_j9ik8v83v20",
         "name": "Database Systems",
         "code": "CS2005",
         "credits": 4,
         "faculty": "Dr. P. Shetty",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_wya39xd0y3u",
+        "id": "sub_3l7fvcl3v20",
         "name": "DSA Lab",
         "code": "CS2001L",
         "credits": 1,
         "faculty": "Dr. Anitha Rao",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       },
       {
-        "id": "sub_bqsrxt80y3u",
+        "id": "sub_znwtexy3v20",
         "name": "DBMS Lab",
         "code": "CS2005L",
         "credits": 1,
         "faculty": "Dr. P. Shetty",
         "color": "",
         "classesPerWeek": null,
-        "expectedClasses": null
+        "expectedClasses": null,
+        "carried": {
+          "a": 0,
+          "t": 0
+        }
       }
     ],
     "timetable": {
       "1": {
         "p1": {
-          "subjectId": "sub_islz4ao0y3u",
+          "subjectId": "sub_g7u31813v20",
           "lab": false
         },
         "p2": {
-          "subjectId": "sub_1wko1560y3u",
+          "subjectId": "sub_5pxgr843v20",
           "lab": false
         },
         "p3": {
-          "subjectId": "sub_4vs9dur0y3u",
+          "subjectId": "sub_j9ik8v83v20",
           "lab": false
         },
         "p4": {
-          "subjectId": "sub_k51ftbd0y3u",
+          "subjectId": "sub_l41p0si3v20",
           "lab": false
         }
       },
       "2": {
         "p1": {
-          "subjectId": "sub_islz4ao0y3u",
+          "subjectId": "sub_g7u31813v20",
           "lab": false
         },
         "p2": {
-          "subjectId": "sub_i5t7wh50y3u",
+          "subjectId": "sub_jpg4zm73v20",
           "lab": false
         },
         "p3": {
-          "subjectId": "sub_4vs9dur0y3u",
+          "subjectId": "sub_j9ik8v83v20",
           "lab": false
         },
         "p5": {
-          "subjectId": "sub_wya39xd0y3u",
+          "subjectId": "sub_3l7fvcl3v20",
           "lab": true
         }
       },
       "3": {
         "p1": {
-          "subjectId": "sub_1wko1560y3u",
+          "subjectId": "sub_5pxgr843v20",
           "lab": false
         },
         "p2": {
-          "subjectId": "sub_islz4ao0y3u",
+          "subjectId": "sub_g7u31813v20",
           "lab": false
         },
         "p4": {
-          "subjectId": "sub_k51ftbd0y3u",
+          "subjectId": "sub_l41p0si3v20",
           "lab": false
         },
         "p5": {
-          "subjectId": "sub_bqsrxt80y3u",
+          "subjectId": "sub_znwtexy3v20",
           "lab": true
         }
       },
       "4": {
         "p1": {
-          "subjectId": "sub_i5t7wh50y3u",
+          "subjectId": "sub_jpg4zm73v20",
           "lab": false
         },
         "p2": {
-          "subjectId": "sub_4vs9dur0y3u",
+          "subjectId": "sub_j9ik8v83v20",
           "lab": false
         },
         "p3": {
-          "subjectId": "sub_1wko1560y3u",
+          "subjectId": "sub_5pxgr843v20",
           "lab": false
         },
         "p4": {
-          "subjectId": "sub_k51ftbd0y3u",
+          "subjectId": "sub_l41p0si3v20",
           "lab": false
         }
       },
       "5": {
         "p1": {
-          "subjectId": "sub_islz4ao0y3u",
+          "subjectId": "sub_g7u31813v20",
           "lab": false
         },
         "p2": {
-          "subjectId": "sub_i5t7wh50y3u",
+          "subjectId": "sub_jpg4zm73v20",
           "lab": false
         },
         "p4": {
-          "subjectId": "sub_4vs9dur0y3u",
+          "subjectId": "sub_j9ik8v83v20",
           "lab": false
         },
         "p5": {
-          "subjectId": "sub_wya39xd0y3u",
+          "subjectId": "sub_3l7fvcl3v20",
           "lab": true
         }
       },
       "6": {
         "p2": {
-          "subjectId": "sub_1wko1560y3u",
+          "subjectId": "sub_5pxgr843v20",
           "lab": false
         },
         "p3": {
-          "subjectId": "sub_i5t7wh50y3u",
+          "subjectId": "sub_jpg4zm73v20",
           "lab": false
         }
       }
@@ -240,7 +268,7 @@
     "calendar": {
       "sources": [
         {
-          "id": "src_pdy9ipb0y3u",
+          "id": "src_awnfp9s3v20",
           "title": "Manipal University Jaipur — Academic Calendar 2026-27",
           "url": "https://jaipur.manipal.edu/img/pdf/academicrules/AC-calender-2026-27.pdf",
           "fetchedAt": "2026-10-12",
@@ -249,156 +277,156 @@
       ],
       "entries": [
         {
-          "id": "cal_8tb9fia0y3u",
+          "id": "cal_u7t6f513v20",
           "type": "holiday",
           "start": "2026-08-15",
           "end": "2026-08-15",
           "title": "Independence Day",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_0nbesls0y3u",
+          "id": "cal_l6j00p53v20",
           "type": "holiday",
           "start": "2026-08-28",
           "end": "2026-08-28",
           "title": "Raksha Bandhan",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_ko8petf0y3u",
+          "id": "cal_mi8bb9k3v20",
           "type": "holiday",
           "start": "2026-09-04",
           "end": "2026-09-04",
           "title": "Janmashtami",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_5h6lkew0y3u",
+          "id": "cal_ggxvrs53v20",
           "type": "working-swap",
           "start": "2026-09-10",
           "end": "2026-09-10",
           "title": "Friday timetable (swapped day)",
           "swapDay": 6,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_ft4j2800y3u",
+          "id": "cal_tk3wfy43v20",
           "type": "exam",
           "start": "2026-09-18",
           "end": "2026-09-25",
           "title": "Mid-term exams (MTE)",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_jtxjquy0y3u",
+          "id": "cal_8ano2uw3v20",
           "type": "holiday",
           "start": "2026-10-02",
           "end": "2026-10-02",
           "title": "Gandhi Jayanti",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_ntlbmry0y3u",
+          "id": "cal_ifxgd9q3v20",
           "type": "working-swap",
           "start": "2026-10-14",
           "end": "2026-10-14",
           "title": "Friday timetable (swapped day)",
           "swapDay": 6,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_b0kpyvj0y3u",
+          "id": "cal_w6vju2n3v20",
           "type": "holiday",
           "start": "2026-10-20",
           "end": "2026-10-20",
           "title": "Dussehra",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_u66scnj0y3u",
+          "id": "cal_s6y24253v20",
           "type": "holiday",
           "start": "2026-11-08",
           "end": "2026-11-08",
           "title": "Diwali",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_9c08x6a0y3u",
+          "id": "cal_jjeipq43v20",
           "type": "holiday",
           "start": "2026-11-09",
           "end": "2026-11-09",
           "title": "Govardhan Puja",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_g0b7e0q0y3u",
+          "id": "cal_g2i8noh3v20",
           "type": "holiday",
           "start": "2026-11-11",
           "end": "2026-11-11",
           "title": "Bhai Dooj",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_2ok2ysz0y3u",
+          "id": "cal_70ju49a3v20",
           "type": "exam",
           "start": "2026-11-18",
           "end": "2026-12-02",
           "title": "End-term exams (ETE)",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_sno8yie0y3u",
+          "id": "cal_n0ea2dg3v20",
           "type": "holiday",
           "start": "2026-12-25",
           "end": "2026-12-25",
           "title": "Christmas",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_s92yidq0y3u",
+          "id": "cal_k3xstp33v20",
           "type": "holiday",
           "start": "2027-01-14",
           "end": "2027-01-14",
           "title": "Makar Sankranti",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_jgxi2sf0y3u",
+          "id": "cal_i1opllv3v20",
           "type": "holiday",
           "start": "2027-01-26",
           "end": "2027-01-26",
           "title": "Republic Day",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         },
         {
-          "id": "cal_fz6keeu0y3u",
+          "id": "cal_xao1wkx3v20",
           "type": "holiday",
           "start": "2027-03-22",
           "end": "2027-03-22",
           "title": "Holi",
           "swapDay": null,
-          "sourceId": "src_pdy9ipb0y3u"
+          "sourceId": "src_awnfp9s3v20"
         }
       ]
     },
     "records": [
       {
-        "id": "rec_8q7g6vw0y3w",
+        "id": "rec_sfql9hy3v22",
         "date": "2026-07-23",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -406,9 +434,9 @@
         "at": "2026-07-23T09:30:00.000Z"
       },
       {
-        "id": "rec_w2o2x400y3w",
+        "id": "rec_ubv0kvr3v22",
         "date": "2026-07-23",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -416,9 +444,9 @@
         "at": "2026-07-23T09:30:00.000Z"
       },
       {
-        "id": "rec_iar5zly0y3w",
+        "id": "rec_m8ujxca3v22",
         "date": "2026-07-23",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "absent",
@@ -426,9 +454,9 @@
         "at": "2026-07-23T09:30:00.000Z"
       },
       {
-        "id": "rec_nqajwm70y3w",
+        "id": "rec_7rg3kp13v22",
         "date": "2026-07-23",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -436,9 +464,9 @@
         "at": "2026-07-23T09:30:00.000Z"
       },
       {
-        "id": "rec_babuu7j0y3w",
+        "id": "rec_hd5vdsi3v22",
         "date": "2026-07-24",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -446,9 +474,9 @@
         "at": "2026-07-24T09:30:00.000Z"
       },
       {
-        "id": "rec_gitdyxq0y3w",
+        "id": "rec_1c1yao03v22",
         "date": "2026-07-24",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "present",
@@ -456,9 +484,9 @@
         "at": "2026-07-24T09:30:00.000Z"
       },
       {
-        "id": "rec_prqztza0y3w",
+        "id": "rec_cjx2ez33v22",
         "date": "2026-07-24",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -466,9 +494,9 @@
         "at": "2026-07-24T09:30:00.000Z"
       },
       {
-        "id": "rec_6wey3ss0y3w",
+        "id": "rec_5xdtekb3v22",
         "date": "2026-07-24",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -476,9 +504,9 @@
         "at": "2026-07-24T09:30:00.000Z"
       },
       {
-        "id": "rec_lscpj7h0y3w",
+        "id": "rec_2uc82n33v22",
         "date": "2026-07-25",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "present",
@@ -486,9 +514,9 @@
         "at": "2026-07-25T09:30:00.000Z"
       },
       {
-        "id": "rec_jlii3fh0y3w",
+        "id": "rec_7go24ms3v22",
         "date": "2026-07-25",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -496,9 +524,9 @@
         "at": "2026-07-25T09:30:00.000Z"
       },
       {
-        "id": "rec_6zprrjs0y3w",
+        "id": "rec_aiygm7l3v22",
         "date": "2026-07-27",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -506,9 +534,9 @@
         "at": "2026-07-27T09:30:00.000Z"
       },
       {
-        "id": "rec_b5hgnjn0y3w",
+        "id": "rec_tzbdlm83v22",
         "date": "2026-07-27",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -516,9 +544,9 @@
         "at": "2026-07-27T09:30:00.000Z"
       },
       {
-        "id": "rec_bu7c0zn0y3w",
+        "id": "rec_9or9k5c3v22",
         "date": "2026-07-27",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -526,9 +554,9 @@
         "at": "2026-07-27T09:30:00.000Z"
       },
       {
-        "id": "rec_5pgkd8a0y3w",
+        "id": "rec_rx06wvb3v22",
         "date": "2026-07-27",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -536,9 +564,9 @@
         "at": "2026-07-27T09:30:00.000Z"
       },
       {
-        "id": "rec_euc0o120y3w",
+        "id": "rec_aq6p9de3v22",
         "date": "2026-07-28",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -546,9 +574,9 @@
         "at": "2026-07-28T09:30:00.000Z"
       },
       {
-        "id": "rec_2bgbne70y3w",
+        "id": "rec_5pzm86s3v22",
         "date": "2026-07-28",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -556,9 +584,9 @@
         "at": "2026-07-28T09:30:00.000Z"
       },
       {
-        "id": "rec_rrof7eg0y3w",
+        "id": "rec_lm81qz53v22",
         "date": "2026-07-28",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "absent",
@@ -566,9 +594,9 @@
         "at": "2026-07-28T09:30:00.000Z"
       },
       {
-        "id": "rec_08n373z0y3w",
+        "id": "rec_3kfinv23v22",
         "date": "2026-07-28",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -576,9 +604,9 @@
         "at": "2026-07-28T09:30:00.000Z"
       },
       {
-        "id": "rec_tpyaec90y3w",
+        "id": "rec_s7su2xr3v22",
         "date": "2026-07-29",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -586,9 +614,9 @@
         "at": "2026-07-29T09:30:00.000Z"
       },
       {
-        "id": "rec_2dniyc20y3w",
+        "id": "rec_tg9ptry3v22",
         "date": "2026-07-29",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -596,9 +624,9 @@
         "at": "2026-07-29T09:30:00.000Z"
       },
       {
-        "id": "rec_s94rdoe0y3w",
+        "id": "rec_p9qebdp3v22",
         "date": "2026-07-29",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -606,9 +634,9 @@
         "at": "2026-07-29T09:30:00.000Z"
       },
       {
-        "id": "rec_h4iwpvm0y3w",
+        "id": "rec_cp4cmpg3v22",
         "date": "2026-07-29",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "cancelled",
@@ -616,9 +644,9 @@
         "at": "2026-07-29T09:30:00.000Z"
       },
       {
-        "id": "rec_e1sbhjn0y3w",
+        "id": "rec_2aw4czu3v22",
         "date": "2026-07-30",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -626,9 +654,9 @@
         "at": "2026-07-30T09:30:00.000Z"
       },
       {
-        "id": "rec_et9kkvs0y3w",
+        "id": "rec_bjav9zj3v22",
         "date": "2026-07-30",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -636,9 +664,9 @@
         "at": "2026-07-30T09:30:00.000Z"
       },
       {
-        "id": "rec_bo48rm90y3w",
+        "id": "rec_u3kxtg33v22",
         "date": "2026-07-30",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "absent",
@@ -646,9 +674,9 @@
         "at": "2026-07-30T09:30:00.000Z"
       },
       {
-        "id": "rec_h8y9wwo0y3w",
+        "id": "rec_3ieywp23v22",
         "date": "2026-07-30",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -656,9 +684,9 @@
         "at": "2026-07-30T09:30:00.000Z"
       },
       {
-        "id": "rec_tm55t340y3w",
+        "id": "rec_1slve1y3v22",
         "date": "2026-07-31",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -666,9 +694,9 @@
         "at": "2026-07-31T09:30:00.000Z"
       },
       {
-        "id": "rec_0asjb480y3w",
+        "id": "rec_azrjkkm3v22",
         "date": "2026-07-31",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "absent",
@@ -676,9 +704,9 @@
         "at": "2026-07-31T09:30:00.000Z"
       },
       {
-        "id": "rec_tqz3h640y3w",
+        "id": "rec_ngblqxn3v22",
         "date": "2026-07-31",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -686,9 +714,9 @@
         "at": "2026-07-31T09:30:00.000Z"
       },
       {
-        "id": "rec_77b1ta40y3w",
+        "id": "rec_388liai3v22",
         "date": "2026-07-31",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -696,9 +724,9 @@
         "at": "2026-07-31T09:30:00.000Z"
       },
       {
-        "id": "rec_dp7jn1b0y3w",
+        "id": "rec_4uzvb803v22",
         "date": "2026-08-01",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "present",
@@ -706,9 +734,9 @@
         "at": "2026-08-01T09:30:00.000Z"
       },
       {
-        "id": "rec_g9dkadq0y3w",
+        "id": "rec_wt2ls2l3v22",
         "date": "2026-08-01",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -716,9 +744,9 @@
         "at": "2026-08-01T09:30:00.000Z"
       },
       {
-        "id": "rec_ovnixfr0y3w",
+        "id": "rec_nlpxy0y3v22",
         "date": "2026-08-03",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -726,9 +754,9 @@
         "at": "2026-08-03T09:30:00.000Z"
       },
       {
-        "id": "rec_4i0legm0y3w",
+        "id": "rec_hpirx8x3v22",
         "date": "2026-08-03",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -736,9 +764,9 @@
         "at": "2026-08-03T09:30:00.000Z"
       },
       {
-        "id": "rec_b80s5720y3w",
+        "id": "rec_ndo7zsn3v22",
         "date": "2026-08-03",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -746,9 +774,9 @@
         "at": "2026-08-03T09:30:00.000Z"
       },
       {
-        "id": "rec_bzwqdo80y3w",
+        "id": "rec_z1scm8g3v22",
         "date": "2026-08-03",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -756,9 +784,9 @@
         "at": "2026-08-03T09:30:00.000Z"
       },
       {
-        "id": "rec_t0i4ch00y3w",
+        "id": "rec_do6xwfj3v22",
         "date": "2026-08-04",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -766,9 +794,9 @@
         "at": "2026-08-04T09:30:00.000Z"
       },
       {
-        "id": "rec_h5z6agg0y3w",
+        "id": "rec_ab86sp83v22",
         "date": "2026-08-04",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "absent",
@@ -776,9 +804,9 @@
         "at": "2026-08-04T09:30:00.000Z"
       },
       {
-        "id": "rec_kpa6tyk0y3w",
+        "id": "rec_xrpnery3v22",
         "date": "2026-08-04",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -786,9 +814,9 @@
         "at": "2026-08-04T09:30:00.000Z"
       },
       {
-        "id": "rec_nhf015f0y3w",
+        "id": "rec_ocp0wma3v22",
         "date": "2026-08-04",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -796,9 +824,9 @@
         "at": "2026-08-04T09:30:00.000Z"
       },
       {
-        "id": "rec_t1flmob0y3w",
+        "id": "rec_2x2dg4c3v22",
         "date": "2026-08-05",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -806,9 +834,9 @@
         "at": "2026-08-05T09:30:00.000Z"
       },
       {
-        "id": "rec_qflk0s40y3w",
+        "id": "rec_ha4r83t3v22",
         "date": "2026-08-05",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -816,9 +844,9 @@
         "at": "2026-08-05T09:30:00.000Z"
       },
       {
-        "id": "rec_68xk24u0y3w",
+        "id": "rec_4u2opjd3v22",
         "date": "2026-08-05",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -826,9 +854,9 @@
         "at": "2026-08-05T09:30:00.000Z"
       },
       {
-        "id": "rec_6dw1kzk0y3w",
+        "id": "rec_sz84fhi3v22",
         "date": "2026-08-05",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -836,9 +864,9 @@
         "at": "2026-08-05T09:30:00.000Z"
       },
       {
-        "id": "rec_u1s7fu00y3w",
+        "id": "rec_40mtlqg3v22",
         "date": "2026-08-06",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -846,9 +874,9 @@
         "at": "2026-08-06T09:30:00.000Z"
       },
       {
-        "id": "rec_yo1138n0y3w",
+        "id": "rec_t7c06q23v22",
         "date": "2026-08-06",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -856,9 +884,9 @@
         "at": "2026-08-06T09:30:00.000Z"
       },
       {
-        "id": "rec_i4h12dz0y3w",
+        "id": "rec_2mstq2e3v22",
         "date": "2026-08-06",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -866,9 +894,9 @@
         "at": "2026-08-06T09:30:00.000Z"
       },
       {
-        "id": "rec_iwa6z5u0y3w",
+        "id": "rec_0jad61i3v22",
         "date": "2026-08-06",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -876,9 +904,9 @@
         "at": "2026-08-06T09:30:00.000Z"
       },
       {
-        "id": "rec_ncz4sxt0y3w",
+        "id": "rec_u61tv8b3v22",
         "date": "2026-08-07",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -886,9 +914,9 @@
         "at": "2026-08-07T09:30:00.000Z"
       },
       {
-        "id": "rec_6hn3j570y3w",
+        "id": "rec_rqzcupo3v22",
         "date": "2026-08-07",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "present",
@@ -896,9 +924,9 @@
         "at": "2026-08-07T09:30:00.000Z"
       },
       {
-        "id": "rec_7dpur6b0y3w",
+        "id": "rec_xehnpoc3v22",
         "date": "2026-08-07",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -906,9 +934,9 @@
         "at": "2026-08-07T09:30:00.000Z"
       },
       {
-        "id": "rec_124i5gv0y3w",
+        "id": "rec_3tqcd7l3v22",
         "date": "2026-08-07",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -916,9 +944,9 @@
         "at": "2026-08-07T09:30:00.000Z"
       },
       {
-        "id": "rec_4ms8eoz0y3w",
+        "id": "rec_sl07kps3v22",
         "date": "2026-08-08",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "present",
@@ -926,9 +954,9 @@
         "at": "2026-08-08T09:30:00.000Z"
       },
       {
-        "id": "rec_p1t1ww10y3w",
+        "id": "rec_eswmwqi3v22",
         "date": "2026-08-08",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -936,9 +964,9 @@
         "at": "2026-08-08T09:30:00.000Z"
       },
       {
-        "id": "rec_bf6akud0y3w",
+        "id": "rec_cuvr7at3v22",
         "date": "2026-08-10",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -946,9 +974,9 @@
         "at": "2026-08-10T09:30:00.000Z"
       },
       {
-        "id": "rec_mpjka0p0y3w",
+        "id": "rec_7603bw43v22",
         "date": "2026-08-10",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -956,9 +984,9 @@
         "at": "2026-08-10T09:30:00.000Z"
       },
       {
-        "id": "rec_7xf860p0y3w",
+        "id": "rec_uy0xy1h3v22",
         "date": "2026-08-10",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -966,9 +994,9 @@
         "at": "2026-08-10T09:30:00.000Z"
       },
       {
-        "id": "rec_jvyj5jg0y3w",
+        "id": "rec_e7ez9dz3v22",
         "date": "2026-08-10",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -976,9 +1004,9 @@
         "at": "2026-08-10T09:30:00.000Z"
       },
       {
-        "id": "rec_x2cemtt0y3w",
+        "id": "rec_kwgdbiv3v22",
         "date": "2026-08-11",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -986,9 +1014,9 @@
         "at": "2026-08-11T09:30:00.000Z"
       },
       {
-        "id": "rec_2eumg160y3w",
+        "id": "rec_aks0jfw3v22",
         "date": "2026-08-11",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "cancelled",
@@ -996,9 +1024,9 @@
         "at": "2026-08-11T09:30:00.000Z"
       },
       {
-        "id": "rec_6bpi7ru0y3w",
+        "id": "rec_5yohe9d3v22",
         "date": "2026-08-11",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1006,9 +1034,9 @@
         "at": "2026-08-11T09:30:00.000Z"
       },
       {
-        "id": "rec_6jptkic0y3w",
+        "id": "rec_oatp47q3v22",
         "date": "2026-08-11",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1016,9 +1044,9 @@
         "at": "2026-08-11T09:30:00.000Z"
       },
       {
-        "id": "rec_22fmt970y3w",
+        "id": "rec_9eldool3v22",
         "date": "2026-08-12",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -1026,9 +1054,9 @@
         "at": "2026-08-12T09:30:00.000Z"
       },
       {
-        "id": "rec_7g96j5r0y3w",
+        "id": "rec_u3f5wt93v22",
         "date": "2026-08-12",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -1036,9 +1064,9 @@
         "at": "2026-08-12T09:30:00.000Z"
       },
       {
-        "id": "rec_5mp8b2z0y3w",
+        "id": "rec_akdis3o3v22",
         "date": "2026-08-12",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -1046,9 +1074,9 @@
         "at": "2026-08-12T09:30:00.000Z"
       },
       {
-        "id": "rec_nqnb7bh0y3w",
+        "id": "rec_m0yyb4u3v22",
         "date": "2026-08-12",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -1056,9 +1084,9 @@
         "at": "2026-08-12T09:30:00.000Z"
       },
       {
-        "id": "rec_ru5gbs80y3w",
+        "id": "rec_6bu78fo3v22",
         "date": "2026-08-13",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -1066,9 +1094,9 @@
         "at": "2026-08-13T09:30:00.000Z"
       },
       {
-        "id": "rec_kh7cl890y3w",
+        "id": "rec_mbpwnn93v22",
         "date": "2026-08-13",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -1076,9 +1104,9 @@
         "at": "2026-08-13T09:30:00.000Z"
       },
       {
-        "id": "rec_x52uwok0y3w",
+        "id": "rec_yptf5az3v22",
         "date": "2026-08-13",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "absent",
@@ -1086,9 +1114,9 @@
         "at": "2026-08-13T09:30:00.000Z"
       },
       {
-        "id": "rec_h3qy9d20y3w",
+        "id": "rec_zq0d44s3v22",
         "date": "2026-08-13",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -1096,9 +1124,9 @@
         "at": "2026-08-13T09:30:00.000Z"
       },
       {
-        "id": "rec_wqscyoq0y3w",
+        "id": "rec_djjcj1p3v22",
         "date": "2026-08-14",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -1106,9 +1134,9 @@
         "at": "2026-08-14T09:30:00.000Z"
       },
       {
-        "id": "rec_kcwxq250y3w",
+        "id": "rec_grmubye3v22",
         "date": "2026-08-14",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1116,9 +1144,9 @@
         "at": "2026-08-14T09:30:00.000Z"
       },
       {
-        "id": "rec_exytryh0y3w",
+        "id": "rec_xs26xj43v22",
         "date": "2026-08-14",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -1126,9 +1154,9 @@
         "at": "2026-08-14T09:30:00.000Z"
       },
       {
-        "id": "rec_xb21wvh0y3w",
+        "id": "rec_oqy2cq23v22",
         "date": "2026-08-14",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -1136,9 +1164,9 @@
         "at": "2026-08-14T09:30:00.000Z"
       },
       {
-        "id": "rec_xhi5sv30y3w",
+        "id": "rec_n1ocyis3v22",
         "date": "2026-08-17",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -1146,9 +1174,9 @@
         "at": "2026-08-17T09:30:00.000Z"
       },
       {
-        "id": "rec_9ljiqs80y3w",
+        "id": "rec_7nu8nct3v22",
         "date": "2026-08-17",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1156,9 +1184,9 @@
         "at": "2026-08-17T09:30:00.000Z"
       },
       {
-        "id": "rec_md6ce280y3w",
+        "id": "rec_n1dhyoi3v22",
         "date": "2026-08-17",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -1166,9 +1194,9 @@
         "at": "2026-08-17T09:30:00.000Z"
       },
       {
-        "id": "rec_i82sh7n0y3w",
+        "id": "rec_f44fk4u3v22",
         "date": "2026-08-17",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -1176,9 +1204,9 @@
         "at": "2026-08-17T09:30:00.000Z"
       },
       {
-        "id": "rec_eso64480y3w",
+        "id": "rec_bi8ftga3v22",
         "date": "2026-08-18",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -1186,9 +1214,9 @@
         "at": "2026-08-18T09:30:00.000Z"
       },
       {
-        "id": "rec_lyoa1it0y3w",
+        "id": "rec_jsda8d13v22",
         "date": "2026-08-18",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -1196,9 +1224,9 @@
         "at": "2026-08-18T09:30:00.000Z"
       },
       {
-        "id": "rec_uxb5e5i0y3w",
+        "id": "rec_b1c9x3p3v22",
         "date": "2026-08-18",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1206,9 +1234,9 @@
         "at": "2026-08-18T09:30:00.000Z"
       },
       {
-        "id": "rec_0ocxgin0y3w",
+        "id": "rec_e6cgptl3v22",
         "date": "2026-08-18",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1216,9 +1244,9 @@
         "at": "2026-08-18T09:30:00.000Z"
       },
       {
-        "id": "rec_dpod64s0y3w",
+        "id": "rec_4cwgl6p3v22",
         "date": "2026-08-19",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -1226,9 +1254,9 @@
         "at": "2026-08-19T09:30:00.000Z"
       },
       {
-        "id": "rec_rbswzeu0y3w",
+        "id": "rec_k50gyov3v22",
         "date": "2026-08-19",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -1236,9 +1264,9 @@
         "at": "2026-08-19T09:30:00.000Z"
       },
       {
-        "id": "rec_x0gj27s0y3w",
+        "id": "rec_xjlqos43v22",
         "date": "2026-08-19",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -1246,9 +1274,9 @@
         "at": "2026-08-19T09:30:00.000Z"
       },
       {
-        "id": "rec_wnhr02p0y3w",
+        "id": "rec_cyebzu83v22",
         "date": "2026-08-19",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -1256,9 +1284,9 @@
         "at": "2026-08-19T09:30:00.000Z"
       },
       {
-        "id": "rec_wuht9q30y3w",
+        "id": "rec_xk7tyha3v22",
         "date": "2026-08-20",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "absent",
@@ -1266,9 +1294,9 @@
         "at": "2026-08-20T09:30:00.000Z"
       },
       {
-        "id": "rec_6ffycaj0y3w",
+        "id": "rec_ypkhzfy3v22",
         "date": "2026-08-20",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -1276,9 +1304,9 @@
         "at": "2026-08-20T09:30:00.000Z"
       },
       {
-        "id": "rec_orsp97u0y3w",
+        "id": "rec_ziuei2t3v22",
         "date": "2026-08-20",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "absent",
@@ -1286,9 +1314,9 @@
         "at": "2026-08-20T09:30:00.000Z"
       },
       {
-        "id": "rec_152wkd00y3w",
+        "id": "rec_owyp9i83v22",
         "date": "2026-08-20",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -1296,9 +1324,9 @@
         "at": "2026-08-20T09:30:00.000Z"
       },
       {
-        "id": "rec_y4sjmb60y3w",
+        "id": "rec_4libtbm3v22",
         "date": "2026-08-21",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -1306,9 +1334,9 @@
         "at": "2026-08-21T09:30:00.000Z"
       },
       {
-        "id": "rec_77qy8mo0y3w",
+        "id": "rec_i93ci5h3v22",
         "date": "2026-08-21",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1316,9 +1344,9 @@
         "at": "2026-08-21T09:30:00.000Z"
       },
       {
-        "id": "rec_3vv1est0y3w",
+        "id": "rec_jegolfr3v22",
         "date": "2026-08-21",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -1326,9 +1354,9 @@
         "at": "2026-08-21T09:30:00.000Z"
       },
       {
-        "id": "rec_t58tw4u0y3w",
+        "id": "rec_facixrc3v22",
         "date": "2026-08-21",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -1336,9 +1364,9 @@
         "at": "2026-08-21T09:30:00.000Z"
       },
       {
-        "id": "rec_2jh2grm0y3w",
+        "id": "rec_vim1hyw3v22",
         "date": "2026-08-22",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1346,9 +1374,9 @@
         "at": "2026-08-22T09:30:00.000Z"
       },
       {
-        "id": "rec_8l2q5rg0y3w",
+        "id": "rec_69s0y9t3v22",
         "date": "2026-08-22",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -1356,9 +1384,9 @@
         "at": "2026-08-22T09:30:00.000Z"
       },
       {
-        "id": "rec_yc42tzs0y3w",
+        "id": "rec_qu49hpp3v22",
         "date": "2026-08-24",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -1366,9 +1394,9 @@
         "at": "2026-08-24T09:30:00.000Z"
       },
       {
-        "id": "rec_ejamngs0y3w",
+        "id": "rec_4h7prfr3v22",
         "date": "2026-08-24",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -1376,9 +1404,9 @@
         "at": "2026-08-24T09:30:00.000Z"
       },
       {
-        "id": "rec_u20m9qn0y3w",
+        "id": "rec_i3uo9953v22",
         "date": "2026-08-24",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -1386,9 +1414,9 @@
         "at": "2026-08-24T09:30:00.000Z"
       },
       {
-        "id": "rec_dcfm1q40y3w",
+        "id": "rec_pz3fvx93v22",
         "date": "2026-08-24",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -1396,9 +1424,9 @@
         "at": "2026-08-24T09:30:00.000Z"
       },
       {
-        "id": "rec_h0620i70y3w",
+        "id": "rec_zpx70ux3v22",
         "date": "2026-08-25",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -1406,9 +1434,9 @@
         "at": "2026-08-25T09:30:00.000Z"
       },
       {
-        "id": "rec_wzaxh3v0y3w",
+        "id": "rec_eag3eqj3v22",
         "date": "2026-08-25",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -1416,9 +1444,9 @@
         "at": "2026-08-25T09:30:00.000Z"
       },
       {
-        "id": "rec_vk2wbvx0y3w",
+        "id": "rec_q6bgftu3v22",
         "date": "2026-08-25",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1426,9 +1454,9 @@
         "at": "2026-08-25T09:30:00.000Z"
       },
       {
-        "id": "rec_jtyyc5q0y3w",
+        "id": "rec_7be0sdc3v22",
         "date": "2026-08-25",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1436,9 +1464,9 @@
         "at": "2026-08-25T09:30:00.000Z"
       },
       {
-        "id": "rec_6u43lyk0y3w",
+        "id": "rec_yvyxbf23v22",
         "date": "2026-08-26",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -1446,9 +1474,9 @@
         "at": "2026-08-26T09:30:00.000Z"
       },
       {
-        "id": "rec_wz83mz90y3w",
+        "id": "rec_q2fxiuu3v22",
         "date": "2026-08-26",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -1456,9 +1484,9 @@
         "at": "2026-08-26T09:30:00.000Z"
       },
       {
-        "id": "rec_0crfmgj0y3w",
+        "id": "rec_m9n9d2n3v22",
         "date": "2026-08-26",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -1466,9 +1494,9 @@
         "at": "2026-08-26T09:30:00.000Z"
       },
       {
-        "id": "rec_t2gva6v0y3w",
+        "id": "rec_ivnq7b33v22",
         "date": "2026-08-26",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -1476,9 +1504,9 @@
         "at": "2026-08-26T09:30:00.000Z"
       },
       {
-        "id": "rec_n19znz40y3w",
+        "id": "rec_na860ag3v22",
         "date": "2026-08-27",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "absent",
@@ -1486,9 +1514,9 @@
         "at": "2026-08-27T09:30:00.000Z"
       },
       {
-        "id": "rec_xrxzi3q0y3w",
+        "id": "rec_kxzyoni3v22",
         "date": "2026-08-27",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -1496,9 +1524,9 @@
         "at": "2026-08-27T09:30:00.000Z"
       },
       {
-        "id": "rec_oyxirq10y3w",
+        "id": "rec_ibuknrw3v22",
         "date": "2026-08-27",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -1506,9 +1534,9 @@
         "at": "2026-08-27T09:30:00.000Z"
       },
       {
-        "id": "rec_hzv31rl0y3w",
+        "id": "rec_dzzz79g3v22",
         "date": "2026-08-27",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -1516,9 +1544,9 @@
         "at": "2026-08-27T09:30:00.000Z"
       },
       {
-        "id": "rec_qbx7p3d0y3w",
+        "id": "rec_e2tpcfb3v22",
         "date": "2026-08-29",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1526,9 +1554,9 @@
         "at": "2026-08-29T09:30:00.000Z"
       },
       {
-        "id": "rec_k31oyfb0y3w",
+        "id": "rec_l8t3use3v22",
         "date": "2026-08-29",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "absent",
@@ -1536,9 +1564,9 @@
         "at": "2026-08-29T09:30:00.000Z"
       },
       {
-        "id": "rec_m3s6jt60y3w",
+        "id": "rec_nk9seqa3v22",
         "date": "2026-08-31",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "leave",
@@ -1546,9 +1574,9 @@
         "at": "2026-08-31T09:30:00.000Z"
       },
       {
-        "id": "rec_os5mf1s0y3w",
+        "id": "rec_fzoj52h3v22",
         "date": "2026-08-31",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1556,9 +1584,9 @@
         "at": "2026-08-31T09:30:00.000Z"
       },
       {
-        "id": "rec_ne7pli10y3w",
+        "id": "rec_1ag79s13v22",
         "date": "2026-08-31",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -1566,9 +1594,9 @@
         "at": "2026-08-31T09:30:00.000Z"
       },
       {
-        "id": "rec_q8kv9580y3w",
+        "id": "rec_d5nfz803v22",
         "date": "2026-08-31",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -1576,9 +1604,9 @@
         "at": "2026-08-31T09:30:00.000Z"
       },
       {
-        "id": "rec_xekc7mk0y3w",
+        "id": "rec_s0lgepp3v22",
         "date": "2026-09-01",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -1586,9 +1614,9 @@
         "at": "2026-09-01T09:30:00.000Z"
       },
       {
-        "id": "rec_74qhk2d0y3x",
+        "id": "rec_tjd205g3v22",
         "date": "2026-09-01",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -1596,9 +1624,9 @@
         "at": "2026-09-01T09:30:00.000Z"
       },
       {
-        "id": "rec_jyhbw0m0y3x",
+        "id": "rec_vk2hez43v22",
         "date": "2026-09-01",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1606,9 +1634,9 @@
         "at": "2026-09-01T09:30:00.000Z"
       },
       {
-        "id": "rec_7dbu5b10y3x",
+        "id": "rec_yeniqa53v22",
         "date": "2026-09-01",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1616,9 +1644,9 @@
         "at": "2026-09-01T09:30:00.000Z"
       },
       {
-        "id": "rec_1tt6jej0y3x",
+        "id": "rec_4g5ipjl3v22",
         "date": "2026-09-02",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "leave",
@@ -1626,9 +1654,9 @@
         "at": "2026-09-02T09:30:00.000Z"
       },
       {
-        "id": "rec_qyjs6o80y3x",
+        "id": "rec_la5tf0t3v22",
         "date": "2026-09-02",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -1636,9 +1664,9 @@
         "at": "2026-09-02T09:30:00.000Z"
       },
       {
-        "id": "rec_chxbgb00y3x",
+        "id": "rec_g73zy303v22",
         "date": "2026-09-02",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -1646,9 +1674,9 @@
         "at": "2026-09-02T09:30:00.000Z"
       },
       {
-        "id": "rec_8hbpo9g0y3x",
+        "id": "rec_h2ueuwz3v22",
         "date": "2026-09-02",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -1656,9 +1684,9 @@
         "at": "2026-09-02T09:30:00.000Z"
       },
       {
-        "id": "rec_d3r3f3g0y3x",
+        "id": "rec_f9dwc0a3v22",
         "date": "2026-09-03",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -1666,9 +1694,9 @@
         "at": "2026-09-03T09:30:00.000Z"
       },
       {
-        "id": "rec_ggyg5oh0y3x",
+        "id": "rec_73ldftj3v22",
         "date": "2026-09-03",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -1676,9 +1704,9 @@
         "at": "2026-09-03T09:30:00.000Z"
       },
       {
-        "id": "rec_rif7po10y3x",
+        "id": "rec_o3462vc3v22",
         "date": "2026-09-03",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -1686,9 +1714,9 @@
         "at": "2026-09-03T09:30:00.000Z"
       },
       {
-        "id": "rec_6xhdkya0y3x",
+        "id": "rec_pag1nol3v22",
         "date": "2026-09-03",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -1696,9 +1724,9 @@
         "at": "2026-09-03T09:30:00.000Z"
       },
       {
-        "id": "rec_wsgz5f20y3x",
+        "id": "rec_myt5bfy3v22",
         "date": "2026-09-05",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "present",
@@ -1706,9 +1734,9 @@
         "at": "2026-09-05T09:30:00.000Z"
       },
       {
-        "id": "rec_5gdamy90y3x",
+        "id": "rec_754woum3v22",
         "date": "2026-09-05",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "absent",
@@ -1716,9 +1744,9 @@
         "at": "2026-09-05T09:30:00.000Z"
       },
       {
-        "id": "rec_xov8pig0y3x",
+        "id": "rec_94f685j3v23",
         "date": "2026-09-07",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -1726,9 +1754,9 @@
         "at": "2026-09-07T09:30:00.000Z"
       },
       {
-        "id": "rec_ytah0pw0y3x",
+        "id": "rec_f1rr53g3v23",
         "date": "2026-09-07",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1736,9 +1764,9 @@
         "at": "2026-09-07T09:30:00.000Z"
       },
       {
-        "id": "rec_h4ahq6a0y3x",
+        "id": "rec_4wxlu3b3v23",
         "date": "2026-09-07",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -1746,9 +1774,9 @@
         "at": "2026-09-07T09:30:00.000Z"
       },
       {
-        "id": "rec_ags0i0u0y3x",
+        "id": "rec_l5oljr53v23",
         "date": "2026-09-07",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -1756,9 +1784,9 @@
         "at": "2026-09-07T09:30:00.000Z"
       },
       {
-        "id": "rec_5m8gtty0y3x",
+        "id": "rec_51rp7rq3v23",
         "date": "2026-09-08",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -1766,9 +1794,9 @@
         "at": "2026-09-08T09:30:00.000Z"
       },
       {
-        "id": "rec_jpy9xlq0y3x",
+        "id": "rec_h1i34th3v23",
         "date": "2026-09-08",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -1776,9 +1804,9 @@
         "at": "2026-09-08T09:30:00.000Z"
       },
       {
-        "id": "rec_vg7uoph0y3x",
+        "id": "rec_x8vi1re3v23",
         "date": "2026-09-08",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1786,9 +1814,9 @@
         "at": "2026-09-08T09:30:00.000Z"
       },
       {
-        "id": "rec_ct2qz3q0y3x",
+        "id": "rec_xkfspf63v23",
         "date": "2026-09-08",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1796,9 +1824,9 @@
         "at": "2026-09-08T09:30:00.000Z"
       },
       {
-        "id": "rec_zjf59c60y3x",
+        "id": "rec_rczyr1o3v23",
         "date": "2026-09-09",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "cancelled",
@@ -1806,9 +1834,9 @@
         "at": "2026-09-09T09:30:00.000Z"
       },
       {
-        "id": "rec_xcnswcs0y3x",
+        "id": "rec_lh1nxaf3v23",
         "date": "2026-09-09",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -1816,9 +1844,9 @@
         "at": "2026-09-09T09:30:00.000Z"
       },
       {
-        "id": "rec_vzb033d0y3x",
+        "id": "rec_x66jwpm3v23",
         "date": "2026-09-09",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -1826,9 +1854,9 @@
         "at": "2026-09-09T09:30:00.000Z"
       },
       {
-        "id": "rec_wosv5780y3x",
+        "id": "rec_ia18gga3v23",
         "date": "2026-09-09",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -1836,9 +1864,9 @@
         "at": "2026-09-09T09:30:00.000Z"
       },
       {
-        "id": "rec_gl4cizp0y3x",
+        "id": "rec_33amdsf3v23",
         "date": "2026-09-10",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "present",
@@ -1846,9 +1874,9 @@
         "at": "2026-09-10T09:30:00.000Z"
       },
       {
-        "id": "rec_oi9l9vh0y3x",
+        "id": "rec_6tk12ck3v23",
         "date": "2026-09-10",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -1856,9 +1884,9 @@
         "at": "2026-09-10T09:30:00.000Z"
       },
       {
-        "id": "rec_pfn2i6s0y3x",
+        "id": "rec_ircjwg93v23",
         "date": "2026-09-11",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -1866,9 +1894,9 @@
         "at": "2026-09-11T09:30:00.000Z"
       },
       {
-        "id": "rec_f6sijy80y3x",
+        "id": "rec_u5axhvy3v23",
         "date": "2026-09-11",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "present",
@@ -1876,9 +1904,9 @@
         "at": "2026-09-11T09:30:00.000Z"
       },
       {
-        "id": "rec_fc8iyn50y3x",
+        "id": "rec_5z3xixv3v23",
         "date": "2026-09-11",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -1886,9 +1914,9 @@
         "at": "2026-09-11T09:30:00.000Z"
       },
       {
-        "id": "rec_3m6bp860y3x",
+        "id": "rec_b1n4l1u3v23",
         "date": "2026-09-11",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -1896,9 +1924,9 @@
         "at": "2026-09-11T09:30:00.000Z"
       },
       {
-        "id": "rec_8gl2oef0y3x",
+        "id": "rec_o7ayyud3v23",
         "date": "2026-09-12",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "absent",
@@ -1906,9 +1934,9 @@
         "at": "2026-09-12T09:30:00.000Z"
       },
       {
-        "id": "rec_igutkhy0y3x",
+        "id": "rec_x4wx4gu3v23",
         "date": "2026-09-12",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "cancelled",
@@ -1916,9 +1944,9 @@
         "at": "2026-09-12T09:30:00.000Z"
       },
       {
-        "id": "rec_pyb6iis0y3x",
+        "id": "rec_qbsu83o3v23",
         "date": "2026-09-14",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -1926,9 +1954,9 @@
         "at": "2026-09-14T09:30:00.000Z"
       },
       {
-        "id": "rec_w2icr630y3x",
+        "id": "rec_eefxny63v23",
         "date": "2026-09-14",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -1936,9 +1964,9 @@
         "at": "2026-09-14T09:30:00.000Z"
       },
       {
-        "id": "rec_4ofaotw0y3x",
+        "id": "rec_6tuoye93v23",
         "date": "2026-09-14",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -1946,9 +1974,9 @@
         "at": "2026-09-14T09:30:00.000Z"
       },
       {
-        "id": "rec_f7uaxf10y3x",
+        "id": "rec_ikqlvo23v23",
         "date": "2026-09-14",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -1956,9 +1984,9 @@
         "at": "2026-09-14T09:30:00.000Z"
       },
       {
-        "id": "rec_5u6lwrl0y3x",
+        "id": "rec_nritkb83v23",
         "date": "2026-09-15",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -1966,9 +1994,9 @@
         "at": "2026-09-15T09:30:00.000Z"
       },
       {
-        "id": "rec_wguj9kz0y3x",
+        "id": "rec_869prdi3v23",
         "date": "2026-09-15",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "present",
@@ -1976,9 +2004,9 @@
         "at": "2026-09-15T09:30:00.000Z"
       },
       {
-        "id": "rec_oaigz8b0y3x",
+        "id": "rec_mlzauvj3v23",
         "date": "2026-09-15",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -1986,9 +2014,9 @@
         "at": "2026-09-15T09:30:00.000Z"
       },
       {
-        "id": "rec_919lnqp0y3x",
+        "id": "rec_dnry8ne3v23",
         "date": "2026-09-15",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -1996,9 +2024,9 @@
         "at": "2026-09-15T09:30:00.000Z"
       },
       {
-        "id": "rec_x17k3ub0y3x",
+        "id": "rec_piwq33x3v23",
         "date": "2026-09-16",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -2006,9 +2034,9 @@
         "at": "2026-09-16T09:30:00.000Z"
       },
       {
-        "id": "rec_jszyn2j0y3x",
+        "id": "rec_5e5czdp3v23",
         "date": "2026-09-16",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -2016,9 +2044,9 @@
         "at": "2026-09-16T09:30:00.000Z"
       },
       {
-        "id": "rec_plyp0u30y3x",
+        "id": "rec_f73nwwm3v23",
         "date": "2026-09-16",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -2026,9 +2054,9 @@
         "at": "2026-09-16T09:30:00.000Z"
       },
       {
-        "id": "rec_c3h7u3e0y3x",
+        "id": "rec_5cnjoxi3v23",
         "date": "2026-09-16",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -2036,9 +2064,9 @@
         "at": "2026-09-16T09:30:00.000Z"
       },
       {
-        "id": "rec_k2yi9790y3x",
+        "id": "rec_t2p3hnz3v23",
         "date": "2026-09-17",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "absent",
@@ -2046,9 +2074,9 @@
         "at": "2026-09-17T09:30:00.000Z"
       },
       {
-        "id": "rec_pp10fc90y3x",
+        "id": "rec_km54b0h3v23",
         "date": "2026-09-17",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -2056,9 +2084,9 @@
         "at": "2026-09-17T09:30:00.000Z"
       },
       {
-        "id": "rec_ztz5r0z0y3x",
+        "id": "rec_1pxz7he3v23",
         "date": "2026-09-17",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -2066,9 +2094,9 @@
         "at": "2026-09-17T09:30:00.000Z"
       },
       {
-        "id": "rec_9j8zy3s0y3x",
+        "id": "rec_97cvqa23v23",
         "date": "2026-09-17",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -2076,9 +2104,9 @@
         "at": "2026-09-17T09:30:00.000Z"
       },
       {
-        "id": "rec_1rhnigi0y3x",
+        "id": "rec_ra16dqa3v23",
         "date": "2026-09-26",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "cancelled",
@@ -2086,9 +2114,9 @@
         "at": "2026-09-26T09:30:00.000Z"
       },
       {
-        "id": "rec_ciyr95d0y3x",
+        "id": "rec_ba8wjof3v23",
         "date": "2026-09-26",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "leave",
@@ -2096,9 +2124,9 @@
         "at": "2026-09-26T09:30:00.000Z"
       },
       {
-        "id": "rec_yqd17tp0y3x",
+        "id": "rec_kk09oy43v23",
         "date": "2026-09-28",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -2106,9 +2134,9 @@
         "at": "2026-09-28T09:30:00.000Z"
       },
       {
-        "id": "rec_6kckkuu0y3x",
+        "id": "rec_pqffvmx3v23",
         "date": "2026-09-28",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "present",
@@ -2116,9 +2144,9 @@
         "at": "2026-09-28T09:30:00.000Z"
       },
       {
-        "id": "rec_clnufkm0y3x",
+        "id": "rec_7ljm29k3v23",
         "date": "2026-09-28",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -2126,9 +2154,9 @@
         "at": "2026-09-28T09:30:00.000Z"
       },
       {
-        "id": "rec_d0obwsi0y3x",
+        "id": "rec_sxmbtqr3v23",
         "date": "2026-09-28",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "leave",
@@ -2136,9 +2164,9 @@
         "at": "2026-09-28T09:30:00.000Z"
       },
       {
-        "id": "rec_fsarzob0y3x",
+        "id": "rec_rd3vek93v23",
         "date": "2026-09-29",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "absent",
@@ -2146,9 +2174,9 @@
         "at": "2026-09-29T09:30:00.000Z"
       },
       {
-        "id": "rec_dool11r0y3x",
+        "id": "rec_ekvcwfn3v23",
         "date": "2026-09-29",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "absent",
@@ -2156,9 +2184,9 @@
         "at": "2026-09-29T09:30:00.000Z"
       },
       {
-        "id": "rec_x5uka1e0y3x",
+        "id": "rec_08z2uhs3v23",
         "date": "2026-09-29",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -2166,9 +2194,9 @@
         "at": "2026-09-29T09:30:00.000Z"
       },
       {
-        "id": "rec_fojfkz90y3x",
+        "id": "rec_sczb4tm3v23",
         "date": "2026-09-29",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -2176,9 +2204,9 @@
         "at": "2026-09-29T09:30:00.000Z"
       },
       {
-        "id": "rec_1r02zy70y3x",
+        "id": "rec_6im1ip13v23",
         "date": "2026-09-30",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -2186,9 +2214,9 @@
         "at": "2026-09-30T09:30:00.000Z"
       },
       {
-        "id": "rec_sskbpnr0y3x",
+        "id": "rec_e9jbybv3v23",
         "date": "2026-09-30",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -2196,9 +2224,9 @@
         "at": "2026-09-30T09:30:00.000Z"
       },
       {
-        "id": "rec_ibo8pri0y3x",
+        "id": "rec_lq0x9tf3v23",
         "date": "2026-09-30",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -2206,9 +2234,9 @@
         "at": "2026-09-30T09:30:00.000Z"
       },
       {
-        "id": "rec_8qqx5wa0y3x",
+        "id": "rec_ucwwz4q3v23",
         "date": "2026-09-30",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "leave",
@@ -2216,9 +2244,9 @@
         "at": "2026-09-30T09:30:00.000Z"
       },
       {
-        "id": "rec_iobxerg0y3x",
+        "id": "rec_cd7je913v23",
         "date": "2026-10-01",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "absent",
@@ -2226,9 +2254,9 @@
         "at": "2026-10-01T09:30:00.000Z"
       },
       {
-        "id": "rec_9e4kn6b0y3x",
+        "id": "rec_9g3zpa43v23",
         "date": "2026-10-01",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -2236,9 +2264,9 @@
         "at": "2026-10-01T09:30:00.000Z"
       },
       {
-        "id": "rec_28rjtbt0y3x",
+        "id": "rec_84de04n3v23",
         "date": "2026-10-01",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -2246,9 +2274,9 @@
         "at": "2026-10-01T09:30:00.000Z"
       },
       {
-        "id": "rec_dfv0ost0y3x",
+        "id": "rec_m73mnd23v23",
         "date": "2026-10-01",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -2256,9 +2284,9 @@
         "at": "2026-10-01T09:30:00.000Z"
       },
       {
-        "id": "rec_r48hi5v0y3x",
+        "id": "rec_hvnwmss3v23",
         "date": "2026-10-03",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "absent",
@@ -2266,9 +2294,9 @@
         "at": "2026-10-03T09:30:00.000Z"
       },
       {
-        "id": "rec_5top8vh0y3x",
+        "id": "rec_8t0sz0o3v23",
         "date": "2026-10-03",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -2276,9 +2304,9 @@
         "at": "2026-10-03T09:30:00.000Z"
       },
       {
-        "id": "rec_1dqhobn0y3x",
+        "id": "rec_lhdxngo3v23",
         "date": "2026-10-05",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "1:p1",
         "kind": "lecture",
         "status": "present",
@@ -2286,9 +2314,9 @@
         "at": "2026-10-05T09:30:00.000Z"
       },
       {
-        "id": "rec_stz5min0y3x",
+        "id": "rec_0n2knga3v23",
         "date": "2026-10-05",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "1:p2",
         "kind": "lecture",
         "status": "absent",
@@ -2296,9 +2324,9 @@
         "at": "2026-10-05T09:30:00.000Z"
       },
       {
-        "id": "rec_t0nutke0y3x",
+        "id": "rec_v0ygje83v23",
         "date": "2026-10-05",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "1:p3",
         "kind": "lecture",
         "status": "present",
@@ -2306,9 +2334,9 @@
         "at": "2026-10-05T09:30:00.000Z"
       },
       {
-        "id": "rec_eqtqlve0y3x",
+        "id": "rec_fdzxqim3v23",
         "date": "2026-10-05",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "1:p4",
         "kind": "lecture",
         "status": "present",
@@ -2316,9 +2344,9 @@
         "at": "2026-10-05T09:30:00.000Z"
       },
       {
-        "id": "rec_5bisutj0y3x",
+        "id": "rec_x7k1upf3v23",
         "date": "2026-10-06",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "2:p1",
         "kind": "lecture",
         "status": "present",
@@ -2326,9 +2354,9 @@
         "at": "2026-10-06T09:30:00.000Z"
       },
       {
-        "id": "rec_0tdp7be0y3x",
+        "id": "rec_gqtvd633v23",
         "date": "2026-10-06",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "2:p2",
         "kind": "lecture",
         "status": "cancelled",
@@ -2336,9 +2364,9 @@
         "at": "2026-10-06T09:30:00.000Z"
       },
       {
-        "id": "rec_gajifhz0y3x",
+        "id": "rec_snybwda3v23",
         "date": "2026-10-06",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "2:p3",
         "kind": "lecture",
         "status": "present",
@@ -2346,9 +2374,9 @@
         "at": "2026-10-06T09:30:00.000Z"
       },
       {
-        "id": "rec_xsf1z7f0y3x",
+        "id": "rec_9c6oesg3v23",
         "date": "2026-10-06",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "2:p5",
         "kind": "lab",
         "status": "present",
@@ -2356,9 +2384,9 @@
         "at": "2026-10-06T09:30:00.000Z"
       },
       {
-        "id": "rec_1vrmda90y3x",
+        "id": "rec_f2agux43v23",
         "date": "2026-10-07",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "3:p1",
         "kind": "lecture",
         "status": "present",
@@ -2366,9 +2394,9 @@
         "at": "2026-10-07T09:30:00.000Z"
       },
       {
-        "id": "rec_jd2yu3s0y3x",
+        "id": "rec_2painro3v23",
         "date": "2026-10-07",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "3:p2",
         "kind": "lecture",
         "status": "present",
@@ -2376,9 +2404,9 @@
         "at": "2026-10-07T09:30:00.000Z"
       },
       {
-        "id": "rec_razhihm0y3x",
+        "id": "rec_0temokj3v23",
         "date": "2026-10-07",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "3:p4",
         "kind": "lecture",
         "status": "present",
@@ -2386,9 +2414,9 @@
         "at": "2026-10-07T09:30:00.000Z"
       },
       {
-        "id": "rec_fg0dd6b0y3x",
+        "id": "rec_6xnfjwe3v23",
         "date": "2026-10-07",
-        "subjectId": "sub_bqsrxt80y3u",
+        "subjectId": "sub_znwtexy3v20",
         "slotKey": "3:p5",
         "kind": "lab",
         "status": "present",
@@ -2396,9 +2424,9 @@
         "at": "2026-10-07T09:30:00.000Z"
       },
       {
-        "id": "rec_ka6nzcy0y3x",
+        "id": "rec_yj7zlq93v23",
         "date": "2026-10-08",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "4:p1",
         "kind": "lecture",
         "status": "present",
@@ -2406,9 +2434,9 @@
         "at": "2026-10-08T09:30:00.000Z"
       },
       {
-        "id": "rec_799ro320y3x",
+        "id": "rec_nj3cwbx3v23",
         "date": "2026-10-08",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "4:p2",
         "kind": "lecture",
         "status": "present",
@@ -2416,9 +2444,9 @@
         "at": "2026-10-08T09:30:00.000Z"
       },
       {
-        "id": "rec_9dp9syk0y3x",
+        "id": "rec_hi8p2tr3v23",
         "date": "2026-10-08",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "4:p3",
         "kind": "lecture",
         "status": "present",
@@ -2426,9 +2454,9 @@
         "at": "2026-10-08T09:30:00.000Z"
       },
       {
-        "id": "rec_hqurn6d0y3x",
+        "id": "rec_hs5vh253v23",
         "date": "2026-10-08",
-        "subjectId": "sub_k51ftbd0y3u",
+        "subjectId": "sub_l41p0si3v20",
         "slotKey": "4:p4",
         "kind": "lecture",
         "status": "present",
@@ -2436,9 +2464,9 @@
         "at": "2026-10-08T09:30:00.000Z"
       },
       {
-        "id": "rec_w4wouqy0y3x",
+        "id": "rec_q879wsw3v23",
         "date": "2026-10-09",
-        "subjectId": "sub_islz4ao0y3u",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": "5:p1",
         "kind": "lecture",
         "status": "present",
@@ -2446,9 +2474,9 @@
         "at": "2026-10-09T09:30:00.000Z"
       },
       {
-        "id": "rec_ipo0jjr0y3x",
+        "id": "rec_t0gobvh3v23",
         "date": "2026-10-09",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "5:p2",
         "kind": "lecture",
         "status": "present",
@@ -2456,9 +2484,9 @@
         "at": "2026-10-09T09:30:00.000Z"
       },
       {
-        "id": "rec_x4033bj0y3x",
+        "id": "rec_pajvc2d3v23",
         "date": "2026-10-09",
-        "subjectId": "sub_4vs9dur0y3u",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": "5:p4",
         "kind": "lecture",
         "status": "present",
@@ -2466,9 +2494,9 @@
         "at": "2026-10-09T09:30:00.000Z"
       },
       {
-        "id": "rec_j51lkqc0y3x",
+        "id": "rec_molg7p23v23",
         "date": "2026-10-09",
-        "subjectId": "sub_wya39xd0y3u",
+        "subjectId": "sub_3l7fvcl3v20",
         "slotKey": "5:p5",
         "kind": "lab",
         "status": "present",
@@ -2476,9 +2504,9 @@
         "at": "2026-10-09T09:30:00.000Z"
       },
       {
-        "id": "rec_z9nilw90y3x",
+        "id": "rec_ycoton93v23",
         "date": "2026-10-10",
-        "subjectId": "sub_1wko1560y3u",
+        "subjectId": "sub_5pxgr843v20",
         "slotKey": "6:p2",
         "kind": "lecture",
         "status": "absent",
@@ -2486,9 +2514,9 @@
         "at": "2026-10-10T09:30:00.000Z"
       },
       {
-        "id": "rec_hnckx4r0y3x",
+        "id": "rec_ubppahl3v23",
         "date": "2026-10-10",
-        "subjectId": "sub_i5t7wh50y3u",
+        "subjectId": "sub_jpg4zm73v20",
         "slotKey": "6:p3",
         "kind": "lecture",
         "status": "present",
@@ -2496,24 +2524,104 @@
         "at": "2026-10-10T09:30:00.000Z"
       },
       {
-        "id": "rec_e0tn3d80y3x",
-        "date": "2026-10-06",
-        "subjectId": "sub_islz4ao0y3u",
+        "id": "rec_j5u83bi3v23",
+        "date": "2026-10-12",
+        "subjectId": "sub_g7u31813v20",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_vjgfh893v23",
+        "date": "2026-10-12",
+        "subjectId": "sub_5pxgr843v20",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ruav88t3v23",
+        "date": "2026-10-12",
+        "subjectId": "sub_j9ik8v83v20",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_nr9dgvi3v23",
+        "date": "2026-10-12",
+        "subjectId": "sub_l41p0si3v20",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dmsumnk3v23",
+        "date": "2026-10-13",
+        "subjectId": "sub_g7u31813v20",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_4030ks73v23",
+        "date": "2026-10-13",
+        "subjectId": "sub_jpg4zm73v20",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_b9vjprq3v23",
+        "date": "2026-10-13",
+        "subjectId": "sub_j9ik8v83v20",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_780rzab3v23",
+        "date": "2026-10-13",
+        "subjectId": "sub_3l7fvcl3v20",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_7hk13303v23",
+        "date": "2026-10-08",
+        "subjectId": "sub_g7u31813v20",
         "slotKey": null,
         "kind": "extra",
         "status": "present",
         "note": "Makeup class",
-        "at": "2026-10-12T11:53:14.925Z"
+        "at": "2026-10-14T09:38:53.307Z"
       },
       {
-        "id": "rec_77moy070y3x",
-        "date": "2026-10-01",
-        "subjectId": "sub_4vs9dur0y3u",
+        "id": "rec_96oef033v23",
+        "date": "2026-10-05",
+        "subjectId": "sub_j9ik8v83v20",
         "slotKey": null,
         "kind": "extra",
         "status": "absent",
         "note": "Extra tutorial",
-        "at": "2026-10-12T11:53:14.925Z"
+        "at": "2026-10-14T09:38:53.307Z"
       }
     ],
     "ocr": {

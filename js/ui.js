@@ -230,7 +230,7 @@
           ${['present', 'absent', 'leave', 'cancelled']
             .map(
               (status2) =>
-                `<button type="button" data-status="${status2}" aria-pressed="${status === status2}" data-act="mark" data-subject="${attr(cl.subjectId)}" data-slot="${attr(cl.slotKey || '')}" data-kind="${attr(cl.kind)}" data-date="${attr(date)}" data-mark="${status2}" title="${status2 === 'cancelled' ? 'Cancelled — not counted at all' : status2 === 'leave' ? (S.data.settings.leaveMode === 'exclude' ? 'Medical leave — excluded from the count' : 'Medical leave — counted as absent') : status2}">${status2 === 'cancelled' ? 'Cancelled' : status2 === 'leave' ? 'Leave' : status2[0].toUpperCase() + status2.slice(1)}</button>`,
+                `<button type="button" data-status="${status2}" aria-pressed="${status === status2}" data-act="mark" data-id="${attr(cl.record ? cl.record.id : '')}" data-subject="${attr(cl.subjectId)}" data-slot="${attr(cl.slotKey || '')}" data-kind="${attr(cl.kind)}" data-date="${attr(date)}" data-mark="${status2}" title="${status2 === 'cancelled' ? 'Cancelled — not counted at all' : status2 === 'leave' ? (S.data.settings.leaveMode === 'exclude' ? 'Medical leave — excluded from the count' : 'Medical leave — counted as absent') : status2}">${status2 === 'cancelled' ? 'Cancelled' : status2 === 'leave' ? 'Leave' : status2[0].toUpperCase() + status2.slice(1)}</button>`,
             )
             .join('')}
         </div>
@@ -609,12 +609,15 @@
       global.AD.App.render();
     },
     mark: (el) => {
-      const { date, subject, slot, kind, mark } = el.dataset;
-      const current = S.data.records.find((r) => r.date === date && (slot ? r.slotKey === slot : !r.slotKey && r.subjectId === subject && r.kind === kind));
+      const { date, subject, slot, kind, mark, id } = el.dataset;
+      // Prefer the record id the row was rendered with: two extra classes of the same subject on
+      // one day would otherwise both toggle the first matching record, leaving one unmarkable.
+      const current = (id && S.data.records.find((r) => r.id === id)) ||
+        S.data.records.find((r) => r.date === date && (slot ? r.slotKey === slot : !r.slotKey && r.subjectId === subject && r.kind === kind));
       if (current && current.status === mark) {
-        Store.setStatus(S.data, { date, subjectId: subject, slotKey: slot || null, kind, status: 'clear' });
+        Store.setStatus(S.data, { date, subjectId: subject, slotKey: slot || null, kind, status: 'clear', id: current.id });
       } else {
-        Store.setStatus(S.data, { date, subjectId: subject, slotKey: slot || null, kind, status: mark });
+        Store.setStatus(S.data, { date, subjectId: subject, slotKey: slot || null, kind, status: mark, id: id || (current && current.id) || null });
       }
       save();
       const c = ctx();

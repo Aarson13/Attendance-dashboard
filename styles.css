@@ -86,8 +86,8 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
 .brand:hover { text-decoration: none; }
 .brand:hover .brand-mark { background: color-mix(in srgb, var(--accent) 26%, transparent); }
 
-/* What the last change did: saved to GitHub, still saving, or not saved. Small, but it is the only
-   honest place to say so — every tap is a commit, and a failed one has to be visible. */
+/* What the last change did: saved, still saving, or not saved. Small, but it is the only
+   honest place to say so — every tap is a write, and a failed one has to be visible. */
 .sync-chip {
   display: inline-flex; align-items: center; gap: 6px; margin-right: 4px;
   border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px;
@@ -105,7 +105,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
 .sync-chip.bad::before { background: var(--bad); }
 @keyframes sync-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 @media (prefers-reduced-motion: reduce) { .sync-chip.busy::before { animation: none; } }
-@media (max-width: 720px) { .sync-chip { display: none; } }
+@media (max-width: 720px) { .sync-chip { max-width: 38vw; font-size: .72rem; padding: 3px 8px; } }
 .brand-mark {
   width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
   background: var(--accent-soft); color: var(--accent); font-weight: 700;
@@ -161,7 +161,6 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
 .grid.cols-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
 .grid.cols-3 { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
 .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.stack-tight > * + * { margin-top: 8px; }
 
 /* ---------- summary tiles ---------- */
 .tile { padding: 12px 14px; }
@@ -235,13 +234,12 @@ label.field input, label.field select { color: var(--text); }
 .bar-fill.warn { background: var(--warn); }
 .bar-fill.bad { background: var(--bad); }
 .bar-mark { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--text); opacity: .55; }
-.bar-sm { height: 7px; }
 
 /* ---------- subject cards ---------- */
 .subject-card { border-left: 4px solid var(--line); }
-.subject-card.s-red { border-left-color: var(--bad); }
-.subject-card.s-yellow { border-left-color: var(--warn); }
-.subject-card.s-green { border-left-color: var(--ok); }
+.subject-card.s-bad { border-left-color: var(--bad); }
+.subject-card.s-warn { border-left-color: var(--warn); }
+.subject-card.s-ok { border-left-color: var(--ok); }
 .subject-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .subject-head .pct { margin-left: auto; font-size: 1.3rem; font-weight: 680; font-variant-numeric: tabular-nums; }
 .pct.ok { color: var(--ok); } .pct.warn { color: var(--warn); } .pct.bad { color: var(--bad); } .pct.none { color: var(--muted); }
@@ -319,9 +317,6 @@ table.review-table input, table.review-table select { width: 100%; }
 .magic-error { color: var(--bad); font-size: .88rem; margin: 8px 0 0; }
 .magic-examples { margin-top: 8px; }
 .magic-examples button { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.thumb-strip { display: flex; gap: 8px; flex-wrap: wrap; }
-.thumb { width: 76px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); cursor: zoom-in; }
-
 /* ---------- charts ---------- */
 .chart { width: 100%; display: block; }
 .chart-bars { height: auto; }
@@ -399,5 +394,5 @@ table.list td input, table.list td select { width: 100%; }
   * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
 }
 @media print {
-  .topbar, .toast-stack, .scroll-progress { display: none; }
+  .topbar, .toast-stack, .scroll-progress, .modal-host { display: none; }
 }

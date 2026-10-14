@@ -83,27 +83,35 @@
   /**
    * Month heatmap. days: [{date, kind, title}] where kind ∈ present | absent | cancelled | off | unmarked | none.
    * Clicking a day calls opts.onPick(date).
+   * NOTE: built with document.createElement, not the SVG helper above — these are real HTML buttons
+   * so keyboard focus, Enter/Space activation and screen-reader semantics all work.
    */
   function heatmap(host, { month, days, today, onPick }) {
     clear(host);
     const [y, m] = month.split('-').map(Number);
     const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
     const firstWeekday = ((new Date(Date.UTC(y, m - 1, 1)).getUTCDay() + 6) % 7) + 1; // 1 = Monday
-    const grid = el('div', { class: 'heatmap', role: 'grid', 'aria-label': `Attendance in ${month}` });
-    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((d) => grid.appendChild(el('div', { class: 'heatmap-dow' }, [d])));
-    for (let i = 1; i < firstWeekday; i++) grid.appendChild(el('div', { class: 'heatmap-day blank' }));
+    const html = (tag, cls, text) => {
+      const node = document.createElement(tag);
+      if (cls) node.className = cls;
+      if (text != null) node.textContent = text;
+      return node;
+    };
+    const grid = html('div', 'heatmap');
+    grid.setAttribute('role', 'grid');
+    grid.setAttribute('aria-label', `Attendance in ${month}`);
+    ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].forEach((d) => grid.appendChild(html('div', 'heatmap-dow', d)));
+    for (let i = 1; i < firstWeekday; i++) grid.appendChild(html('div', 'heatmap-day blank'));
     const byDate = new Map((days || []).map((d) => [d.date, d]));
     for (let d = 1; d <= daysInMonth; d++) {
       const date = `${month}-${String(d).padStart(2, '0')}`;
       const info = byDate.get(date);
       const kind = info ? info.kind : 'none';
-      const cell = el('button', {
-        class: `heatmap-day k-${kind}${date === today ? ' is-today' : ''}`,
-        type: 'button',
-        'data-date': date,
-        title: info ? `${date} — ${info.title}` : date,
-        'aria-label': info ? `${date}: ${info.title}` : `${date}: no classes`,
-      }, [String(d)]);
+      const cell = html('button', `heatmap-day k-${kind}${date === today ? ' is-today' : ''}`, String(d));
+      cell.type = 'button';
+      cell.dataset.date = date;
+      cell.title = info ? `${date} — ${info.title}` : date;
+      cell.setAttribute('aria-label', info ? `${date}: ${info.title}` : `${date}: no classes`);
       if (onPick) cell.addEventListener('click', () => onPick(date));
       grid.appendChild(cell);
     }

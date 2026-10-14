@@ -189,8 +189,12 @@
   }
 
   /* ---------- records ---------- */
-  function setStatus(data, { date, subjectId, slotKey, kind, status }) {
-    const idx = data.records.findIndex((r) => r.date === date && (slotKey ? r.slotKey === slotKey : !r.slotKey && r.subjectId === subjectId && r.kind === kind));
+  function setStatus(data, { date, subjectId, slotKey, kind, status, id }) {
+    // An explicit record id wins: two extra classes of the same subject on one day share every
+    // other key, so matching by slot/subject alone would always hit the first one. A stale id
+    // (record gone since render) falls through to a fresh entry, never to someone else's record.
+    const idx = id ? data.records.findIndex((r) => r.id === id)
+      : data.records.findIndex((r) => r.date === date && (slotKey ? r.slotKey === slotKey : !r.slotKey && r.subjectId === subjectId && r.kind === kind));
     if (status === 'clear') {
       if (idx >= 0) data.records.splice(idx, 1);
       return null;

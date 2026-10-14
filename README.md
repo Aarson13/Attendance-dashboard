@@ -5,11 +5,10 @@ Two pages, one repository:
 - **`/` — the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
 a glass dashboard preview underneath. React 19 + Vite + Tailwind v4, built to `dist/`.
 - **`/app.html` — the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
-build step, no account. Your semester is kept as **one JSON document in a sync target** you choose:
-this site's own Cloudflare database by default (nothing to set up — the first visit claims a space
-and keeps its key), or a file in a GitHub repository you own. Every interaction pulls the document,
-applies the change and writes it back, so the target is the source of truth. Nothing about your
-attendance is stored in the browser.
+build step, no account. Your semester is kept as **one JSON document in this site's Cloudflare
+database** (nothing to set up — the first visit claims a space and keeps its key). Every
+interaction pulls the document, applies the change and writes it back, so the database is the
+source of truth. Nothing about your attendance is stored in the browser.
 
 Both are built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75%
 and is editable). Every number on screen comes from the same formulas, and the academic calendar is
@@ -26,18 +25,10 @@ npm install
 npm run dev          # Vite dev server: the home page at / and the tracker at /app.html
 ```
 
-Then open `/app.html`, go to **Settings → “Where your data lives”**, and pick a target:
-
-1. **this site's database** (the default whenever the page is served over http) — nothing to fill in.
-   The first save claims a *space* and keeps its key in that browser; **Show space id & key** is what
-   you paste into a second device to carry the semester over.
-2. **a GitHub repository** — the owner and repository (the code repository works, or a separate
-   private one), plus a **fine-grained personal access token** with *Contents: read and write* on just
-   that repository (GitHub → Settings → Developer settings → Personal access tokens → *Fine-grained
-   tokens*).
-
-Press **Save & test** and the tracker writes its first document. After that, every tap marks a class
-and writes it, and the topbar chip tells you it happened.
+Then open `/app.html` — there is nothing to configure. The first save claims a *space* in the
+site's database and keeps its key in that browser, and after that every tap marks a class and
+writes it, with the topbar chip telling you it happened. Export / Import JSON in Settings is the
+backup and the way to move semesters.
 
 To serve the built site exactly as it ships:
 
@@ -69,8 +60,8 @@ The tracker alone needs no build at all — `npm run serve:tracker` serves this 
 | Charts | hand-rolled SVG (`js/charts.js`, and the preview's own `TrendChart.jsx`) | one less CDN dependency, still works offline |
 | Fonts | Inter Variable, self-hosted via `@fontsource-variable/inter` | no third-party request on first paint |
 | OCR | Tesseract.js from a CDN, only loaded when you press *Run OCR* | images are processed in your browser, never uploaded |
-| Storage | a JSON file in your GitHub repository | no server to run or pay for; git history is a free audit trail and undo; open the file on any device |
-| Sync | `js/github.js` over the GitHub Contents API | pull-merge-push per interaction, with sha conflict handling and no credentials in the document |
+| Storage | one JSON document in the site's Cloudflare D1 database | no setup, no account; every tap pulls, merges and writes it back |
+| Sync | `js/sync.js` over the site's own `/api` | pull-merge-push per interaction, with rev conflict handling and no credentials in the document |
 | Calendar | `scripts/sync-calendar.mjs` (Node + `pdfjs-dist`) | the calendar is scraped from the official PDF, then imported |
 | Post-build | `scripts/copy-tracker.mjs` | the tracker has no build step, so the home page's build copies it into `dist/` |
 
@@ -82,23 +73,35 @@ under your cursor (native date pickers, sliders and dropdowns all break that way
 
 ---
 
-## Where your data lives (the built-in database, the default)
+## Where your data lives
 
-The tracker's document — subjects, timetable, calendar, marks, settings — is one JSON object, and by
-default it lives as a row in the site's own Cloudflare D1 database (`worker/api.js`, served by the
+The tracker's document — subjects, timetable, calendar, marks, settings — is one JSON object, and
+it lives as a row in the site's own Cloudflare D1 database (`worker/api.js`, served by the
 same Worker that serves the static files):
 
-- **First use claims a space.** `POST /api/spaces` mints a 12-character space id and a 32-character
-  key; the server stores only the SHA-256 of the key, and the browser keeps the pair. That is the
-  whole credential model — no account, no token, nothing typed.
-- **Every read and write carries the key**, so a space is readable and writable only by devices that
-  hold it. `Settings → Sync → Show space id & key` is how a phone joins the same semester; a write
-  with a foreign `Origin` is refused as well.
-- **`rev` replaces the file's sha.** A write states the rev it was based on, and the server updates
-  conditionally (`WHERE rev = ?`), so two devices that read the same rev cannot both win: the loser
-  gets `409` with the winner's document attached, merges, and retries once.
+- **First use claims a space.** `POST /api/spaces` mints a space id and a key; the server stores
+  only the SHA-256 of the key, and the browser keeps the pair. That is the whole credential model
+  — no account, no token, nothing typed.
+- **On every interaction** the document is pulled again, the change is applied, and the result is
+  written back. The database is the source of truth.
+- **If another device wrote in the meantime**, the pull notices the `rev` moved, the two documents
+  are merged (subjects and marks are unioned by id, with this device's values winning on a genuine
+  clash) and the write retried once. A write that loses that race is never a silent overwrite.
 - **Screenshots ride in their own kind** (`images` vs `doc`, separate revisions) and are written only
-  when the set changes — same trick, second file.
+  when the set changes — otherwise every tap would push megabytes for nothing.
+- **Failures are visible, not swallowed.** A refused key, a rate limit and a lost race each say what
+  they are: the topbar chip turns red, a toast explains, and the change stays in memory marked as
+  unsaved. The tracker never pretends a write succeeded, and it never quietly falls back to
+  storing on the device.
+
+**What “no device storage” costs.** With nothing cached locally, a change that cannot reach the
+database lives in memory only: close the tab while offline and that tap is gone, which is why a
+failed save shouts instead of whispering. Migration is handled once — if an older version left
+data in `localStorage`, the app offers to fold it into the database and, only after that save
+succeeds, deletes it from the browser.
+
+**Trying it without an account:** the home page's *View demo* (`/app.html#demo`) loads the sample
+semester **in memory** — no writes, and every save says so.
 
 Local development runs the identical stack in workerd:
 
@@ -110,45 +113,6 @@ npm run dev:api        # wrangler dev on http://127.0.0.1:8787, local D1 include
 The Vite dev server proxies `/api` to that port, so `npm run dev` syncs too. Deployment itself is a
 prebuilt Worker plus static assets: `wrangler.jsonc` is the local twin of `deploy/manifest.json`,
 which binds the `DB` (D1) and `ASSETS` and points the Worker at `index.js` / `api.js`.
-
-## Where your data lives (GitHub sync)
-
-Attendance is **not** stored on the device, whichever target you choose. The whole semester is one
-JSON document — subjects, timetable, calendar, marks, settings — and with GitHub as the target it
-lives in a file in a repository you own, default `attendance.json` on `main`. `js/github.js` is the
-only code that touches the network (both targets go through it):
-
-- **On load** the file is pulled, so a fresh browser (or phone) shows your real semester with no
-  import step and nothing to lose.
-- **On every interaction** the file is pulled again, the change is applied, and the result is
-  committed. The repository is the source of truth, and one commit per interaction means the history
-  reads like a log of the semester (`Mark CS2001 present`, `Import 214 earlier marks from this
-  browser`) and any commit can be reverted in GitHub itself.
-- **If another device wrote in the meantime**, the pull notices the file's `sha` moved, the two
-  documents are merged (subjects and marks are unioned by id, with this device's values winning on a
-  genuine clash) and the write retried once. A write that loses that race is never a silent overwrite.
-- **Uploaded timetable screenshots** are the only bulky field, so they ride in a second file
-  (`attendance-images.json`) and are committed only when the set actually changes — otherwise every
-  tap would push a megabyte into the history for nothing.
-- **Failures are visible, not swallowed.** A rejected token, a missing repository, a rate limit and a
-  lost race each say what they are: the topbar chip turns red, a toast explains, and the change stays
-  in memory marked as unsaved. The tracker never pretends a write succeeded, and it never quietly
-  falls back to storing on the device.
-
-**Credentials.** The token is the one thing that may be kept on this device, and only if you tick
-*remember the token*. Unticked, it lives in the page for that tab and is gone when the tab is. It is
-never written into the JSON document, never logged, and needs *Contents: read and write* on one
-repository — nothing else. **If that repository is public, your attendance file is public too**, its
-history included; use a private repository for the data if that matters to you.
-
-**What “no device storage” costs.** With nothing cached locally, a change that cannot reach GitHub
-lives in memory only: close the tab while offline and that tap is gone, which is why a failed push
-shouts instead of whispering. Migration is handled once — if an older version left data in
-`localStorage`, the app offers to fold it into the repository and, only after that push succeeds,
-deletes it from the browser.
-
-**Trying it without an account:** the home page's *View demo* (`/app.html#demo`) loads the sample
-semester **in memory** — no repository, no token, no writes, and every save says so.
 
 ---
 
@@ -441,18 +405,16 @@ flagged rather than guessed. Both orientations are covered by tests.
 
 ## Privacy, storage and offline
 
-- Attendance lives in **your** sync target and nowhere else: no account with us. With the built-in
-  database that is this site's own D1 (a space protected by its key); with GitHub as the target, the
-  only origin the app talks to is `api.github.com`. The other origins the browser is allowed to touch
-  are the one-time Tesseract.js download (engine + English model, from a CDN) when you run OCR, and
-  the hosting platform's own usage beacon (`static.cloudflareinsights.com`, cookieless, injected into
-  every page it serves — blocking it made the host unable to account for the site and it suspended
-  serving, which is why it is allowed).
-- The app needs nothing else: the built-in target asks for no token, and the GitHub target needs
-  *Contents: read and write* on the one repository you name.
+- Attendance lives in **this site's own database** and nowhere else: no account with us. The app
+  talks to its own `/api` plus the one-time Tesseract.js download (engine + English model, from a
+  CDN) when you run OCR, and the hosting platform's own usage beacon
+  (`static.cloudflareinsights.com`, cookieless, injected into every page it serves — blocking it
+  made the host unable to account for the site and it suspended serving, which is why it is
+  allowed).
+- The app needs nothing else: no token, no paste, no setup.
 - With no local copy, the app is honest about needing the network: the shell and the OCR engine are
-  cached by `sw.js`, so it *opens* offline, but until a save reaches GitHub the topbar chip says it
-  has not been saved.
+  cached by `sw.js`, so it *opens* offline, but until a save reaches the database the topbar chip
+  says it has not been saved.
 - Add it to a phone home screen — `manifest.webmanifest` + `icon.svg` are included.
 
 ---
@@ -466,11 +428,11 @@ The pieces that are not obvious from the code:
 
 - **The policy is in `app.html`** (a meta CSP, since the app is static): the only script origins are
   the app's own files and `cdn.jsdelivr.net`, no inline script exists, `object-src`/`base-uri`/
-  `form-action` are closed, and `connect-src` lists the GitHub API plus the two OCR hosts. The landing
+  `form-action` are closed, and `connect-src` lists the site itself plus the two OCR hosts. The landing
   page carries the parts of the policy that cannot fight the Vite dev server
   (`index.html`), and `_headers` adds the rest for hosts that read it — `X-Content-Type-Options`,
-  `Referrer-Policy`, `X-Frame-Options`/`frame-ancestors` and a real CSP header per page. GitHub Pages
-  and `npx serve` ignore `_headers`, so there the meta policy is what you get.
+  `Referrer-Policy`, `X-Frame-Options`/`frame-ancestors` and a real CSP header per page. Plain static
+  hosts ignore `_headers`, so there the meta policy is what you get.
 - **The CDN script is pinned twice**: `js/ocr.js` loads `tesseract.js@6.0.1` with a `sha384` integrity
   hash, so a substituted CDN response is refused by the browser instead of executed. Bumping the
   version means recomputing that hash (the comment above the loader says how).
@@ -478,19 +440,16 @@ The pieces that are not obvious from the code:
   `javascript:alert(1)` safe — it is valid HTML — so the only place a URL becomes an `href`
   (`js/panels.js`) goes through `Store.safeUrl`, and `Store.normalize` strips a non-http(s) URL as it
   reads the document, so a hostile one never reaches the DOM at all.
-- **Files this app did not write are treated as untrusted**: `Store.normalize` and `Github.merge`
-  drop `__proto__`/`constructor`/`prototype` keys before folding a document in, so a repository file
+- **Files this app did not write are treated as untrusted**: `Store.normalize` and `Sync.merge`
+  drop `__proto__`/`constructor`/`prototype` keys before folding a document in, so a hostile payload
   or an imported snapshot cannot reach an `Object.prototype`.
-- **The token stays out of the document, the URL and the log.** It lives in memory unless you tick
-  *remember on this device*, in which case it is one `localStorage` key; nothing logs it, and it is
-  never part of the JSON that is committed.
 
 ---
 
 ## Tests
 
 ```bash
-npm test              # 73 tests: engine, home-page data, the sync client and the quick-add parser
+npm test              # 78 tests: engine, home-page data, the sync client, the API and the quick-add parser
 npm run build         # a failure here is a real failure, not a warning to read past
 ```
 
@@ -524,30 +483,28 @@ unsure, a bare `lab` keeping the subject from the line before, repeated slots ke
 a lab called out in the last period, warnings for the lines it cannot place — and that `Magic.apply`
 writes the same cell shape the grid editor does, which the app's own scheduler then reads back.
 
-`tests/github.test.mjs` adds 17 for the sync client, against a scripted Contents API: a pasted URL
-is cleaned up and a token is required before anything syncs; the token never reaches the document;
-base64 round-trips the real strings in a timetable; a missing file is a first run, not an error; a
-file too large to be inlined is read through the blob endpoint; broken JSON is reported instead of
-half-applied; a write carries the `sha` it read and the commit message it was given; a **409 re-reads,
-merges both devices and writes once more**; simultaneous interactions share one commit while
-sequential ones get one commit each, with the API never seeing two writes at once; a rejected token,
-a permission error and a rate limit are three different messages (and a rate limit stops further
-requests before they are spent); a dead network is a `network` error that leaves the change flagged
-as unsaved; and the merge unions subjects and marks by id without dropping either side — and refuses
-a prototype-shaped remote document rather than adopting its keys.
+`tests/sync.test.mjs` adds 12 for the sync client, against a scripted `/api`: nothing needs
+configuring before the first save; the first save claims a space and every write carries its key;
+each write quotes the rev the previous one returned; a **409 re-reads, merges both devices and
+writes once more**; screenshots ride in their own kind and an unchanged set costs no write; a
+missing document is a first run, not an error; a refused key is an `auth` error that turns the chip
+red; simultaneous interactions collapse to the newest state while a later one still commits; a dead
+network is a `network` error that leaves the change flagged as unsaved; the merge unions subjects
+and marks by id — and refuses a prototype-shaped remote document rather than adopting its keys;
+and `file://` stays unconfigured, since it has no database to talk to.
 
 ## Repository layout
 
 ```
 index.html  vite.config.js          # the home page (built by Vite into dist/)
 app.html    styles.css  sw.js  manifest.webmanifest  icon.svg  _headers
-js/    calc.js  store.js  github.js  charts.js  ocr.js  magic.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
+js/    calc.js  store.js  sync.js  charts.js  ocr.js  magic.js  ui.js  panels.js  app.js  sample-data.js  manipal-calendar.js
 data/  muj-2026-27.json  muj-2026-27.days.txt        # scraper output
 src/   main.jsx  App.jsx  data/attendance.js  lib/hooks.js  styles/index.css  components/*.jsx
 scripts/ sync-calendar.mjs  write-samples.mjs  copy-tracker.mjs  build-deploy.mjs
 worker/  worker.js  api.js                  # the sync API + security headers; wrangler.jsonc runs it locally
 samples/ timetable-sample.csv  calendar-sample.csv  sample-data.json
-tests/  calc.test.mjs  home-data.test.mjs  github.test.mjs  cloud-sync.test.mjs  worker-api.test.mjs
+tests/  calc.test.mjs  home-data.test.mjs  sync.test.mjs  magic.test.mjs  worker-api.test.js
 ```
 
 ---
@@ -562,12 +519,10 @@ tests/  calc.test.mjs  home-data.test.mjs  github.test.mjs  cloud-sync.test.mjs 
   anything commercial.
 - Calendar data belongs to the college; the bundled file is MUJ's published 2026-27 PDF, included to
   make the demo work out of the box.
-- Known limits: nothing is cached on the device, so an interaction made while GitHub is unreachable
-  survives reload only if the push eventually succeeds — the app says so loudly rather than pretending,
-  and the alternative (a local cache) is exactly what this design avoids; the API allows 5,000
-  authenticated requests an hour per user, which a term's marking never approaches but a stuck retry
-  loop could, so a rate limit pauses syncing until GitHub's own reset time; a public repository makes
-  the attendance file public; the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
+- Known limits: nothing is cached on the device, so an interaction made while the database is
+  unreachable survives reload only if the save eventually succeeds — the app says so loudly rather
+  than pretending, and the alternative (a local cache) is exactly what this design avoids; export a
+  JSON backup now and then, since it is also the way to move semesters; the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
   at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side — the shape is
   visible around the text, not through it; OCR expects a reasonably straight table (photos at an angle
   need cropping first); the scraper understands Manipal-style month-grid PDFs and falls back to a

@@ -1,13 +1,16 @@
 /* sw.js — offline support.
- * The app has no build step and no backend, so "works offline after first load" means caching the
- * shell here plus whatever Tesseract.js pulls from its CDN the first time you run OCR.
- * Only active when the page is served over http(s); file:// pages have no service workers.
+ * The tracker has no build step; its document lives in the site's cloud database, so "works
+ * offline after first load" means caching the shell here plus whatever Tesseract.js pulls from
+ * its CDN the first time you run OCR. Only active when the page is served over http(s); file://
+ * pages have no service workers.
  */
 // v2: the app moved from index.html to app.html, so an installed shell has to be replaced rather than
 // reused — the cache name is the only signal the browser gives an existing install.
 // v3: the sync client joined the shell.
+// v5: the sync client is cloud-only now (js/sync.js replaces js/github.js), so an installed
+// shell has to be replaced rather than reused.
 // v4: quick add (the natural-language timetable entry) joined the shell.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL = `attendance-shell-${VERSION}`;
 const RUNTIME = `attendance-runtime-${VERSION}`;
 const SHELL_FILES = [
@@ -18,7 +21,7 @@ const SHELL_FILES = [
   'js/manipal-calendar.js',
   'js/calc.js',
   'js/store.js',
-  'js/github.js',
+  'js/sync.js',
   'js/charts.js',
   'js/ocr.js',
   'js/magic.js',

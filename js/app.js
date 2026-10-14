@@ -16,7 +16,7 @@
       S.data = Store.defaults();
       S.date = Ui.todayISO();
       S.month = S.date.slice(0, 7);
-      A.Github.onChange(renderSyncStatus);
+      A.Sync.onChange(renderSyncStatus);
       App.applyTheme();
       wire();
       App.render(true);
@@ -231,37 +231,36 @@
     });
   }
 
-  /* ---------- the repository is the source of truth ---------- */
+  /* ---------- the database is the source of truth ---------- */
   let lastPullAt = 0;
 
   /**
    * Startup order: pull first, then let anything be edited. Nothing is read from this device — the
    * one exception is a snapshot an older version left in localStorage, which is folded into the
-   * repository once and then deleted here.
+   * database once and then deleted here.
    */
   async function bootstrap() {
-    const Github = A.Github;
+    const Sync = A.Sync;
     const legacy = Store.localSnapshot();
     // The landing page's "View demo" button. Both forms are accepted because static hosts differ:
     // `?demo=1` survives on GitHub Pages, while a clean-URL server (the project's own `npm run serve`)
     // answers /app.html?demo=1 with a 301 to /app and drops the query — the fragment is kept.
     const wantsDemo = new URLSearchParams(global.location.search).get('demo') === '1' || global.location.hash.replace('#', '') === 'demo';
 
-    if (!Github.isConfigured()) {
-      // Nothing to pull. The sample (if it was asked for) runs in memory and says so on every save.
+    if (!Sync.isConfigured()) {
+      // Opened straight from disk: there is no same-origin database to talk to. The sample (if it
+      // was asked for) runs in memory and says so on every save.
       S.readOnly = true;
       if (legacy && (legacy.subjects.length || legacy.records.length)) S.data = legacy;
       if (wantsDemo) S.data = A.Sample.build(Ui.todayISO());
       App.applyTheme();
       App.render(true);
-      if (legacy && (legacy.subjects.length || legacy.records.length)) {
-        Ui.toast('This browser still holds attendance from an older version. Connect GitHub in <b>Settings → Sync</b> and it is pushed there once, then deleted here.', 'info', 15000);
-      }
+      Ui.toast('Opened from a file — open the hosted site and your attendance is saved automatically.', 'info', 12000);
       return;
     }
 
     try {
-      const pulled = await Github.pull();
+      const pulled = await Sync.pull();
       lastPullAt = Date.now();
       S.readOnly = false;
       if (pulled.doc) S.data = Store.normalize(pulled.doc.data);
@@ -272,16 +271,16 @@
     }
 
     if (legacy && (legacy.subjects.length || legacy.records.length)) {
-      // Fold the old device copy into the repository document (union by id, the repo's values win),
+      // Fold the old device copy into the database document (union by id, the database values win),
       // push it, and only then drop it from this browser.
-      S.data = Github.merge(legacy, S.data);
+      S.data = Sync.merge(legacy, S.data);
       const count = legacy.records.length;
-      Github.queueSync(S.data, { message: `Import ${count} earlier mark${count === 1 ? '' : 's'} from this browser` })
+      Sync.queueSync(S.data, { message: `Import ${count} earlier mark${count === 1 ? '' : 's'} from this browser` })
         .then(() => {
           Store.clearLocal();
-          Ui.toast('Data from the previous version is now in GitHub, and has been removed from this browser.', 'ok', 10000);
+          Ui.toast('Data from the previous version is now in the cloud database, and has been removed from this browser.', 'ok', 10000);
         })
-        .catch(() => Ui.toast('Moved the old local data into memory, but pushing it to GitHub failed — it is still on this device until that succeeds.', 'bad', 15000));
+        .catch(() => Ui.toast('Moved the old local data into memory, but saving it failed — it is still on this device until that succeeds.', 'bad', 15000));
     }
 
     App.applyTheme();
@@ -290,16 +289,16 @@
     if (wantsDemo && !S.readOnly) {
       setTimeout(() => Ui.actions['load-sample'](), 350);
     } else if (!S.data.subjects.length && !S.data.records.length && !S.readOnly) {
-      setTimeout(() => Ui.toast(`Sync is live — ${Github.describe()}. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.`, 'info', 9000), 700);
+      setTimeout(() => Ui.toast('Saving is live — every tap is stored in the cloud database. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.', 'info', 9000), 700);
     }
   }
 
   /** Pull (never push) — used when the tab regains focus. */
   App.refresh = async function refresh() {
-    const Github = A.Github;
-    if (!Github.isConfigured()) return;
+    const Sync = A.Sync;
+    if (S.readOnly || !Sync.isConfigured()) return;
     try {
-      const pulled = await Github.pull();
+      const pulled = await Sync.pull();
       lastPullAt = Date.now();
       if (pulled.doc) {
         S.data = Store.normalize(pulled.doc.data);
@@ -315,14 +314,12 @@
   function renderSyncStatus(state) {
     const chip = document.getElementById('syncChip');
     if (!chip) return;
-    const Github = A.Github;
-    const configured = Github.isConfigured();
     const when = state.lastSyncAt ? timeAgo(state.lastSyncAt) : '';
     let kind = '';
     let label = '';
-    if (!configured) {
+    if (S.readOnly) {
       kind = 'off';
-      label = Github.mode() === 'github' ? 'GitHub not connected' : 'Sync not connected';
+      label = 'not saving';
     } else if (state.status === 'syncing' || state.status === 'pending') {
       kind = 'busy';
       label = 'saving…';
@@ -341,7 +338,7 @@
     }
     chip.className = `sync-chip ${kind}`;
     chip.textContent = label;
-    chip.title = [Github.describe(), state.error ? state.error.message : '', state.message].filter(Boolean).join(' — ');
+    chip.title = ['cloud database', state.error ? state.error.message : '', state.message].filter(Boolean).join(' — ');
   }
 
   function timeAgo(iso) {

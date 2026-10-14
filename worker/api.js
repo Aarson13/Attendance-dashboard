@@ -1,11 +1,8 @@
 /* api.js — the sync API the tracker talks to when it is running on this site's own database.
  *
- * The tracker's document is still "one JSON file" (js/github.js reads and writes it by sha), but the
- * file now lives as a row in D1 instead of a GitHub repository: `docs(space, kind, body, rev)` where
- * `rev` plays the part the file's sha played — every write states the rev it was based on, and a
- * write whose base rev has moved is rejected with 409 so the client re-reads, merges and retries.
- * That is the same pull-merge-push contract github.js already implements, so the client needed no
- * new conflict logic, only a different transport.
+ * The tracker's document is one JSON object (js/sync.js reads and writes it by rev) living as a
+ * row in D1: `docs(space, kind, body, rev)`. Every write states the rev it was based on, and a write
+ * whose base rev has moved is rejected with 409 so the client re-reads, merges and retries.
  *
  * A space is one attendance document's home (a person, a class, a semester). It is created by the
  * first device to ask for one and is protected by a random key: the server keeps only the SHA-256

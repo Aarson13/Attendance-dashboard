@@ -1,10 +1,10 @@
 /* store.js — the data model plus import/export (JSON, CSV, ICS).
  *
- * The whole app is one JSON document, and that document lives in a GitHub repository (js/github.js
- * reads and writes it, one commit per interaction) — not on this device. What is left here is the
- * shape: defaults, normalisation that repairs anything hand-edited, and the importers/exporters.
+ * The whole app is one JSON document, and that document lives in this site's cloud database
+ * (js/sync.js reads and writes it on every interaction) — not on this device. What is left here is
+ * the shape: defaults, normalisation that repairs anything hand-edited, and the importers/exporters.
  * `localSnapshot()` exists only to recover data written by an older version that did store it
- * locally, so it can be pushed to GitHub once and then deleted here.
+ * locally, so it can be saved to the database once and then deleted here.
  */
 (function (global) {
   'use strict';

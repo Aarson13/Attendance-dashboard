@@ -2,7 +2,7 @@
   "name": "attendance-dashboard",
   "version": "1.0.0",
   "private": true,
-  "description": "College attendance dashboard: a React + Tailwind home page and a no-build plain-JS tracker whose semester is one JSON file in your own GitHub repository.",
+  "description": "College attendance dashboard: a React + Tailwind home page and a no-build plain-JS tracker whose semester is one JSON document in the site's Cloudflare D1 database.",
   "type": "module",
   "scripts": {
     "dev": "vite",

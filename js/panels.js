@@ -653,80 +653,14 @@
   }
 
   /* ================= Settings / Data ================= */
-  /** The built-in target: no account, no token — a space and the key that proves this device belongs to it. */
-  function cloudSettings(cloud) {
-    return `
-      <p class="muted">No account and no token: the first save claims a <b>space</b> in this site's own
-      database and keeps its key in this browser. To carry the same semester to a phone or laptop,
-      show the space id and key here and paste them there — or paste a pair you were given to join it.</p>
-      <div class="row">
-        <label class="field" style="flex:1 1 130px">Space <input data-act="sync-space" value="${attr(cloud.space)}" placeholder="claimed on first save" autocomplete="off" spellcheck="false" /></label>
-        <label class="field" style="flex:1 1 150px">Key <input type="password" data-act="sync-key" value="" placeholder="${cloud.key ? '••••••• (saved)' : 'paste one to join a space'}" autocomplete="off" spellcheck="false" /></label>
-      </div>
-      ${cloud.space ? `<button class="small" data-act="sync-copy-key" type="button">Show space id &amp; key</button>` : ''}`;
-  }
-
-  function githubSettings(Github, cfg) {
-    return `
-      <p class="muted">Attendance is a JSON file in a GitHub repository you own, committed one change
-      at a time.</p>
-      <div class="row">
-        <label class="field" style="flex:1 1 130px">Owner <input data-act="sync-owner" value="${attr(cfg.owner)}" placeholder="your-username" autocomplete="off" spellcheck="false" /></label>
-        <label class="field" style="flex:1 1 150px">Repository <input data-act="sync-repo" value="${attr(cfg.repo)}" placeholder="Attendance-dashboard" autocomplete="off" spellcheck="false" /></label>
-      </div>
-      <div class="row">
-        <label class="field">Branch <input data-act="sync-branch" value="${attr(cfg.branch)}" autocomplete="off" spellcheck="false" style="width:120px" /></label>
-        <label class="field" style="flex:1 1 160px">File path <input data-act="sync-path" value="${attr(cfg.path)}" autocomplete="off" spellcheck="false" /></label>
-      </div>
-      <label class="field">Personal access token
-        <input type="password" data-act="sync-token" value="" placeholder="${Github.hasToken() ? '••••••• (saved)' : 'github_pat_…'}" autocomplete="new-password" spellcheck="false" />
-      </label>
-      <label class="row" style="gap:6px"><input type="checkbox" data-act="sync-remember" ${cfg.rememberToken ? 'checked' : ''} /> remember the token on this device (unticked, it lasts for this tab only)</label>
-      <p class="muted">The token is never committed anywhere. It needs <b>Contents: read and write</b> on this one
-      repository: GitHub → Settings → Developer settings → Personal access tokens → <i>Fine-grained tokens</i>.</p>`;
-  }
-
   function renderData() {
     const S = U().S;
     const settings = S.data.settings;
     const bytes = Store.storageBytes(S.data);
-    const Github = A.Github;
-    const cfg = Github.config();
-    const sync = Github.state();
+    const sync = A.Sync.state();
     const lastSync = sync.lastSyncAt ? new Date(sync.lastSyncAt).toLocaleString() : 'never';
-    const cloudMode = Github.mode() === 'cloud';
-    const cloud = Github.cloudInfo();
     return `
       <div class="grid cols-2">
-        <div class="card">
-          <h2>Where your data lives</h2>
-          <p class="muted">Attendance is never kept in this browser. Every tap pulls the document, applies
-          the change and writes it back, so another device sees your marks straight away and the history
-          is your undo. Two targets: this site's own database (no setup) or a JSON file in a GitHub
-          repository you own.</p>
-          <div class="row" style="margin:8px 0;gap:18px">
-            <label class="row" style="gap:6px"><input type="radio" name="syncMode" value="cloud" data-act="sync-mode" ${cloudMode ? 'checked' : ''} /> this site's database</label>
-            <label class="row" style="gap:6px"><input type="radio" name="syncMode" value="github" data-act="sync-mode" ${cloudMode ? '' : 'checked'} /> a GitHub repository</label>
-          </div>
-          <hr />
-          ${cloudMode ? cloudSettings(cloud) : githubSettings(Github, cfg)}
-          <div class="row" style="margin-top:8px">
-            <button class="primary" data-act="sync-save" type="button">Save &amp; test</button>
-            <button data-act="sync-pull" type="button">Pull now</button>
-            <button data-act="sync-push" type="button">Push now</button>
-            <button data-act="sync-disconnect" type="button">Disconnect</button>
-          </div>
-          <p class="muted">Status: <b>${esc(sync.status)}</b> · last save: ${esc(lastSync)} · ${esc(Github.describe())}</p>
-          ${sync.error ? `<p class="chip bad">${esc(sync.error.message)}</p>` : ''}
-          ${cloudMode
-            ? `<p class="muted">Every read and write carries the key, so a space is readable and writable only by
-               devices that hold it — the server keeps a hash of the key, never the key itself.</p>`
-            : `<p class="muted">Uploaded timetable screenshots are the only bulky field, so they ride in
-               <code>${esc(Github.imagesPath())}</code> and are only written when they actually change.</p>
-               <div class="banner warn" style="margin-top:10px"><b>Public repository?</b> Then your attendance file is
-               public too, and anyone can read it — commit history included. Keep the data in a private
-               repository (it can be a different one from the code) if that matters.</div>`}
-        </div>
         <div class="card">
           <h2>Rules</h2>
           <label class="field">Minimum attendance (p)
@@ -776,9 +710,10 @@
             <button data-act="load-sample" type="button">Load sample semester</button>
             <button class="danger" data-act="reset-all" type="button">Erase everything</button>
           </div>
-          <p class="muted">Document size: ${(bytes / 1024).toFixed(1)} KB — ${cloudMode
-            ? 'saved to this site\u2019s database'
-            : `committed to <code>${esc(cfg.path)}</code>${cfg.owner && cfg.repo ? ` in ${esc(cfg.owner)}/${esc(cfg.repo)}` : ''}`}.
+          <p class="muted">Every tap is saved automatically to this site's cloud database — status:
+          <b>${esc(sync.status)}</b> · last save: ${esc(lastSync)}.</p>
+          ${sync.error ? `<p class="chip bad">${esc(sync.error.message)}</p>` : ''}
+          <p class="muted">Document size: ${(bytes / 1024).toFixed(1)} KB, saved to the cloud database.
           Screenshots add about ${(Math.max(0, bytes - JSON.stringify(Object.assign({}, S.data, { ocr: { images: [] } })).length) / 1024).toFixed(0)} KB on top.</p>
           ${S.data.ocr.images.length ? `<button class="small" data-act="clear-images" type="button" style="margin-top:8px">Delete ${S.data.ocr.images.length} stored OCR image(s)</button>` : ''}
         </div>
@@ -790,7 +725,7 @@
             <li><b>Calendar</b> — import the scraped Manipal calendar (or CSV/ICS/OCR) so holidays, exams and swapped days are skipped automatically. Set your semester dates.</li>
             <li><b>Today</b> — tap Present / Absent / Leave / Cancelled per class. Cancelled and off days vanish from every count.</li>
             <li><b>Dashboard</b> — watch the safety buffer, the 75% marker and the heatmap; use <b>Tools</b> for what-ifs and "can I skip tomorrow?".</li>
-            <li><b>Export</b> a JSON backup now and then — it is the same file that lives in your repository, handy for moving to a different repo or for a manual restore.</li>
+            <li><b>Export</b> a JSON backup now and then — handy for moving semesters or for a manual restore.</li>
           </ol>
         </div>
         <div class="card">
@@ -1524,7 +1459,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'reset-all': () => {
       U().openModal(
         'Erase everything?',
-        `<p>This empties the document in your repository: every subject, timetable cell, calendar entry and attendance mark goes. The commits before it still hold the old version, so it is recoverable from GitHub's history — but export a backup first if you would rather not go digging there.</p>
+        `<p>This empties the document in the cloud database: every subject, timetable cell, calendar entry and attendance mark goes. Export a backup first if you might want it back.</p>
          <div class="row"><button class="danger" data-act="reset-all-confirm" type="button">Yes, erase it all</button><button data-act="modal-close" type="button">Cancel</button></div>`,
       );
     },
@@ -1545,143 +1480,6 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       U().toast('Stored OCR images deleted.', 'info');
     },
   };
-
-  /* ---------- Settings → Sync ---------- */
-  /** Reads the whole sync form at once, so a half-filled form never overwrites a good setting. */
-  function syncForm() {
-    const val = (act) => {
-      const el = document.querySelector(`[data-act="${act}"]`);
-      return el ? el.value : '';
-    };
-    const tokenField = document.querySelector('[data-act="sync-token"]');
-    const remember = document.querySelector('[data-act="sync-remember"]');
-    return {
-      owner: val('sync-owner'),
-      repo: val('sync-repo'),
-      branch: val('sync-branch'),
-      path: val('sync-path'),
-      cloudSpace: val('sync-space'),
-      cloudKey: val('sync-key'),
-      rememberToken: !!(remember && remember.checked),
-      // An empty box means "keep the token I already have", not "forget it".
-      token: tokenField && tokenField.value ? tokenField.value.trim() : A.Github.hasToken() ? undefined : '',
-    };
-  }
-
-  Object.assign(actions, {
-    'sync-save': async () => {
-      const Github = A.Github;
-      const form = syncForm();
-      const cloudMode = Github.mode() === 'cloud';
-      if (cloudMode) {
-        // Joining a space needs both halves of the credential; an untouched key box keeps the key
-        // this device already holds rather than throwing it away.
-        if (form.cloudKey) Github.setCloud(form.cloudSpace || Github.cloudInfo().space, form.cloudKey);
-        else if (form.cloudSpace && form.cloudSpace !== Github.cloudInfo().space) {
-          U().toast('A new space id needs the key that goes with it — copy both from the other device.', 'bad', 9000);
-          return;
-        }
-      } else {
-        const patch = { owner: form.owner, repo: form.repo, branch: form.branch, path: form.path, rememberToken: form.rememberToken };
-        if (form.token !== undefined) patch.token = form.token;
-        Github.configure(patch);
-      }
-      if (!Github.isConfigured()) {
-        U().toast('Owner, repository and a token are all needed before anything can be saved.', 'bad', 9000);
-        return;
-      }
-      try {
-        const probe = await Github.test();
-        const S = U().S;
-        if (probe.exists) {
-          // The target already has a document: pull it, fold in whatever is on screen, commit.
-          const pulled = await Github.pull();
-          const before = S.data.records.length;
-          S.data = Github.merge(pulled.doc ? Store.normalize(pulled.doc.data) : null, S.data);
-          await Github.queueSync(S.data, { message: 'Connect this device' });
-          U().toast(`Connected. ${probe.records} mark(s) were already in ${Github.describe()}, ${Math.max(0, before)} in this tab — merged.`, 'ok', 9000);
-        } else {
-          await Github.queueSync(S.data, { message: 'Initial commit from the attendance dashboard' });
-          U().toast(`Connected. Saved the first document to ${Github.describe()}.`, 'ok', 9000);
-        }
-        Store.clearLocal();
-        S.readOnly = false;
-        A.App.render();
-      } catch (err) {
-        U().toast(`<b>Could not connect.</b> ${U().esc(err.message)}`, 'bad', 15000);
-      }
-    },
-    'sync-mode': (el) => {
-      const mode = el.value === 'github' ? 'github' : 'cloud';
-      A.Github.configure({ mode });
-      A.App.render();
-      U().toast(mode === 'cloud' ? 'Sync target: this site\u2019s database.' : 'Sync target: a GitHub repository.', 'info');
-    },
-    'sync-copy-key': () => {
-      const info = A.Github.cloudInfo();
-      if (!info.space) {
-        U().toast('Nothing to show yet — the space is claimed on the first save.', 'info', 8000);
-        return;
-      }
-      U().openModal(
-        'This device\u2019s space & key',
-        `<p class="muted">Enter these under <b>Settings → Sync</b> on the other device (space in the first
-         box, key in the second, then <b>Save &amp; test</b>) to carry this semester over. Anyone holding
-         both can read and write this attendance — treat the key like a password.</p>
-         <textarea readonly rows="3" style="width:100%;font-family:monospace;background:var(--panel-2);color:inherit;border:1px solid var(--line);border-radius:8px;padding:10px">${esc(`space: ${info.space}\nkey:   ${info.key}`)}</textarea>`,
-      );
-    },
-    'sync-pull': async () => {
-      const Github = A.Github;
-      try {
-        const pulled = await Github.pull();
-        if (!pulled.doc) {
-          U().toast('There is no data file in that repository yet — push once to create it.', 'info', 8000);
-          return;
-        }
-        U().S.data = Store.normalize(pulled.doc.data);
-        U().S.readOnly = false;
-        A.App.render();
-        U().toast(`Pulled ${U().S.data.records.length} mark(s) from ${A.Github.describe()}.`, 'ok');
-      } catch (err) {
-        U().toast(`<b>Could not pull.</b> ${U().esc(err.message)}`, 'bad', 12000);
-      }
-    },
-    'sync-push': () => {
-      const Github = A.Github;
-      Github.queueSync(U().S.data, { message: 'Manual push from the attendance dashboard' })
-        .then(() => {
-          U().S.readOnly = false;
-          A.App.render();
-          U().toast('Pushed.', 'ok');
-        })
-        .catch((err) => U().toast(`<b>Could not push.</b> ${U().esc(err.message)}`, 'bad', 12000));
-    },
-    'sync-disconnect': () => {        U().openModal(
-          'Stop syncing?',
-          A.Github.mode() === 'cloud'
-            ? `<p>This device switches back to the GitHub form and stops saving anything. Your space and
-               its key stay here, and the document stays in the database — switch the mode back to
-               <b>this site's database</b> any time to pick up where you left off.</p>
-               <div class="row"><button class="danger" data-act="sync-disconnect-confirm" type="button">Disconnect</button><button data-act="modal-close" type="button">Cancel</button></div>`
-            : `<p>This device will forget the token and stop saving anything. The document stays in your
-               repository — nothing is deleted there, and you can reconnect any time.</p>
-               <div class="row"><button class="danger" data-act="sync-disconnect-confirm" type="button">Disconnect</button><button data-act="modal-close" type="button">Cancel</button></div>`,
-        );
-    },
-    'sync-disconnect-confirm': () => {
-      A.Github.disconnect();
-      U().S.readOnly = true;
-      U().closeModal();
-      A.App.render();
-      U().toast('Disconnected. Nothing is saved while unconnected.', 'info', 8000);
-    },
-    'sync-remember': (el) => {
-      // Only the credential flag changes here — the token value itself is left alone.
-      A.Github.setRemember(el.checked);
-      U().toast(el.checked ? 'The token will be remembered on this device.' : 'The token is kept for this tab only.', 'info');
-    },
-  });
 
   function onFieldChange(el) {
     if (el.dataset.act === 'period-field') {

@@ -10,13 +10,13 @@
   to come from the host). Scripts: this app's own files plus the one CDN copy of tesseract.js, whose
   bytes are pinned by the integrity hash in js/ocr.js — no inline script is used at all. wasm-unsafe-eval
   is what the OCR engine's wasm needs; style-src allows the inline style attributes the views use;
-  connect allows the GitHub API and the two OCR hosts (engine files and the trained language model), plus
+  connect allows the two OCR hosts (engine files and the trained language model), plus
   data:/blob: because the wasm core is fetched as a data URL — without that the run still finishes via a
   fallback core, but the console fills with refusals. If OCR ever stops working after an edit here, the
   console names the directive that refused it.
 -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://api.github.com https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
-<meta name="description" content="A one-person college attendance tracker: subjects, weekly timetable, academic calendar, daily marking, projections and OCR for timetables and calendar notices. Your semester is kept as a JSON file in your own GitHub repository, committed on every tap." />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://static.cloudflareinsights.com 'wasm-unsafe-eval'; worker-src 'self' blob: https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' data: blob: https://cdn.jsdelivr.net https://tessdata.projectnaptha.com https://cloudflareinsights.com; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'" />
+<meta name="description" content="A one-person college attendance tracker: subjects, weekly timetable, academic calendar, daily marking, projections and OCR for timetables and calendar notices. Your semester is saved automatically to this site's cloud database on every tap." />
 <title>Attendance dashboard — tracker</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2338bdf8'/%3E%3Cpath d='M8 17l5 5 11-12' stroke='%230b0e12' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 <link rel="manifest" href="manifest.webmanifest" />
@@ -44,7 +44,7 @@
       <button role="tab" data-tab="tools" aria-selected="false">Tools</button>
       <button role="tab" data-tab="data" aria-selected="false">Settings</button>
     </nav>
-    <span class="sync-chip" id="syncChip" role="status" aria-live="polite">GitHub not connected</span>
+    <span class="sync-chip" id="syncChip" role="status" aria-live="polite">connecting…</span>
     <button class="icon-btn" id="themeToggle" type="button" title="Switch light / dark" aria-label="Switch light or dark theme">◐</button>
   </div>
 </header>
@@ -57,7 +57,7 @@
 <script src="js/manipal-calendar.js"></script>
 <script src="js/calc.js"></script>
 <script src="js/store.js"></script>
-<script src="js/github.js"></script>
+<script src="js/sync.js"></script>
 <script src="js/charts.js"></script>
 <script src="js/ocr.js"></script>
 <script src="js/magic.js"></script>

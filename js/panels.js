@@ -752,6 +752,10 @@
               <option value="credits" ${settings.sort === 'credits' ? 'selected' : ''}>by credits</option>
             </select>
           </label>
+          <hr />
+          <h3>Previous attendance</h3>
+          <p class="muted">Joining mid-semester? Enter per-subject attended / held from your portal — it joins every calculation.</p>
+          <button data-act="tab" data-tab="subjects" type="button">Open Subjects → Existing attendance</button>
         </div>
         <div class="card">
           <h2>Appearance & data</h2>

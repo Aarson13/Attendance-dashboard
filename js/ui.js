@@ -487,8 +487,11 @@
           <label class="field">Code<input id="newSubjCode" placeholder="CS3002" size="8" /></label>
           <label class="field">Credits<input id="newSubjCredits" type="number" min="0" step="0.5" value="3" style="width:80px" /></label>
           <label class="field">Faculty (optional)<input id="newSubjFaculty" placeholder="Dr. Iyer" /></label>
+          <label class="field">Prev. attended<input id="newSubjAttended" type="number" min="0" step="1" value="0" style="width:80px" title="Classes of this subject you already attended before tracking" /></label>
+          <label class="field">Prev. held<input id="newSubjHeld" type="number" min="0" step="1" value="0" style="width:80px" title="Classes of this subject already held before tracking" /></label>
           <button class="primary" data-act="subj-add" type="button">Add subject</button>
         </div>
+        <p class="muted">Joining mid-semester? Fill Prev. attended / held from your portal — they join every calculation. Leave at 0 to start fresh.</p>
       </div>
       <div class="card">
         <div class="section-head">
@@ -688,6 +691,13 @@
         return;
       }
       const credits = Number($('#newSubjCredits').value);
+      const readCount = (sel) => {
+        const el = $(sel);
+        const n = el ? Number(el.value) : 0;
+        return isFinite(n) && n > 0 ? Math.round(n) : 0;
+      };
+      const carriedT = readCount('#newSubjHeld');
+      const carriedA = Math.min(carriedT, readCount('#newSubjAttended'));
       S.data.subjects.push({
         id: Store.uid('sub'),
         name: name.value.trim(),
@@ -697,10 +707,10 @@
         color: '',
         classesPerWeek: null,
         expectedClasses: null,
-        carried: { a: 0, t: 0 },
+        carried: { a: carriedA, t: carriedT },
       });
       save();
-      toast('Subject added. Next: put it on the timetable.', 'ok');
+      toast(carriedT ? `Subject added with previous attendance ${carriedA}/${carriedT}. Next: put it on the timetable.` : 'Subject added. Next: put it on the timetable.', 'ok');
       global.AD.App.render();
     },
     'subj-delete': (el) => {

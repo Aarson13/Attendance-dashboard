@@ -1,0 +1,2523 @@
+{
+  "app": "attendance-dashboard",
+  "version": 1,
+  "exportedAt": "2026-10-12T11:53:14.925Z",
+  "data": {
+    "app": "attendance-dashboard",
+    "version": 1,
+    "settings": {
+      "threshold": 0.75,
+      "theme": "dark",
+      "semester": {
+        "name": "Odd semester 2026",
+        "start": "2026-07-23",
+        "end": "2026-11-13"
+      },
+      "leaveMode": "absent",
+      "sort": "risk",
+      "schoolDays": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "periods": [
+        {
+          "id": "p1",
+          "label": "P1",
+          "start": "09:00",
+          "end": "09:55"
+        },
+        {
+          "id": "p2",
+          "label": "P2",
+          "start": "10:00",
+          "end": "10:55"
+        },
+        {
+          "id": "p3",
+          "label": "P3",
+          "start": "11:05",
+          "end": "12:00"
+        },
+        {
+          "id": "p4",
+          "label": "P4",
+          "start": "12:05",
+          "end": "13:00"
+        },
+        {
+          "id": "p5",
+          "label": "P5",
+          "start": "14:00",
+          "end": "14:55"
+        },
+        {
+          "id": "p6",
+          "label": "P6",
+          "start": "15:00",
+          "end": "15:55"
+        }
+      ],
+      "spotlights": true
+    },
+    "subjects": [
+      {
+        "id": "sub_islz4ao0y3u",
+        "name": "Data Structures and Algorithms",
+        "code": "CS2001",
+        "credits": 4,
+        "faculty": "Dr. Anitha Rao",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_1wko1560y3u",
+        "name": "Discrete Mathematics",
+        "code": "MA2002",
+        "credits": 3,
+        "faculty": "Dr. S. Nair",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_i5t7wh50y3u",
+        "name": "Digital Design",
+        "code": "EC2003",
+        "credits": 3,
+        "faculty": "Dr. K. Iyer",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_k51ftbd0y3u",
+        "name": "Object Oriented Programming",
+        "code": "CS2004",
+        "credits": 3,
+        "faculty": "Prof. R. Menon",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_4vs9dur0y3u",
+        "name": "Database Systems",
+        "code": "CS2005",
+        "credits": 4,
+        "faculty": "Dr. P. Shetty",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_wya39xd0y3u",
+        "name": "DSA Lab",
+        "code": "CS2001L",
+        "credits": 1,
+        "faculty": "Dr. Anitha Rao",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      },
+      {
+        "id": "sub_bqsrxt80y3u",
+        "name": "DBMS Lab",
+        "code": "CS2005L",
+        "credits": 1,
+        "faculty": "Dr. P. Shetty",
+        "color": "",
+        "classesPerWeek": null,
+        "expectedClasses": null
+      }
+    ],
+    "timetable": {
+      "1": {
+        "p1": {
+          "subjectId": "sub_islz4ao0y3u",
+          "lab": false
+        },
+        "p2": {
+          "subjectId": "sub_1wko1560y3u",
+          "lab": false
+        },
+        "p3": {
+          "subjectId": "sub_4vs9dur0y3u",
+          "lab": false
+        },
+        "p4": {
+          "subjectId": "sub_k51ftbd0y3u",
+          "lab": false
+        }
+      },
+      "2": {
+        "p1": {
+          "subjectId": "sub_islz4ao0y3u",
+          "lab": false
+        },
+        "p2": {
+          "subjectId": "sub_i5t7wh50y3u",
+          "lab": false
+        },
+        "p3": {
+          "subjectId": "sub_4vs9dur0y3u",
+          "lab": false
+        },
+        "p5": {
+          "subjectId": "sub_wya39xd0y3u",
+          "lab": true
+        }
+      },
+      "3": {
+        "p1": {
+          "subjectId": "sub_1wko1560y3u",
+          "lab": false
+        },
+        "p2": {
+          "subjectId": "sub_islz4ao0y3u",
+          "lab": false
+        },
+        "p4": {
+          "subjectId": "sub_k51ftbd0y3u",
+          "lab": false
+        },
+        "p5": {
+          "subjectId": "sub_bqsrxt80y3u",
+          "lab": true
+        }
+      },
+      "4": {
+        "p1": {
+          "subjectId": "sub_i5t7wh50y3u",
+          "lab": false
+        },
+        "p2": {
+          "subjectId": "sub_4vs9dur0y3u",
+          "lab": false
+        },
+        "p3": {
+          "subjectId": "sub_1wko1560y3u",
+          "lab": false
+        },
+        "p4": {
+          "subjectId": "sub_k51ftbd0y3u",
+          "lab": false
+        }
+      },
+      "5": {
+        "p1": {
+          "subjectId": "sub_islz4ao0y3u",
+          "lab": false
+        },
+        "p2": {
+          "subjectId": "sub_i5t7wh50y3u",
+          "lab": false
+        },
+        "p4": {
+          "subjectId": "sub_4vs9dur0y3u",
+          "lab": false
+        },
+        "p5": {
+          "subjectId": "sub_wya39xd0y3u",
+          "lab": true
+        }
+      },
+      "6": {
+        "p2": {
+          "subjectId": "sub_1wko1560y3u",
+          "lab": false
+        },
+        "p3": {
+          "subjectId": "sub_i5t7wh50y3u",
+          "lab": false
+        }
+      }
+    },
+    "calendar": {
+      "sources": [
+        {
+          "id": "src_pdy9ipb0y3u",
+          "title": "Manipal University Jaipur — Academic Calendar 2026-27",
+          "url": "https://jaipur.manipal.edu/img/pdf/academicrules/AC-calender-2026-27.pdf",
+          "fetchedAt": "2026-10-12",
+          "kind": "pdf"
+        }
+      ],
+      "entries": [
+        {
+          "id": "cal_8tb9fia0y3u",
+          "type": "holiday",
+          "start": "2026-08-15",
+          "end": "2026-08-15",
+          "title": "Independence Day",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_0nbesls0y3u",
+          "type": "holiday",
+          "start": "2026-08-28",
+          "end": "2026-08-28",
+          "title": "Raksha Bandhan",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_ko8petf0y3u",
+          "type": "holiday",
+          "start": "2026-09-04",
+          "end": "2026-09-04",
+          "title": "Janmashtami",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_5h6lkew0y3u",
+          "type": "working-swap",
+          "start": "2026-09-10",
+          "end": "2026-09-10",
+          "title": "Friday timetable (swapped day)",
+          "swapDay": 6,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_ft4j2800y3u",
+          "type": "exam",
+          "start": "2026-09-18",
+          "end": "2026-09-25",
+          "title": "Mid-term exams (MTE)",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_jtxjquy0y3u",
+          "type": "holiday",
+          "start": "2026-10-02",
+          "end": "2026-10-02",
+          "title": "Gandhi Jayanti",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_ntlbmry0y3u",
+          "type": "working-swap",
+          "start": "2026-10-14",
+          "end": "2026-10-14",
+          "title": "Friday timetable (swapped day)",
+          "swapDay": 6,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_b0kpyvj0y3u",
+          "type": "holiday",
+          "start": "2026-10-20",
+          "end": "2026-10-20",
+          "title": "Dussehra",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_u66scnj0y3u",
+          "type": "holiday",
+          "start": "2026-11-08",
+          "end": "2026-11-08",
+          "title": "Diwali",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_9c08x6a0y3u",
+          "type": "holiday",
+          "start": "2026-11-09",
+          "end": "2026-11-09",
+          "title": "Govardhan Puja",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_g0b7e0q0y3u",
+          "type": "holiday",
+          "start": "2026-11-11",
+          "end": "2026-11-11",
+          "title": "Bhai Dooj",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_2ok2ysz0y3u",
+          "type": "exam",
+          "start": "2026-11-18",
+          "end": "2026-12-02",
+          "title": "End-term exams (ETE)",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_sno8yie0y3u",
+          "type": "holiday",
+          "start": "2026-12-25",
+          "end": "2026-12-25",
+          "title": "Christmas",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_s92yidq0y3u",
+          "type": "holiday",
+          "start": "2027-01-14",
+          "end": "2027-01-14",
+          "title": "Makar Sankranti",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_jgxi2sf0y3u",
+          "type": "holiday",
+          "start": "2027-01-26",
+          "end": "2027-01-26",
+          "title": "Republic Day",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        },
+        {
+          "id": "cal_fz6keeu0y3u",
+          "type": "holiday",
+          "start": "2027-03-22",
+          "end": "2027-03-22",
+          "title": "Holi",
+          "swapDay": null,
+          "sourceId": "src_pdy9ipb0y3u"
+        }
+      ]
+    },
+    "records": [
+      {
+        "id": "rec_8q7g6vw0y3w",
+        "date": "2026-07-23",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-23T09:30:00.000Z"
+      },
+      {
+        "id": "rec_w2o2x400y3w",
+        "date": "2026-07-23",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-23T09:30:00.000Z"
+      },
+      {
+        "id": "rec_iar5zly0y3w",
+        "date": "2026-07-23",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-07-23T09:30:00.000Z"
+      },
+      {
+        "id": "rec_nqajwm70y3w",
+        "date": "2026-07-23",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-23T09:30:00.000Z"
+      },
+      {
+        "id": "rec_babuu7j0y3w",
+        "date": "2026-07-24",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_gitdyxq0y3w",
+        "date": "2026-07-24",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_prqztza0y3w",
+        "date": "2026-07-24",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6wey3ss0y3w",
+        "date": "2026-07-24",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_lscpj7h0y3w",
+        "date": "2026-07-25",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jlii3fh0y3w",
+        "date": "2026-07-25",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6zprrjs0y3w",
+        "date": "2026-07-27",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_b5hgnjn0y3w",
+        "date": "2026-07-27",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_bu7c0zn0y3w",
+        "date": "2026-07-27",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5pgkd8a0y3w",
+        "date": "2026-07-27",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_euc0o120y3w",
+        "date": "2026-07-28",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_2bgbne70y3w",
+        "date": "2026-07-28",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_rrof7eg0y3w",
+        "date": "2026-07-28",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-07-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_08n373z0y3w",
+        "date": "2026-07-28",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_tpyaec90y3w",
+        "date": "2026-07-29",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_2dniyc20y3w",
+        "date": "2026-07-29",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_s94rdoe0y3w",
+        "date": "2026-07-29",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h4iwpvm0y3w",
+        "date": "2026-07-29",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-07-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_e1sbhjn0y3w",
+        "date": "2026-07-30",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_et9kkvs0y3w",
+        "date": "2026-07-30",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_bo48rm90y3w",
+        "date": "2026-07-30",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-07-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h8y9wwo0y3w",
+        "date": "2026-07-30",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_tm55t340y3w",
+        "date": "2026-07-31",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_0asjb480y3w",
+        "date": "2026-07-31",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-07-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_tqz3h640y3w",
+        "date": "2026-07-31",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_77b1ta40y3w",
+        "date": "2026-07-31",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-07-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dp7jn1b0y3w",
+        "date": "2026-08-01",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_g9dkadq0y3w",
+        "date": "2026-08-01",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ovnixfr0y3w",
+        "date": "2026-08-03",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_4i0legm0y3w",
+        "date": "2026-08-03",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_b80s5720y3w",
+        "date": "2026-08-03",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_bzwqdo80y3w",
+        "date": "2026-08-03",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_t0i4ch00y3w",
+        "date": "2026-08-04",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-04T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h5z6agg0y3w",
+        "date": "2026-08-04",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-04T09:30:00.000Z"
+      },
+      {
+        "id": "rec_kpa6tyk0y3w",
+        "date": "2026-08-04",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-04T09:30:00.000Z"
+      },
+      {
+        "id": "rec_nhf015f0y3w",
+        "date": "2026-08-04",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-04T09:30:00.000Z"
+      },
+      {
+        "id": "rec_t1flmob0y3w",
+        "date": "2026-08-05",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_qflk0s40y3w",
+        "date": "2026-08-05",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_68xk24u0y3w",
+        "date": "2026-08-05",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6dw1kzk0y3w",
+        "date": "2026-08-05",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_u1s7fu00y3w",
+        "date": "2026-08-06",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_yo1138n0y3w",
+        "date": "2026-08-06",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_i4h12dz0y3w",
+        "date": "2026-08-06",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_iwa6z5u0y3w",
+        "date": "2026-08-06",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ncz4sxt0y3w",
+        "date": "2026-08-07",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6hn3j570y3w",
+        "date": "2026-08-07",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_7dpur6b0y3w",
+        "date": "2026-08-07",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_124i5gv0y3w",
+        "date": "2026-08-07",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_4ms8eoz0y3w",
+        "date": "2026-08-08",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_p1t1ww10y3w",
+        "date": "2026-08-08",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_bf6akud0y3w",
+        "date": "2026-08-10",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_mpjka0p0y3w",
+        "date": "2026-08-10",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_7xf860p0y3w",
+        "date": "2026-08-10",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jvyj5jg0y3w",
+        "date": "2026-08-10",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x2cemtt0y3w",
+        "date": "2026-08-11",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_2eumg160y3w",
+        "date": "2026-08-11",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-08-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6bpi7ru0y3w",
+        "date": "2026-08-11",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6jptkic0y3w",
+        "date": "2026-08-11",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_22fmt970y3w",
+        "date": "2026-08-12",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_7g96j5r0y3w",
+        "date": "2026-08-12",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5mp8b2z0y3w",
+        "date": "2026-08-12",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_nqnb7bh0y3w",
+        "date": "2026-08-12",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ru5gbs80y3w",
+        "date": "2026-08-13",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_kh7cl890y3w",
+        "date": "2026-08-13",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x52uwok0y3w",
+        "date": "2026-08-13",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h3qy9d20y3w",
+        "date": "2026-08-13",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-13T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wqscyoq0y3w",
+        "date": "2026-08-14",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_kcwxq250y3w",
+        "date": "2026-08-14",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_exytryh0y3w",
+        "date": "2026-08-14",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xb21wvh0y3w",
+        "date": "2026-08-14",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xhi5sv30y3w",
+        "date": "2026-08-17",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_9ljiqs80y3w",
+        "date": "2026-08-17",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_md6ce280y3w",
+        "date": "2026-08-17",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_i82sh7n0y3w",
+        "date": "2026-08-17",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_eso64480y3w",
+        "date": "2026-08-18",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-18T09:30:00.000Z"
+      },
+      {
+        "id": "rec_lyoa1it0y3w",
+        "date": "2026-08-18",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-18T09:30:00.000Z"
+      },
+      {
+        "id": "rec_uxb5e5i0y3w",
+        "date": "2026-08-18",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-18T09:30:00.000Z"
+      },
+      {
+        "id": "rec_0ocxgin0y3w",
+        "date": "2026-08-18",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-18T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dpod64s0y3w",
+        "date": "2026-08-19",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-19T09:30:00.000Z"
+      },
+      {
+        "id": "rec_rbswzeu0y3w",
+        "date": "2026-08-19",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-19T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x0gj27s0y3w",
+        "date": "2026-08-19",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-19T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wnhr02p0y3w",
+        "date": "2026-08-19",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-19T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wuht9q30y3w",
+        "date": "2026-08-20",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-20T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6ffycaj0y3w",
+        "date": "2026-08-20",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-20T09:30:00.000Z"
+      },
+      {
+        "id": "rec_orsp97u0y3w",
+        "date": "2026-08-20",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-20T09:30:00.000Z"
+      },
+      {
+        "id": "rec_152wkd00y3w",
+        "date": "2026-08-20",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-20T09:30:00.000Z"
+      },
+      {
+        "id": "rec_y4sjmb60y3w",
+        "date": "2026-08-21",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-21T09:30:00.000Z"
+      },
+      {
+        "id": "rec_77qy8mo0y3w",
+        "date": "2026-08-21",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-21T09:30:00.000Z"
+      },
+      {
+        "id": "rec_3vv1est0y3w",
+        "date": "2026-08-21",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-21T09:30:00.000Z"
+      },
+      {
+        "id": "rec_t58tw4u0y3w",
+        "date": "2026-08-21",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-21T09:30:00.000Z"
+      },
+      {
+        "id": "rec_2jh2grm0y3w",
+        "date": "2026-08-22",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-22T09:30:00.000Z"
+      },
+      {
+        "id": "rec_8l2q5rg0y3w",
+        "date": "2026-08-22",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-22T09:30:00.000Z"
+      },
+      {
+        "id": "rec_yc42tzs0y3w",
+        "date": "2026-08-24",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ejamngs0y3w",
+        "date": "2026-08-24",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_u20m9qn0y3w",
+        "date": "2026-08-24",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dcfm1q40y3w",
+        "date": "2026-08-24",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-24T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h0620i70y3w",
+        "date": "2026-08-25",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wzaxh3v0y3w",
+        "date": "2026-08-25",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_vk2wbvx0y3w",
+        "date": "2026-08-25",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jtyyc5q0y3w",
+        "date": "2026-08-25",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-25T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6u43lyk0y3w",
+        "date": "2026-08-26",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wz83mz90y3w",
+        "date": "2026-08-26",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_0crfmgj0y3w",
+        "date": "2026-08-26",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_t2gva6v0y3w",
+        "date": "2026-08-26",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_n19znz40y3w",
+        "date": "2026-08-27",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xrxzi3q0y3w",
+        "date": "2026-08-27",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_oyxirq10y3w",
+        "date": "2026-08-27",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_hzv31rl0y3w",
+        "date": "2026-08-27",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-27T09:30:00.000Z"
+      },
+      {
+        "id": "rec_qbx7p3d0y3w",
+        "date": "2026-08-29",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_k31oyfb0y3w",
+        "date": "2026-08-29",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_m3s6jt60y3w",
+        "date": "2026-08-31",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "leave",
+        "note": "",
+        "at": "2026-08-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_os5mf1s0y3w",
+        "date": "2026-08-31",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-08-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ne7pli10y3w",
+        "date": "2026-08-31",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_q8kv9580y3w",
+        "date": "2026-08-31",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-08-31T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xekc7mk0y3w",
+        "date": "2026-09-01",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_74qhk2d0y3x",
+        "date": "2026-09-01",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jyhbw0m0y3x",
+        "date": "2026-09-01",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_7dbu5b10y3x",
+        "date": "2026-09-01",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_1tt6jej0y3x",
+        "date": "2026-09-02",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "leave",
+        "note": "",
+        "at": "2026-09-02T09:30:00.000Z"
+      },
+      {
+        "id": "rec_qyjs6o80y3x",
+        "date": "2026-09-02",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-02T09:30:00.000Z"
+      },
+      {
+        "id": "rec_chxbgb00y3x",
+        "date": "2026-09-02",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-02T09:30:00.000Z"
+      },
+      {
+        "id": "rec_8hbpo9g0y3x",
+        "date": "2026-09-02",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-02T09:30:00.000Z"
+      },
+      {
+        "id": "rec_d3r3f3g0y3x",
+        "date": "2026-09-03",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ggyg5oh0y3x",
+        "date": "2026-09-03",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_rif7po10y3x",
+        "date": "2026-09-03",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6xhdkya0y3x",
+        "date": "2026-09-03",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wsgz5f20y3x",
+        "date": "2026-09-05",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5gdamy90y3x",
+        "date": "2026-09-05",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xov8pig0y3x",
+        "date": "2026-09-07",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ytah0pw0y3x",
+        "date": "2026-09-07",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_h4ahq6a0y3x",
+        "date": "2026-09-07",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ags0i0u0y3x",
+        "date": "2026-09-07",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5m8gtty0y3x",
+        "date": "2026-09-08",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jpy9xlq0y3x",
+        "date": "2026-09-08",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_vg7uoph0y3x",
+        "date": "2026-09-08",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ct2qz3q0y3x",
+        "date": "2026-09-08",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_zjf59c60y3x",
+        "date": "2026-09-09",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-09-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xcnswcs0y3x",
+        "date": "2026-09-09",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_vzb033d0y3x",
+        "date": "2026-09-09",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wosv5780y3x",
+        "date": "2026-09-09",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_gl4cizp0y3x",
+        "date": "2026-09-10",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_oi9l9vh0y3x",
+        "date": "2026-09-10",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_pfn2i6s0y3x",
+        "date": "2026-09-11",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_f6sijy80y3x",
+        "date": "2026-09-11",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_fc8iyn50y3x",
+        "date": "2026-09-11",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_3m6bp860y3x",
+        "date": "2026-09-11",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-11T09:30:00.000Z"
+      },
+      {
+        "id": "rec_8gl2oef0y3x",
+        "date": "2026-09-12",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_igutkhy0y3x",
+        "date": "2026-09-12",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-09-12T09:30:00.000Z"
+      },
+      {
+        "id": "rec_pyb6iis0y3x",
+        "date": "2026-09-14",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_w2icr630y3x",
+        "date": "2026-09-14",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_4ofaotw0y3x",
+        "date": "2026-09-14",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_f7uaxf10y3x",
+        "date": "2026-09-14",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-14T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5u6lwrl0y3x",
+        "date": "2026-09-15",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-15T09:30:00.000Z"
+      },
+      {
+        "id": "rec_wguj9kz0y3x",
+        "date": "2026-09-15",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-15T09:30:00.000Z"
+      },
+      {
+        "id": "rec_oaigz8b0y3x",
+        "date": "2026-09-15",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-15T09:30:00.000Z"
+      },
+      {
+        "id": "rec_919lnqp0y3x",
+        "date": "2026-09-15",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-15T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x17k3ub0y3x",
+        "date": "2026-09-16",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-16T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jszyn2j0y3x",
+        "date": "2026-09-16",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-16T09:30:00.000Z"
+      },
+      {
+        "id": "rec_plyp0u30y3x",
+        "date": "2026-09-16",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-16T09:30:00.000Z"
+      },
+      {
+        "id": "rec_c3h7u3e0y3x",
+        "date": "2026-09-16",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-16T09:30:00.000Z"
+      },
+      {
+        "id": "rec_k2yi9790y3x",
+        "date": "2026-09-17",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_pp10fc90y3x",
+        "date": "2026-09-17",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ztz5r0z0y3x",
+        "date": "2026-09-17",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_9j8zy3s0y3x",
+        "date": "2026-09-17",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-17T09:30:00.000Z"
+      },
+      {
+        "id": "rec_1rhnigi0y3x",
+        "date": "2026-09-26",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-09-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ciyr95d0y3x",
+        "date": "2026-09-26",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "leave",
+        "note": "",
+        "at": "2026-09-26T09:30:00.000Z"
+      },
+      {
+        "id": "rec_yqd17tp0y3x",
+        "date": "2026-09-28",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_6kckkuu0y3x",
+        "date": "2026-09-28",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_clnufkm0y3x",
+        "date": "2026-09-28",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_d0obwsi0y3x",
+        "date": "2026-09-28",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "leave",
+        "note": "",
+        "at": "2026-09-28T09:30:00.000Z"
+      },
+      {
+        "id": "rec_fsarzob0y3x",
+        "date": "2026-09-29",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dool11r0y3x",
+        "date": "2026-09-29",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-09-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x5uka1e0y3x",
+        "date": "2026-09-29",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_fojfkz90y3x",
+        "date": "2026-09-29",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-29T09:30:00.000Z"
+      },
+      {
+        "id": "rec_1r02zy70y3x",
+        "date": "2026-09-30",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_sskbpnr0y3x",
+        "date": "2026-09-30",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ibo8pri0y3x",
+        "date": "2026-09-30",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-09-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_8qqx5wa0y3x",
+        "date": "2026-09-30",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "leave",
+        "note": "",
+        "at": "2026-09-30T09:30:00.000Z"
+      },
+      {
+        "id": "rec_iobxerg0y3x",
+        "date": "2026-10-01",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-10-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_9e4kn6b0y3x",
+        "date": "2026-10-01",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_28rjtbt0y3x",
+        "date": "2026-10-01",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_dfv0ost0y3x",
+        "date": "2026-10-01",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-01T09:30:00.000Z"
+      },
+      {
+        "id": "rec_r48hi5v0y3x",
+        "date": "2026-10-03",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-10-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5top8vh0y3x",
+        "date": "2026-10-03",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-03T09:30:00.000Z"
+      },
+      {
+        "id": "rec_1dqhobn0y3x",
+        "date": "2026-10-05",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "1:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_stz5min0y3x",
+        "date": "2026-10-05",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "1:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-10-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_t0nutke0y3x",
+        "date": "2026-10-05",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "1:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_eqtqlve0y3x",
+        "date": "2026-10-05",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "1:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-05T09:30:00.000Z"
+      },
+      {
+        "id": "rec_5bisutj0y3x",
+        "date": "2026-10-06",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "2:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_0tdp7be0y3x",
+        "date": "2026-10-06",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "2:p2",
+        "kind": "lecture",
+        "status": "cancelled",
+        "note": "",
+        "at": "2026-10-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_gajifhz0y3x",
+        "date": "2026-10-06",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "2:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_xsf1z7f0y3x",
+        "date": "2026-10-06",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "2:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-06T09:30:00.000Z"
+      },
+      {
+        "id": "rec_1vrmda90y3x",
+        "date": "2026-10-07",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "3:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_jd2yu3s0y3x",
+        "date": "2026-10-07",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "3:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_razhihm0y3x",
+        "date": "2026-10-07",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "3:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_fg0dd6b0y3x",
+        "date": "2026-10-07",
+        "subjectId": "sub_bqsrxt80y3u",
+        "slotKey": "3:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-07T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ka6nzcy0y3x",
+        "date": "2026-10-08",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "4:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_799ro320y3x",
+        "date": "2026-10-08",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "4:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_9dp9syk0y3x",
+        "date": "2026-10-08",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "4:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_hqurn6d0y3x",
+        "date": "2026-10-08",
+        "subjectId": "sub_k51ftbd0y3u",
+        "slotKey": "4:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-08T09:30:00.000Z"
+      },
+      {
+        "id": "rec_w4wouqy0y3x",
+        "date": "2026-10-09",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": "5:p1",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_ipo0jjr0y3x",
+        "date": "2026-10-09",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "5:p2",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_x4033bj0y3x",
+        "date": "2026-10-09",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": "5:p4",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_j51lkqc0y3x",
+        "date": "2026-10-09",
+        "subjectId": "sub_wya39xd0y3u",
+        "slotKey": "5:p5",
+        "kind": "lab",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-09T09:30:00.000Z"
+      },
+      {
+        "id": "rec_z9nilw90y3x",
+        "date": "2026-10-10",
+        "subjectId": "sub_1wko1560y3u",
+        "slotKey": "6:p2",
+        "kind": "lecture",
+        "status": "absent",
+        "note": "",
+        "at": "2026-10-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_hnckx4r0y3x",
+        "date": "2026-10-10",
+        "subjectId": "sub_i5t7wh50y3u",
+        "slotKey": "6:p3",
+        "kind": "lecture",
+        "status": "present",
+        "note": "",
+        "at": "2026-10-10T09:30:00.000Z"
+      },
+      {
+        "id": "rec_e0tn3d80y3x",
+        "date": "2026-10-06",
+        "subjectId": "sub_islz4ao0y3u",
+        "slotKey": null,
+        "kind": "extra",
+        "status": "present",
+        "note": "Makeup class",
+        "at": "2026-10-12T11:53:14.925Z"
+      },
+      {
+        "id": "rec_77moy070y3x",
+        "date": "2026-10-01",
+        "subjectId": "sub_4vs9dur0y3u",
+        "slotKey": null,
+        "kind": "extra",
+        "status": "absent",
+        "note": "Extra tutorial",
+        "at": "2026-10-12T11:53:14.925Z"
+      }
+    ],
+    "ocr": {
+      "images": []
+    }
+  }
+}

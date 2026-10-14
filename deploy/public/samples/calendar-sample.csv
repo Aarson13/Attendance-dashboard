@@ -1,0 +1,11 @@
+type,start,end,title,swap_day
+holiday,2026-08-15,2026-08-15,Independence Day,
+holiday,2026-10-02,2026-10-02,Gandhi Jayanti,
+holiday,2026-10-20,2026-10-20,Dussehra,
+holiday,2026-11-08,2026-11-09,Diwali + Govardhan Puja,
+exam,2026-09-18,2026-09-25,Mid-term exams,
+working-swap,2026-09-10,2026-09-10,Thursday follows the Friday timetable,6
+suspended,2026-10-14,2026-10-14,Class suspended for institute event,
+
+# type: holiday | exam | suspended | working-swap
+# working-swap needs swap_day (1=Mon … 6=Sat): that date follows the named weekday's timetable.

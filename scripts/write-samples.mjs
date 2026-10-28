@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * write-samples.mjs — regenerate samples/ from the same sources the app uses, so the files people
+ * write-samples.mjs - regenerate samples/ from the same sources the app uses, so the files people
  * download can never drift from what the app actually imports.
  *
  * Usage: npm run samples

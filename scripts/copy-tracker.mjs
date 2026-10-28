@@ -1,4 +1,4 @@
-/* copy-tracker.mjs — the tracker (app.html + its plain CSS/JS) deliberately has no build step, so the
+/* copy-tracker.mjs - the tracker (app.html + its plain CSS/JS) deliberately has no build step, so the
  * home page's postbuild step copies those files into dist/ next to the built landing page. Serving
  * dist/ then gives the whole site: the home page at / and the tracker at /app.html.
  *
@@ -24,7 +24,7 @@ async function exists(target) {
 }
 
 if (!(await exists(dist))) {
-  console.error('dist/ not found — run `npm run build` (vite build) first.');
+  console.error('dist/ not found - run `npm run build` (vite build) first.');
   process.exit(1);
 }
 
@@ -38,4 +38,4 @@ for (const dir of DIRS) {
   copied++;
 }
 
-console.log(`copied the tracker into dist/ (${FILES.length} files, ${DIRS.join(', ')}) — the site is ready to serve`);
+console.log(`copied the tracker into dist/ (${FILES.length} files, ${DIRS.join(', ')}) - the site is ready to serve`);

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-/** True once the page has scrolled past `threshold` — the nav uses it to stop being transparent. */
+/** True once the page has scrolled past `threshold` - the nav uses it to stop being transparent. */
 export function useScrolled(threshold = 12) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -27,7 +27,7 @@ export function usePrefersReducedMotion() {
 
 /**
  * Reveal-on-scroll: returns a ref plus the class names to spread on an element. With reduced motion
- * (or no IntersectionObserver) the element is simply visible — nothing is ever hidden without a way
+ * (or no IntersectionObserver) the element is simply visible - nothing is ever hidden without a way
  * to show it.
  */
 export function useReveal(index = 0) {

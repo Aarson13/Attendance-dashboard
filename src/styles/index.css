@@ -1,4 +1,4 @@
-/* index.css — the home page's design system.
+/* index.css - the home page's design system.
  *
  * Tailwind v4 reads the @theme block below, so every token here is both a CSS variable
  * (`var(--blur-outer)`) and a utility (`blur-outer`). Palette, blur values, radii and motion are
@@ -8,8 +8,8 @@
 @import 'tailwindcss';
 
 @theme {
-  /* — palette: black/navy, violet, lavender, white. Green/amber/red exist only as *data* states
-       (attendance bands, chips, the low-attendance alert), never as decoration. — */
+  /* - palette: black/navy, violet, lavender, white. Green/amber/red exist only as *data* states
+       (attendance bands, chips, the low-attendance alert), never as decoration. - */
   --color-ink: #05030f;
   --color-ink-deep: #000000;
   --color-violet: #6d4aff;
@@ -22,21 +22,21 @@
   --color-warn: #fbbf24;
   --color-low: #f87171;
 
-  /* — blur values, per ribbon layer — */
+  /* - blur values, per ribbon layer - */
   --blur-outer: 24px;
   --blur-middle: 35px;
   --blur-core: 16px;
   --blur-ambient: 100px;
   --blur-glass: 20px;
 
-  /* — radii — */
+  /* - radii - */
   --radius-card: 18px;
   --radius-pill: 999px;
 
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
     Arial, sans-serif;
 
-  /* — motion — */
+  /* - motion - */
   --ease-soft: cubic-bezier(0.45, 0.05, 0.55, 0.95);
   /* 9s and 10s: both inside the brief's 8–10s band, and deliberately not equal, so the glow and the
      shape never pulse in lockstep. */
@@ -128,7 +128,7 @@
 
      The width is min(940px, 150vw), not a flat 94vw, because on a phone the copy is nearly
      full-bleed: the gradient's opaque plateau only reaches 33% of the element's width, so a 94vw
-     veil left the first and last characters of every line sitting on bare ribbon — measured at
+     veil left the first and last characters of every line sitting on bare ribbon - measured at
      1.89:1 for the muted subtext at 390px wide. 150vw puts the plateau past both screen edges and
      leaves the desktop value untouched (940px), where the copy is 677px wide. */
   .hero-shield {

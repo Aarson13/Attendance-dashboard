@@ -1,7 +1,7 @@
-/* ui.js — state, helpers and the Today / Dashboard / Subjects / Tools views.
+/* ui.js - state, helpers and the Today / Dashboard / Subjects / Tools views.
  *
  * Rendering model: an action mutates S.data, saves, then re-renders the current view. Views are
- * plain functions of the data, so every number shown comes from AD.Calc — there is exactly one
+ * plain functions of the data, so every number shown comes from AD.Calc - there is exactly one
  * place where attendance is computed. Timetable, Calendar and Settings live in panels.js.
  */
 (function (global) {
@@ -40,7 +40,7 @@
   const projectionNote = (st) => {
     if (st.remaining > 0) return `If you miss all ${st.remaining} classes left this semester: ${pctText(st.projectedWorst)}. If you attend them all: ${pctText(st.projectedBest)}.`;
     if (st.TAdjusted) return `Nothing left to project: the semester plan (${st.TPlanned} classes) is already smaller than the ${st.t} classes held so far. Extend the semester dates or set Total T to forecast the rest of the term.`;
-    return `Nothing left to project — every one of the ${st.t} planned classes is counted, so the rest of the term just holds your current ${pctText(st.pct)}.`;
+    return `Nothing left to project - every one of the ${st.t} planned classes is counted, so the rest of the term just holds your current ${pctText(st.pct)}.`;
   };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
@@ -69,13 +69,13 @@
 
   /**
    * Every action ends here. The document in memory is the working copy; the cloud database is where
-   * it lives, so saving means pushing — pull (in case another device wrote), merge, push. Pushing on
+   * it lives, so saving means pushing - pull (in case another device wrote), merge, push. Pushing on
    * every interaction is what makes the database the single source of truth.
    */
   function save(message) {
     const Sync = A.Sync;
     if (S.readOnly) {
-      toast('Nothing is saved here — this is a view-only demo. Open the hosted site to track attendance.', 'warn', 8000);
+      toast('Nothing is saved here - this is a view-only demo. Open the hosted site to track attendance.', 'warn', 8000);
       return;
     }
     Sync.queueSync(S.data, { message: message || 'Mark attendance' }).catch((err) => {
@@ -125,7 +125,7 @@
     if (S.readOnly) {
       return `<div class="banner info"><strong>View-only demo</strong>
         This sample semester is held in memory for this visit and is not saved anywhere. Open the
-        hosted site to track your own attendance — every tap there is saved automatically.</div>`;
+        hosted site to track your own attendance - every tap there is saved automatically.</div>`;
     }
     return `<div class="banner info"><strong>Nothing set up yet</strong>
       Add your subjects in the <b>Subjects</b> tab, then fill the week in <b>Timetable</b> (click any cell) or import a CSV / screenshot.
@@ -204,7 +204,7 @@
 
     let statusBanner = '';
     if (plan.off) {
-      statusBanner = `<div class="banner info"><strong>No classes</strong>${esc(plan.titles.join(', ') || 'Off day')} — holidays, exam days and suspended days are skipped in every calculation.</div>`;
+      statusBanner = `<div class="banner info"><strong>No classes</strong>${esc(plan.titles.join(', ') || 'Off day')} - holidays, exam days and suspended days are skipped in every calculation.</div>`;
     } else if (plan.swap) {
       statusBanner = `<div class="banner info"><strong>${Calc.DAY_NAMES[plan.swap - 1]} timetable on a ${Calc.DAY_NAMES[plan.actualWeekday - 1]}</strong>${esc(plan.titles.join(', ') || 'Swapped day from your calendar')}</div>`;
     }
@@ -231,7 +231,7 @@
           ${['present', 'absent', 'leave', 'cancelled']
             .map(
               (status2) =>
-                `<button type="button" data-status="${status2}" aria-pressed="${status === status2}" data-act="mark" data-subject="${attr(cl.subjectId)}" data-slot="${attr(cl.slotKey || '')}" data-kind="${attr(cl.kind)}" data-date="${attr(date)}" data-mark="${status2}" title="${status2 === 'cancelled' ? 'Cancelled — not counted at all' : status2 === 'leave' ? (S.data.settings.leaveMode === 'exclude' ? 'Medical leave — excluded from the count' : 'Medical leave — counted as absent') : status2}">${status2 === 'cancelled' ? 'Cancelled' : status2 === 'leave' ? 'Leave' : status2[0].toUpperCase() + status2.slice(1)}</button>`,
+                `<button type="button" data-status="${status2}" aria-pressed="${status === status2}" data-act="mark" data-subject="${attr(cl.subjectId)}" data-slot="${attr(cl.slotKey || '')}" data-kind="${attr(cl.kind)}" data-date="${attr(date)}" data-mark="${status2}" title="${status2 === 'cancelled' ? 'Cancelled - not counted at all' : status2 === 'leave' ? (S.data.settings.leaveMode === 'exclude' ? 'Medical leave - excluded from the count' : 'Medical leave - counted as absent') : status2}">${status2 === 'cancelled' ? 'Cancelled' : status2 === 'leave' ? 'Leave' : status2[0].toUpperCase() + status2.slice(1)}</button>`,
             )
             .join('')}
         </div>
@@ -248,7 +248,7 @@
         : '';
 
     const subjectOptions = S.data.subjects
-      .map((s) => `<option value="${attr(s.id)}">${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`)
+      .map((s) => `<option value="${attr(s.id)}">${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</option>`)
       .join('');
 
     return `
@@ -355,7 +355,7 @@
             </select>
           </label>
         </div>
-        ${sorted.length ? sorted.map(subjectCard).join('') : '<div class="empty">No subjects yet — add them in the Subjects tab, or load the sample data in Settings.</div>'}
+        ${sorted.length ? sorted.map(subjectCard).join('') : '<div class="empty">No subjects yet - add them in the Subjects tab, or load the sample data in Settings.</div>'}
       </div>
       <div class="grid cols-2">
         <div class="card"><h3>Attendance per subject</h3><div id="chartBars"></div></div>
@@ -425,7 +425,7 @@
         const st = byId.get(s.id);
         const cls = st ? statusClass(st) : 'none';
         return `<tr data-id="${attr(s.id)}">
-          <td>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</td>
+          <td>${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</td>
           <td><input data-act="carried-field" data-field="a" type="number" min="0" step="1" value="${attr(raw.a == null ? 0 : raw.a)}" style="width:84px" aria-label="Classes attended before tracking" /></td>
           <td><input data-act="carried-field" data-field="t" type="number" min="0" step="1" value="${attr(raw.t == null ? 0 : raw.t)}" style="width:84px" aria-label="Classes held before tracking" /></td>
           <td class="nowrap"><span class="chip ${cls === 'bad' ? 'bad' : cls === 'warn' ? 'warn' : cls === 'ok' ? 'ok' : ''}">${pctText(st ? st.pct : null)}</span> ${impossible ? '<small class="muted">attended can&rsquo;t exceed held</small>' : ''}</td>
@@ -479,7 +479,7 @@
           <label class="field">Prev. held<input id="newSubjHeld" type="number" min="0" step="1" value="0" style="width:80px" title="Classes of this subject already held before tracking" /></label>
           <button class="primary" data-act="subj-add" type="button">Add subject</button>
         </div>
-        <p class="muted">Joining mid-semester? Fill Prev. attended / held from your portal — they join every calculation. Leave at 0 to start fresh.</p>
+        <p class="muted">Joining mid-semester? Fill Prev. attended / held from your portal - they join every calculation. Leave at 0 to start fresh.</p>
       </div>
       <div class="card">
         <div class="section-head">
@@ -487,7 +487,7 @@
           <span class="spacer"></span>
           <span class="muted">classes held before you started marking</span>
         </div>
-        <p class="muted">Your college portal already knows how many classes have been held and how many you attended for each subject. Type those two numbers here and they join <b>every</b> calculation — the percentage, safe misses, recovery, projections, overall and credit-weighted. Leave them at 0 if you are starting fresh.
+        <p class="muted">Your college portal already knows how many classes have been held and how many you attended for each subject. Type those two numbers here and they join <b>every</b> calculation - the percentage, safe misses, recovery, projections, overall and credit-weighted. Leave them at 0 if you are starting fresh.
         Only count classes you have <b>not</b> already marked in the Today tab: marked days are added on top. Keep the semester dates as the real ones so the semester plan (T) covers the whole term.</p>
         ${S.data.subjects.length ? `<div class="table-scroll">
           <table class="list" style="min-width:560px">
@@ -515,7 +515,7 @@
       simOut = `<dl class="stat-list">
           <div><dt>Now</dt><b>${pctText(pick.pct)} (${pick.a}/${pick.t})</b></div>
           <div><dt>After missing ${misses} more</dt><b class="${eff.safe ? 'pct ok' : 'pct bad'}">${pctText(eff.pct)} (${pick.a}/${pick.t + misses})</b></div>
-          <div><dt>Still ≥ ${(p() * 100).toFixed(0)}%?</dt><b>${eff.safe ? `yes — ${eff.buffer} more could go` : 'no, this drops you below'}</b></div>
+          <div><dt>Still ≥ ${(p() * 100).toFixed(0)}%?</dt><b>${eff.safe ? `yes - ${eff.buffer} more could go` : 'no, this drops you below'}</b></div>
           <div><dt>Break-even right now</dt><b>${breakpointNow} more miss${breakpointNow === 1 ? '' : 'es'} allowed</b></div>
         </dl>
         <p class="muted">${projectionNote(pick)}</p>`;
@@ -528,7 +528,7 @@
     if (S.plan) {
       if (!planClasses.length) {
         const planInfo = Calc.dayPlan(planDate, c);
-        planOut = `<div class="empty">No classes on ${Calc.fmtDayName(planDate)} ${Calc.fmtDate(planDate)}${planInfo.off ? ` — ${esc(planInfo.titles.join(', ') || 'off day')}` : ''}.</div>`;
+        planOut = `<div class="empty">No classes on ${Calc.fmtDayName(planDate)} ${Calc.fmtDate(planDate)}${planInfo.off ? ` - ${esc(planInfo.titles.join(', ') || 'off day')}` : ''}.</div>`;
       } else {
         planOut = `<table class="list"><thead><tr><th>Class</th><th>Your %</th><th>After skipping</th><th>Verdict</th></tr></thead><tbody>
           ${planClasses
@@ -557,7 +557,7 @@
         <div class="field-row">
           <label class="field">Subject
             <select data-act="sim-subject" data-id="sim-subject">
-              ${subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === simSubject ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('')}
+              ${subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === simSubject ? 'selected' : ''}>${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</option>`).join('')}
             </select>
           </label>
           <label class="field">Miss this many more<input id="simMisses" type="number" min="0" step="1" value="${attr(misses)}" style="width:92px" /></label>
@@ -603,7 +603,7 @@
     },
     'day-set': (el) => {
       if (!el.value || !/^\d{4}-\d{2}-\d{2}$/.test(el.value)) {
-        toast('That date does not look right — use the date picker.', 'warn');
+        toast('That date does not look right - use the date picker.', 'warn');
         return;
       }
       S.date = el.value;
@@ -624,7 +624,7 @@
       toast(
         current && current.status === mark
           ? `Cleared marking for ${esc(subjectTag(subjById(subject)))}.`
-          : `<b>${word}</b> — ${esc(subjectTag(subjById(subject)))}: ${pctText(st.pct)} (${st.a}/${st.t})${st.t && st.buffer != null ? st.buffer > 0 ? ` · ${st.buffer} safe miss${st.buffer === 1 ? '' : 'es'} left` : ' · no safe misses left' : ''}`,
+          : `<b>${word}</b> - ${esc(subjectTag(subjById(subject)))}: ${pctText(st.pct)} (${st.a}/${st.t})${st.t && st.buffer != null ? st.buffer > 0 ? ` · ${st.buffer} safe miss${st.buffer === 1 ? '' : 'es'} left` : ' · no safe misses left' : ''}`,
         mark === 'present' ? 'ok' : mark === 'absent' ? 'bad' : 'info',
       );
       global.AD.App.render();
@@ -652,7 +652,7 @@
       Store.addExtra(S.data, { date: S.date || todayISO(), subjectId: subject.value, status: el.dataset.status, kind: 'extra', note: note ? note.value.trim() : '' });
       save();
       const st = Calc.subjectStats(subjById(subject.value), ctx());
-      toast(`Extra class added — ${esc(subjectTag(subjById(subject.value)))}: ${pctText(st.pct)} (${st.a}/${st.t})`, 'ok');
+      toast(`Extra class added - ${esc(subjectTag(subjById(subject.value)))}: ${pctText(st.pct)} (${st.a}/${st.t})`, 'ok');
       global.AD.App.render();
     },
     'sort-set': (el) => {
@@ -736,7 +736,7 @@
       };
       const a = read('a');
       const t = read('t');
-      if (a > t) toast(`${esc(subjectTag(subject))}: attended can&rsquo;t be more than held — counting ${t} attended.`, 'warn', 7000);
+      if (a > t) toast(`${esc(subjectTag(subject))}: attended can&rsquo;t be more than held - counting ${t} attended.`, 'warn', 7000);
       subject.carried = { a, t };
       save();
       global.AD.App.render();

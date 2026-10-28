@@ -2,17 +2,17 @@
 
 Two pages, one repository:
 
-- **`/` — the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
+- **`/` - the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
 a glass dashboard preview underneath. React 19 + Vite + Tailwind v4, built to `dist/`.
-- **`/app.html` — the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
+- **`/app.html` - the tracker.** The actual product: static HTML/CSS/vanilla JS, no framework, no
 build step, no account. Your semester is kept as **one JSON document in this site's Cloudflare
-database** (nothing to set up — the first visit claims a space and keeps its key). Every
+database** (nothing to set up - the first visit claims a space and keeps its key). Every
 interaction pulls the document, applies the change and writes it back, so the database is the
 source of truth. Nothing about your attendance is stored in the browser.
 
 Both are built around one rule: **you need `p` % attendance in every subject** (`p` defaults to 75%
 and is editable). Every number on screen comes from the same formulas, and the academic calendar is
-*scraped* from the college's PDF rather than typed in by hand — with OCR kept as the fallback for
+*scraped* from the college's PDF rather than typed in by hand - with OCR kept as the fallback for
 notice-board photos.
 
 ---
@@ -25,7 +25,7 @@ npm install
 npm run dev          # Vite dev server: the home page at / and the tracker at /app.html
 ```
 
-Then open `/app.html` — there is nothing to configure. The first save claims a *space* in the
+Then open `/app.html` - there is nothing to configure. The first save claims a *space* in the
 site's database and keeps its key in that browser, and after that every tap marks a class and
 writes it, with the topbar chip telling you it happened. Export / Import JSON in Settings is the
 backup and the way to move semesters.
@@ -41,7 +41,7 @@ Then either press **Settings → Load sample semester** to explore a complete de
 **Subjects → add a subject**. The landing page's *Get started* / *View demo* buttons link to
 `./app.html` and `./app.html?demo=1`; the `?demo=1` URL offers the sample semester on arrival.
 
-The tracker alone needs no build at all — `npm run serve:tracker` serves this folder directly, and
+The tracker alone needs no build at all - `npm run serve:tracker` serves this folder directly, and
 `npx -y serve@14 -l 4173 .` (or `python -m http.server 4173`) does the same.
 
 > Opening the tracker straight from disk (`file://`) works for everything except OCR and the
@@ -67,7 +67,7 @@ The tracker alone needs no build at all — `npm run serve:tracker` serves this 
 
 Interaction contract, worth knowing before editing any view: **one `data-act` attribute, two event
 paths.** Buttons, links and images run their action on `click`; `input`/`select`/`textarea` run
-theirs on `change` only. The click delegate deliberately ignores form controls — running their
+theirs on `change` only. The click delegate deliberately ignores form controls - running their
 action on click would `preventDefault()` the file pickers into never opening and re-render the field
 under your cursor (native date pickers, sliders and dropdowns all break that way).
 
@@ -75,20 +75,20 @@ under your cursor (native date pickers, sliders and dropdowns all break that way
 
 ## Where your data lives
 
-The tracker's document — subjects, timetable, calendar, marks, settings — is one JSON object, and
+The tracker's document - subjects, timetable, calendar, marks, settings - is one JSON object, and
 it lives as a row in the site's own Cloudflare D1 database (`worker/api.js`, served by the
 same Worker that serves the static files):
 
 - **First use claims a space.** `POST /api/spaces` mints a space id and a key; the server stores
   only the SHA-256 of the key, and the browser keeps the pair. That is the whole credential model
-  — no account, no token, nothing typed.
+  - no account, no token, nothing typed.
 - **On every interaction** the document is pulled again, the change is applied, and the result is
   written back. The database is the source of truth.
 - **If another device wrote in the meantime**, the pull notices the `rev` moved, the two documents
   are merged (subjects and marks are unioned by id, with this device's values winning on a genuine
   clash) and the write retried once. A write that loses that race is never a silent overwrite.
 - **Screenshots ride in their own kind** (`images` vs `doc`, separate revisions) and are written only
-  when the set changes — otherwise every tap would push megabytes for nothing.
+  when the set changes - otherwise every tap would push megabytes for nothing.
 - **Failures are visible, not swallowed.** A refused key, a rate limit and a lost race each say what
   they are: the topbar chip turns red, a toast explains, and the change stays in memory marked as
   unsaved. The tracker never pretends a write succeeded, and it never quietly falls back to
@@ -96,12 +96,12 @@ same Worker that serves the static files):
 
 **What “no device storage” costs.** With nothing cached locally, a change that cannot reach the
 database lives in memory only: close the tab while offline and that tap is gone, which is why a
-failed save shouts instead of whispering. Migration is handled once — if an older version left
+failed save shouts instead of whispering. Migration is handled once - if an older version left
 data in `localStorage`, the app offers to fold it into the database and, only after that save
 succeeds, deletes it from the browser.
 
 **Trying it without an account:** the home page's *View demo* (`/app.html#demo`) loads the sample
-semester **in memory** — no writes, and every save says so.
+semester **in memory** - no writes, and every save says so.
 
 Local development runs the identical stack in workerd:
 
@@ -148,8 +148,8 @@ tests/home-data.test.mjs  the preview's maths, in Node
 [`src/styles/index.css`](src/styles/index.css), so each is both a CSS variable and a Tailwind
 utility: `--color-ink`, `--color-violet` (#6D4AFF), `--color-lavender` (#A78BFA), `--color-core`
 (#EFE7FF), `--blur-outer` (24px), `--blur-middle` (35px), `--blur-ambient` (100px), `--blur-glass`
-(20px), `--radius-card` (18px). Green/amber/red appear only as *data* states — attendance bands,
-chips and the low-attendance warning — never as decoration.
+(20px), `--radius-card` (18px). Green/amber/red appear only as *data* states - attendance bands,
+chips and the low-attendance warning - never as decoration.
 
 **The ribbon** is one closed cubic-Bézier bowtie path drawn three times, widest to narrowest (violet
 `flare 236`, lavender `flare 168 / inset 46`, near-white core `flare 34 / inset 150`), each layer
@@ -167,7 +167,7 @@ melts the flares into the page. Above and below the copy the hero fades to pure 
 | 1920px | white 15.8:1 · muted 6.2:1 |
 
 Those numbers come from rendering the page with the glyphs made transparent and measuring the
-brightest pixel inside each text element's own box — the pessimistic reading, i.e. what the letters
+brightest pixel inside each text element's own box - the pessimistic reading, i.e. what the letters
 actually sit on. 390px and 1440px were re-measured with every animated ribbon layer pinned at its
 *brightest* frame; the widths between them were measured mid-cycle, inside the same range. Keeping them above the 4.5:1 floor is the job of `.hero-shield`, a soft radial veil
 over the copy; it is the reason the middle of the ribbon is calmer than its glow either side
@@ -178,7 +178,7 @@ glow over 10s, so the two never lock together), the hero copy rises in on load, 
 stagger in as they scroll into view, and every animation collapses to nothing when the OS asks for
 reduced motion. Because the animated layers change how bright the ribbon is behind the copy, the
 contrast figures above were re-measured with **every layer pinned at its brightest frame**
-(`scale(1.035)`, glow 0.64, core 0.96) — the ceiling of the cycle, not one lucky instant.
+(`scale(1.035)`, glow 0.64, core 0.96) - the ceiling of the cycle, not one lucky instant.
 
 ---
 
@@ -195,11 +195,11 @@ These are implemented once, in [`js/calc.js`](js/calc.js), and unit-tested in
 - **Existing attendance** (`carried: { a, t }` per subject, entered in the *Subjects* tab) is what
   your portal already knew before you started marking here. It folds into `a` and `t` for every
   formula below, and it is *dateless*: it never shows up on one day, so it stays out of the heatmap
-  and out of every recorded date — but the trend line is seeded with it, which is why the line's
+  and out of every recorded date - but the trend line is seeded with it, which is why the line's
   last point always equals the dashboard tiles. If carried classes push `t` past the semester plan
   `T`, `T` is raised to `t` (and a warning tells you to fix the semester dates or set *Total T*),
   because more classes can never have been held than the plan contains.
-- **Cancelled classes are not counted anywhere** — they don't add to `t` and don't add to `T`.
+- **Cancelled classes are not counted anywhere** - they don't add to `t` and don't add to `T`.
 - **Holidays, exam windows and suspended days** are skipped automatically; a day from the calendar
   always beats the weekly timetable.
 - **`T`, scheduled classes this semester** = timetable cells falling on teaching days inside your
@@ -212,7 +212,7 @@ These are implemented once, in [`js/calc.js`](js/calc.js), and unit-tested in
 Per subject:
 
 ```
-current %          = a / t                                   (N/A when t = 0 — never a divide-by-zero)
+current %          = a / t                                   (N/A when t = 0 - never a divide-by-zero)
 safe misses left   = max(0, floor(a / p - t))
 attend in a row to recover = ceil((p*t - a) / (1 - p))        (only when below p)
 projected best     = (a + remaining) / T                      (attend everything left)
@@ -266,29 +266,29 @@ One object, exported as `{ app, version, exportedAt, data }`:
 
 ## How to use it
 
-1. **Subjects** — add each subject with credits and optional faculty. Classes-per-week defaults to
+1. **Subjects** - add each subject with credits and optional faculty. Classes-per-week defaults to
    the credit count until a timetable exists; *Total T* overrides the semester total if your
    college publishes one. Joining mid-semester? Type the two numbers your portal already shows into
-   **Existing attendance** (attended / held, per subject) — they count in every figure immediately,
+   **Existing attendance** (attended / held, per subject) - they count in every figure immediately,
    and *Clear* wipes a row back to 0. Don't double-count: only enter classes you have not already
    marked on the Today tab.
-2. **Timetable** — click any cell to assign a subject; tick *Lab* for a lab (it then spans that
+2. **Timetable** - click any cell to assign a subject; tick *Lab* for a lab (it then spans that
    period and the next, and counts once). Periods are editable under *Edit periods*.
    For bulk entry, describe the week in English in the **Quick add** box at the top of the tab
    (`CS2001 Mon 9-10, Wed 11-12`, `Mon: CS2001, MA2002, CS2005`); see below.
-3. **Calendar** — set the semester dates, press **Import this calendar** to load the scraped
+3. **Calendar** - set the semester dates, press **Import this calendar** to load the scraped
    Manipal snapshot, or add/import entries yourself (CSV/ICS/OCR). Types: holiday, exam period
    (no classes), classes suspended, and *extra working day / swapped timetable* (with the weekday it
    follows).
-4. **Today** — one tap per class: **Present / Absent / Leave / Cancelled**. Tap the same button again
+4. **Today** - one tap per class: **Present / Absent / Leave / Cancelled**. Tap the same button again
    to clear it. Move with ◀ ▶ or pick any date to fix past days. *Add an extra class* records
    make-up classes that aren't in the timetable.
-5. **Dashboard** — overall %, credit-weighted %, subjects at risk, "you can bunk today", per-subject
+5. **Dashboard** - overall %, credit-weighted %, subjects at risk, "you can bunk today", per-subject
    cards sorted most-at-risk-first (or by credits), a bar chart, a trend line, and a monthly
    heatmap you can click to jump into that day.
-6. **Tools** — the *what-if* simulator ("if I miss X more classes of Y…") and the *can I skip
+6. **Tools** - the *what-if* simulator ("if I miss X more classes of Y…") and the *can I skip
    tomorrow?* planner, which shows every class that day plus what skipping it does to that subject.
-7. **Settings → Export everything (JSON)** — do this before switching browsers or clearing site data.
+7. **Settings → Export everything (JSON)** - do this before switching browsers or clearing site data.
 
 ---
 
@@ -296,10 +296,10 @@ One object, exported as `{ app, version, exportedAt, data }`:
 
 - **In the app:** Settings → *Load sample semester* builds 7 subjects, a Mon–Sat timetable with two
   labs, the scraped Manipal calendar (holidays, MTE/ETE windows, two swapped "Friday timetable"
-  days) and ~2½ months of deterministic attendance — including one subject below the threshold, one
+  days) and ~2½ months of deterministic attendance - including one subject below the threshold, one
   borderline, cancelled classes, a medical-leave mark and two extra classes.
 - **On disk:** [`samples/sample-data.json`](samples/sample-data.json) is the same dataset as a
-  backup file — import it via Settings → *Import backup / calendar JSON*.
+  backup file - import it via Settings → *Import backup / calendar JSON*.
   Regenerate both files with `npm run samples`.
 - [`samples/calendar-sample.csv`](samples/calendar-sample.csv) is the calendar CSV template.
 
@@ -319,13 +319,13 @@ npm run sync:calendar -- \
 The script downloads the PDF (or an HTML calendar), reconstructs the month grid from the PDF's text
 coordinates, and writes:
 
-- `data/<label>.json` — importable: holidays, exam windows, swapped-timetable days, semester windows
-- `data/<label>.days.txt` — the raw day-by-day dump, for eyeballing before you trust it
-- `js/manipal-calendar.js` — the offline `<script>` bundle the app offers as *Bundled* in the
+- `data/<label>.json` - importable: holidays, exam windows, swapped-timetable days, semester windows
+- `data/<label>.days.txt` - the raw day-by-day dump, for eyeballing before you trust it
+- `js/manipal-calendar.js` - the offline `<script>` bundle the app offers as *Bundled* in the
   Calendar tab (regenerate it with `--emit-js` and reload the page)
 
 It prints warnings instead of guessing: duplicate festival labels, missing markers, unscannable
-PDFs. Anything it gets wrong is fixable by hand in the Calendar tab — the import never overwrites
+PDFs. Anything it gets wrong is fixable by hand in the Calendar tab - the import never overwrites
 your existing entries, and entries are deduplicated on type + dates + title.
 
 **Bundled snapshot:** Manipal University Jaipur's official *Academic Calendar 2026-27* (odd semester
@@ -334,7 +334,7 @@ and 14 Oct). Scraped 2026-10-12; the exact source URL and fetch date are shown i
 
 **MIT Manipal:** its calendar page currently publishes 2025-26 only
 (<https://www.manipal.edu/mit/mit-experience/academic-calendar.html>). Point the same command at
-that PDF (or at whichever campus applies) when a 2026-27 file appears — no code changes needed.
+that PDF (or at whichever campus applies) when a 2026-27 file appears - no code changes needed.
 
 **Fallback for notices (OCR):** photos of holiday lists and circulars can be read in the Calendar
 tab. Dates are parsed into a review table (type / from / to / title, all editable, each row
@@ -349,28 +349,28 @@ The Timetable tab opens with one box that reads plain English:
 ```
 CS2001 Mon 9-10, Wed 11-12       one subject, twice a week
 Mon-Fri P1 CS2001                every weekday, first period
-Mon: CS2001, MA2002, CS2005      a whole day's column — P1, P2, P3 in order
+Mon: CS2001, MA2002, CS2005      a whole day's column - P1, P2, P3 in order
 DSA Lab Thu 2-4                  an afternoon lab
 Fri 3:30 CS2004                  a time the grid rounds to a period
 ```
 
-It parses as you type and shows every slot it worked out — day, period, resolved subject, lab —
+It parses as you type and shows every slot it worked out - day, period, resolved subject, lab -
 before anything is written. Four chips (Day, Time, Subject, Lab) light up as each part of the
 sentence is recognised, *Add to timetable* stays off while a row still needs a subject, and each row
 can be corrected (subject, lab, drop) right there. Parsing is `js/magic.js`: a pure function of the
 text and the document, with no network and no model, so the box stays instant and offline. Nothing is
 written until you press Add, and then it is one commit like any other edit.
 
-- **Days** — `Mon`, `Monday`, `Tue & Thu`, `Mon-Fri` (Sunday is not a school day).
-- **Times** — `9-10`, `09:00-10:00`, `2-4` (afternoon), `3:30`, `9am`; or a period: `P2`,
+- **Days** - `Mon`, `Monday`, `Tue & Thu`, `Mon-Fri` (Sunday is not a school day).
+- **Times** - `9-10`, `09:00-10:00`, `2-4` (afternoon), `3:30`, `9am`; or a period: `P2`,
   `period 3`, or a lone `3`. A time that only *rounds* to a period says which one it picked.
-- **Subjects** — by code, full name or a distinctive part of one, through a fuzzy matcher.
+- **Subjects** - by code, full name or a distinctive part of one, through a fuzzy matcher.
   A near-miss is pre-selected but marked *unsure*; anything unplaceable comes back
-  red with a subject picker and *create a new subject from this text* — never a silent guess.
+  red with a subject picker and *create a new subject from this text* - never a silent guess.
 - **Guesses are named, not hidden.** A day column typed without times fills the periods in order and
   says it did; a line that leaves out the time keeps the one before it, marked *same time as the line
   before*; a lab in the last period is flagged because it cannot span two. A line it cannot place at
-  all — no day, no time, a repeated slot, Sunday — is explained instead of dropped.
+  all - no day, no time, a repeated slot, Sunday - is explained instead of dropped.
 
 ---
 
@@ -379,14 +379,14 @@ written until you press Add, and then it is one commit like any other edit.
 - Attendance lives in **this site's own database** and nowhere else: no account with us. The app
   talks to its own `/api` plus the one-time Tesseract.js download (engine + English model, from a
   CDN) when you run OCR, and the hosting platform's own usage beacon
-  (`static.cloudflareinsights.com`, cookieless, injected into every page it serves — blocking it
+  (`static.cloudflareinsights.com`, cookieless, injected into every page it serves - blocking it
   made the host unable to account for the site and it suspended serving, which is why it is
   allowed).
 - The app needs nothing else: no token, no paste, no setup.
 - With no local copy, the app is honest about needing the network: the shell and the OCR engine are
   cached by `sw.js`, so it *opens* offline, but until a save reaches the database the topbar chip
   says it has not been saved.
-- Add it to a phone home screen — `manifest.webmanifest` + `icon.svg` are included.
+- Add it to a phone home screen - `manifest.webmanifest` + `icon.svg` are included.
 
 ---
 
@@ -394,21 +394,21 @@ written until you press Add, and then it is one commit like any other edit.
 
 Small app, small attack surface: no account, no third-party JavaScript at runtime except the one OCR
 engine, and a backend of one Worker whose API is a space claim plus a conditional write
-(`worker/api.js`) — the only state it holds is the document and a hash of the key that guards it.
+(`worker/api.js`) - the only state it holds is the document and a hash of the key that guards it.
 The pieces that are not obvious from the code:
 
 - **The policy is in `app.html`** (a meta CSP, since the app is static): the only script origins are
   the app's own files and `cdn.jsdelivr.net`, no inline script exists, `object-src`/`base-uri`/
   `form-action` are closed, and `connect-src` lists the site itself plus the two OCR hosts. The landing
   page carries the parts of the policy that cannot fight the Vite dev server
-  (`index.html`), and `_headers` adds the rest for hosts that read it — `X-Content-Type-Options`,
+  (`index.html`), and `_headers` adds the rest for hosts that read it - `X-Content-Type-Options`,
   `Referrer-Policy`, `X-Frame-Options`/`frame-ancestors` and a real CSP header per page. Plain static
   hosts ignore `_headers`, so there the meta policy is what you get.
 - **The CDN script is pinned twice**: `js/ocr.js` loads `tesseract.js@6.0.1` with a `sha384` integrity
   hash, so a substituted CDN response is refused by the browser instead of executed. Bumping the
   version means recomputing that hash (the comment above the loader says how).
 - **Source URLs are scheme-checked, never merely escaped.** `escapeHtml` cannot make
-  `javascript:alert(1)` safe — it is valid HTML — so the only place a URL becomes an `href`
+  `javascript:alert(1)` safe - it is valid HTML - so the only place a URL becomes an `href`
   (`js/panels.js`) goes through `Store.safeUrl`, and `Store.normalize` strips a non-http(s) URL as it
   reads the document, so a hostile one never reaches the DOM at all.
 - **Files this app did not write are treated as untrusted**: `Store.normalize` and `Sync.merge`
@@ -432,7 +432,7 @@ buffer, recovery, projections, the overall and credit-weighted totals and the tr
 impossible pairs (attended > held) are clamped rather than believed, and junk in a hand-edited backup
 is repaired on import. Two of the 29 go at the untrusted edges instead: a document full of
 prototype-shaped keys is normalised without touching `Object.prototype`, and a non-http(s) source URL
-(including a `JaVaScRiPt:` one) is dropped by `Store.safeUrl` — both on import and in a scraped
+(including a `JaVaScRiPt:` one) is dropped by `Store.safeUrl` - both on import and in a scraped
 snapshot. The engine files are dependency-free and DOM-free on purpose, which
 is what makes them testable; `js/app.js` is the one file that needs a DOM, so its event wiring is
 verified in a browser rather than here.
@@ -451,7 +451,7 @@ inheriting the day and time before it, days and times paired when both are liste
 readings (`2-4` is 14:00, and `3:30` says it rounds into P6), a spoken period and a lone number, an
 unknown subject handed back for a decision, a partial name matched against a rough one flagged
 unsure, a bare `lab` keeping the subject from the line before, repeated slots keeping the last one,
-a lab called out in the last period, warnings for the lines it cannot place — and that `Magic.apply`
+a lab called out in the last period, warnings for the lines it cannot place - and that `Magic.apply`
 writes the same cell shape the grid editor does, which the app's own scheduler then reads back.
 
 `tests/sync.test.mjs` adds 12 for the sync client, against a scripted `/api`: nothing needs
@@ -461,7 +461,7 @@ writes once more**; screenshots ride in their own kind and an unchanged set cost
 missing document is a first run, not an error; a refused key is an `auth` error that turns the chip
 red; simultaneous interactions collapse to the newest state while a later one still commits; a dead
 network is a `network` error that leaves the change flagged as unsaved; the merge unions subjects
-and marks by id — and refuses a prototype-shaped remote document rather than adopting its keys;
+and marks by id - and refuses a prototype-shaped remote document rather than adopting its keys;
 and `file://` stays unconfigured, since it has no database to talk to.
 
 ## Repository layout
@@ -491,12 +491,12 @@ tests/  calc.test.mjs  home-data.test.mjs  sync.test.mjs  magic.test.mjs  worker
 - Calendar data belongs to the college; the bundled file is MUJ's published 2026-27 PDF, included to
   make the demo work out of the box.
 - Known limits: nothing is cached on the device, so an interaction made while the database is
-  unreachable survives reload only if the save eventually succeeds — the app says so loudly rather
+  unreachable survives reload only if the save eventually succeeds - the app says so loudly rather
   than pretending, and the alternative (a local cache) is exactly what this design avoids; export a
   JSON backup now and then, since it is also the way to move semesters; the hero's copy sits over the brightest part of the ribbon, so the veil that keeps it
-  at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side — the shape is
+  at ≥4.5:1 is also what makes the ribbon's middle dimmer than its glow either side - the shape is
   visible around the text, not through it; calendar-notice OCR expects reasonably straight photos;
   the scraper understands Manipal-style month-grid PDFs and falls back to a
   readable day dump for other layouts; charts are deliberately simple SVG; the home page's sample
   semester is illustrative data in `src/data/attendance.js`, not the tracker's own `localStorage`
-  state, so the two never need to agree; there is no multi-device sync — export/import is the sync.
+  state, so the two never need to agree; there is no multi-device sync - export/import is the sync.

@@ -1,7 +1,7 @@
-/* magic.js — the natural-language timetable entry ("quick add").
+/* magic.js - the natural-language timetable entry ("quick add").
  *
  * One line of English in, timetable cells out: "CS2001 Mon 9-10, Wed 11-12" or "Mon: CS2001, MA2002"
- * or "DSA Lab Thu 2-4". Parsing is pure and local — no network, no OCR — and it *never writes*: it
+ * or "DSA Lab Thu 2-4". Parsing is pure and local - no network, no OCR - and it *never writes*: it
  * answers with rows + warnings + a guidance error, the panel renders that live as you type, and the
  * user presses Add. Anything the parser had to guess (a time that only rounds to a period, a day
  * column typed without times) comes back flagged `assumed` and is named in the warnings, so a guess
@@ -19,7 +19,7 @@
   'use strict';
 
   const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  /** Words that are grammar, never part of a subject name — stripped from the ends of what's left. */
+  /** Words that are grammar, never part of a subject name - stripped from the ends of what's left. */
   const CONNECTORS = new Set(['add', 'put', 'at', 'on', 'in', 'for', 'from', 'to', 'till', 'until', 'the', 'a', 'an', 'of', 'and', 'with', 'my', 'new', 'every', 'each', 'all', 'class', 'classes', 'lecture', 'lectures', 'please', 'timing', 'time', 'onwards']);
   const LAB_WORD = /\b(labs?|practicals?|pracs?|tutorials?|tuts?|workshops?|studios?)\b/i;
   const SUNDAY = /^(sun|sunday)$/i;
@@ -95,7 +95,7 @@
 
   /**
    * A clock time → the period it belongs to. Exact start beats exact end beats "inside" beats
-   * "within ten minutes of a start" — each weaker step is reported through `how` so the preview can
+   * "within ten minutes of a start" - each weaker step is reported through `how` so the preview can
    * say that it rounded ("your 11:00 → P3, which starts 11:05").
    */
   function periodByTime(time, periods, opts) {
@@ -213,7 +213,7 @@
 
     const cleaned = cleanLabel(text.replace(/\s+/g, ' ').trim());
     // "lab" on its own is a kind, not a name: "CS2001 Mon 9-10, Fri P2 lab" means the same subject
-    // again, on Friday, as a lab — so the name is left empty and inherited from the line before.
+    // again, on Friday, as a lab - so the name is left empty and inherited from the line before.
     const named = cleaned.replace(new RegExp(LAB_WORD.source, 'gi'), ' ').replace(/\s+/g, ' ').trim();
     return { days, specs, text: named ? cleaned : '', lab: LAB_WORD.test(raw), sunday };
   }
@@ -248,7 +248,7 @@
     const subjects = (data && data.subjects) || [];
     const periods = (settings.periods || []).filter((p) => p && p.start).slice().sort(byStart);
     if (!periods.length) {
-      out.error = 'No periods are set up yet — add them under “Edit periods” below first.';
+      out.error = 'No periods are set up yet - add them under “Edit periods” below first.';
       return out;
     }
     const labelOf = (periodId) => {
@@ -263,7 +263,7 @@
     let skippedSunday = false;
 
     for (const segment of text.split(/\n|;/).map((s) => s.trim()).filter(Boolean)) {
-      // "Mon: CS2001, MA2002" — a day (or day list) colon, then one subject per line of that day
+      // "Mon: CS2001, MA2002" - a day (or day list) colon, then one subject per line of that day
       let body = segment;
       let column = null;
       const colon = /^([^:]{0,60}):\s*(.+)$/.exec(segment);
@@ -295,7 +295,7 @@
 
         let specs = item.specs.slice();
         if (!specs.length && shared && (item.days.length || column)) specs = [shared];
-        // "… Mon 9-10 CS2001, Wed" — a bare follow-up keeps the time it belongs to
+        // "… Mon 9-10 CS2001, Wed" - a bare follow-up keeps the time it belongs to
         if (!specs.length && carry.spec && (!item.text || (subject && subject.id === carry.subjectId))) specs = [{ period: carry.spec.period, how: 'same', text: '' }];
         if (!specs.length && column) {
           const per = periods[Math.min(index, periods.length - 1)];
@@ -304,11 +304,11 @@
         }
 
         if (!days.length) {
-          out.warnings.push(`“${segment}” doesn't name a day — add “Mon”, “Tue & Thu” or “Mon-Fri”.`);
+          out.warnings.push(`“${segment}” doesn't name a day - add “Mon”, “Tue & Thu” or “Mon-Fri”.`);
           return;
         }
         if (!specs.length) {
-          out.warnings.push(`${subjectText || 'That line'} on ${dayName(days[0])}: no time — add “9-10” or “P2”.`);
+          out.warnings.push(`${subjectText || 'That line'} on ${dayName(days[0])}: no time - add “9-10” or “P2”.`);
           return;
         }
 
@@ -317,7 +317,7 @@
             ? (() => {
                 const n = Math.min(days.length, specs.length);
                 if (days.length !== specs.length) {
-                  out.warnings.push(`“${segment}” reads as ${days.length} day(s) and ${specs.length} time(s) — paired the first ${n} in order.`);
+                  out.warnings.push(`“${segment}” reads as ${days.length} day(s) and ${specs.length} time(s) - paired the first ${n} in order.`);
                 }
                 return days.slice(0, n).map((day, i) => [day, specs[i]]);
               })()
@@ -343,14 +343,14 @@
           const key = `${day}:${row.periodId}`;
           if (seenAt[key] != null) {
             const name = subject ? subject.name : subjectText || 'that line';
-            out.warnings.push(`${dayName(day)} ${labelOf(row.periodId)} was given twice — kept “${name}”.`);
+            out.warnings.push(`${dayName(day)} ${labelOf(row.periodId)} was given twice - kept “${name}”.`);
             out.rows[seenAt[key]] = row;
           } else {
             seenAt[key] = out.rows.length;
             out.rows.push(row);
           }
           if (isLab && periods.indexOf(spec.period) === periods.length - 1) {
-            const note = `${labelOf(spec.period.id)} is the last period of the day — a lab there can't span two periods.`;
+            const note = `${labelOf(spec.period.id)} is the last period of the day - a lab there can't span two periods.`;
             if (!spanWarned.has(note)) {
               spanWarned.add(note);
               out.warnings.push(note);
@@ -371,12 +371,12 @@
     for (const day of Object.keys(assumed)) {
       out.warnings.push(`${dayName(Number(day))}: no times given, so ${listify(assumed[day])} were filled in order.`);
     }
-    if (skippedSunday) out.warnings.push('Sunday is not one of your school days — that line was skipped.');
+    if (skippedSunday) out.warnings.push('Sunday is not one of your school days - that line was skipped.');
 
     if (!out.rows.length) {
       out.error = skippedSunday
-        ? 'Sunday is not a school day — try a Monday to Saturday slot.'
-        : 'Nothing to add yet — try “CS2001 Mon 9-10, Wed 11-12”.';
+        ? 'Sunday is not a school day - try a Monday to Saturday slot.'
+        : 'Nothing to add yet - try “CS2001 Mon 9-10, Wed 11-12”.';
     }
     return out;
   }
@@ -384,7 +384,7 @@
   /**
    * Write parsed rows into a timetable, in the same cell shape the CSV importer and the grid editor
    * use ({ subjectId, lab }), so nothing downstream can tell them apart. A row whose subject is still
-   * unresolved is skipped and counted — the panel refuses the Add button before it gets here.
+   * unresolved is skipped and counted - the panel refuses the Add button before it gets here.
    */
   function apply(rows, data) {
     let applied = 0;

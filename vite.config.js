@@ -18,7 +18,7 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    // The tracker lives at /app.html in dev too — no copy step needed while developing. Its built-in
+    // The tracker lives at /app.html in dev too - no copy step needed while developing. Its built-in
     // sync talks to /api on this origin, so in dev that is proxied to `npm run dev:api` (wrangler dev
     // on 8787, with a local D1) next door; with nothing listening there, sync reports a network error.
     proxy: { '/api': 'http://127.0.0.1:8787' },

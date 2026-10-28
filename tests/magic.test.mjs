@@ -143,7 +143,7 @@ test('magic: lines it cannot place are explained instead of dropped', () => {
 
   const noTime = Magic.parse('CS2001 Tue', data);
   assert.equal(noTime.rows.length, 0);
-  assert.match(noTime.warnings[0], /no time — add “9-10” or “P2”/);
+  assert.match(noTime.warnings[0], /no time - add “9-10” or “P2”/);
 
   const sunday = Magic.parse('Sun 9-10 CS2001', data);
   assert.equal(sunday.rows.length, 0);

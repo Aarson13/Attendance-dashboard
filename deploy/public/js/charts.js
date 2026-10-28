@@ -1,4 +1,4 @@
-/* charts.js — tiny SVG chart renderers (bar, trend line, month heatmap).
+/* charts.js - tiny SVG chart renderers (bar, trend line, month heatmap).
  * Hand-rolled SVG keeps the app dependency-free so it works offline from the first load.
  */
 (function (global) {
@@ -25,7 +25,7 @@
     clear(host);
     const p = (opts && opts.threshold) || 0.75;
     if (!items.length) {
-      host.innerHTML = '<p class="empty">No subjects yet — add a subject and mark some attendance.</p>';
+      host.innerHTML = '<p class="empty">No subjects yet - add a subject and mark some attendance.</p>';
       return;
     }
     const rowH = 34;
@@ -101,7 +101,7 @@
         class: `heatmap-day k-${kind}${date === today ? ' is-today' : ''}`,
         type: 'button',
         'data-date': date,
-        title: info ? `${date} — ${info.title}` : date,
+        title: info ? `${date} - ${info.title}` : date,
         'aria-label': info ? `${date}: ${info.title}` : `${date}: no classes`,
       }, [String(d)]);
       if (onPick) cell.addEventListener('click', () => onPick(date));

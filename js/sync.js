@@ -1,4 +1,4 @@
-/* sync.js — the only place that talks to the network.
+/* sync.js - the only place that talks to the network.
  *
  * Attendance is not kept on this device. The document lives as one JSON object in this site's
  * Cloudflare D1 database (worker/api.js, tables `spaces` + `docs`), and every interaction pulls it,
@@ -37,7 +37,7 @@
   /* ---------- device state ---------- */
   let cloud = { space: '', key: '' };
   let provisioning = null;
-  let baseRev = 0; // the rev we last read or wrote — required by the next PUT
+  let baseRev = 0; // the rev we last read or wrote - required by the next PUT
   let imagesRev = 0;
 
   const state = { status: 'idle', error: null, pulled: false, lastSyncAt: null, pending: false, message: '' };
@@ -72,11 +72,11 @@
     writeStore(CLOUD_KEY, cloud.space && cloud.key ? JSON.stringify(cloud) : null);
   }
 
-  /** False only where there is no same-origin API to talk to (file://) — everywhere else just works. */
+  /** False only where there is no same-origin API to talk to (file://) - everywhere else just works. */
   const isConfigured = () => typeof global.location === 'undefined' || global.location.protocol !== 'file:';
   const describe = () => 'cloud database';
 
-  /** Claims a space on the server — the first visit, or after the key was forgotten. */
+  /** Claims a space on the server - the first visit, or after the key was forgotten. */
   async function provisionSpace() {
     let res;
     try {
@@ -86,7 +86,7 @@
         body: '{}',
       });
     } catch (err) {
-      throw new SyncError('network', 'Could not reach the cloud database — check the connection.', err.message);
+      throw new SyncError('network', 'Could not reach the cloud database - check the connection.', err.message);
     }
     if (!res.ok) throw new SyncError('bad-response', `The database answered ${res.status} while claiming a space.`);
     const body = await res.json();
@@ -120,7 +120,7 @@
     try {
       res = await global.fetch(`${API_BASE}${target}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
     } catch (err) {
-      throw new SyncError('network', 'Could not reach the cloud database — check the connection.', err.message);
+      throw new SyncError('network', 'Could not reach the cloud database - check the connection.', err.message);
     }
     if (res.status === 404) return { status: 404, res: null };
     if (res.status === 409) return { status: 409, res: await res.json() };
@@ -133,16 +133,16 @@
       detail = res.statusText || '';
     }
     if (res.status === 401 || res.status === 403) {
-      throw new SyncError('auth', 'The database refused this device\u2019s key — its saved space is no longer valid.', detail);
+      throw new SyncError('auth', 'The database refused this device\u2019s key - its saved space is no longer valid.', detail);
     }
-    if (res.status === 429) throw new SyncError('rate-limit', 'The database is limiting this device for a moment — syncing resumes shortly.', detail);
-    throw new SyncError('bad-response', `The database answered ${res.status}${detail ? ` — ${detail}` : ''}.`, detail);
+    if (res.status === 429) throw new SyncError('rate-limit', 'The database is limiting this device for a moment - syncing resumes shortly.', detail);
+    throw new SyncError('bad-response', `The database answered ${res.status}${detail ? ` - ${detail}` : ''}.`, detail);
   }
 
   /* ---------- transport ---------- */
   /** Reads one document kind. Returns null when nothing has been written yet (the first push creates it). */
   async function readDoc(kind) {
-    if (!isConfigured()) throw new SyncError('not-configured', 'Open the hosted site to save attendance — file:// has no database to talk to.');
+    if (!isConfigured()) throw new SyncError('not-configured', 'Open the hosted site to save attendance - file:// has no database to talk to.');
     const creds = await ensureCloud();
     const got = await cloudCall('GET', `/api/doc?space=${encodeURIComponent(creds.space)}&kind=${kindOf(kind)}`);
     if (got.status === 404 || !got.res || !got.res.data) return null;
@@ -199,8 +199,8 @@
 
   /**
    * Pull, merge if the remote moved under us, push. The document this device holds is the working
-   * copy. Every failure is recorded in the state before it is rethrown, so whoever called this — a
-   * tap, a retry — the status chip tells the same story.
+   * copy. Every failure is recorded in the state before it is rethrown, so whoever called this - a
+   * tap, a retry - the status chip tells the same story.
    */
   async function sync(data, opts) {
     try {
@@ -217,7 +217,7 @@
   }
 
   async function runSync(data, opts) {
-    if (!isConfigured()) throw new SyncError('not-configured', 'Open the hosted site to save attendance — file:// has no database to talk to.');
+    if (!isConfigured()) throw new SyncError('not-configured', 'Open the hosted site to save attendance - file:// has no database to talk to.');
 
     emit({ status: 'syncing', error: null, message: '' });
     let pulled = false;
@@ -308,7 +308,7 @@
     });
   }
 
-  /** Forgets this device's space and starts over — used by the tests and by "Erase everything". */
+  /** Forgets this device's space and starts over - used by the tests and by "Erase everything". */
   function disconnect() {
     cloud = { space: '', key: '' };
     persistCloud();

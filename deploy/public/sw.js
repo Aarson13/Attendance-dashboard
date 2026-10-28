@@ -1,11 +1,11 @@
-/* sw.js — offline support.
+/* sw.js - offline support.
  * The tracker has no build step; its document lives in the site's cloud database, so "works
  * offline after first load" means caching the shell here plus whatever Tesseract.js pulls from
  * its CDN the first time you run OCR. Only active when the page is served over http(s); file://
  * pages have no service workers.
  */
 // v2: the app moved from index.html to app.html, so an installed shell has to be replaced rather than
-// reused — the cache name is the only signal the browser gives an existing install.
+// reused - the cache name is the only signal the browser gives an existing install.
 // v3: the sync client joined the shell.
 // v5: the sync client is cloud-only now (js/sync.js replaces js/github.js), so an installed
 // shell has to be replaced rather than reused.

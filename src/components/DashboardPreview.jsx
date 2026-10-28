@@ -35,7 +35,7 @@ export default function DashboardPreview() {
         <GlassCard index={8} className="mt-5 flex flex-wrap items-center justify-between gap-4 p-5">
           <p className="text-sm text-muted">
             Add your subjects, drop in the timetable, mark classes in one tap. Your semester is a JSON
-            file in your own GitHub repository — one commit per tap, no server of ours in the middle.
+            file in your own GitHub repository - one commit per tap, no server of ours in the middle.
           </p>
           <a className="btn btn-white !px-5 !py-2.5 text-sm" href="./app.html">
             Open the tracker

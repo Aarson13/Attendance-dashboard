@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * sync-calendar.mjs — scrape a Manipal-style academic calendar into an importable JSON snapshot.
+ * sync-calendar.mjs - scrape a Manipal-style academic calendar into an importable JSON snapshot.
  *
  * Why this exists: the academic calendar is the one part of the app that changes outside our
  * control, so it is refreshed by scraping the official PDF/HTML "every once in a while" instead
- * of typing dates by hand. The app itself never fetches anything — you import the JSON this
+ * of typing dates by hand. The app itself never fetches anything - you import the JSON this
  * script writes (Calendar → Import). `--emit-js` additionally writes a plain <script> bundle so
  * the app can offer it offline / from file://.
  *
@@ -19,7 +19,7 @@
  *        --label mit-2025-26
  *
  * Output: data/<label>.json (importable), data/<label>.days.txt (raw day-by-day dump for review),
- * and optionally a JS bundle. Always eyeball the dump before trusting a new snapshot — the parser
+ * and optionally a JS bundle. Always eyeball the dump before trusting a new snapshot - the parser
  * prints warnings for duplicates and misses instead of silently guessing.
  */
 import fs from 'node:fs';
@@ -127,7 +127,7 @@ async function readPdfGrid(buffer, opts) {
   return days;
 }
 
-/** Plain-text fallback for HTML calendars: keep lines that look like "14 Aug 2026 — Holiday". */
+/** Plain-text fallback for HTML calendars: keep lines that look like "14 Aug 2026 - Holiday". */
 function readHtmlLines(buffer) {
   const html = buffer.toString('utf8');
   const text = html
@@ -212,7 +212,7 @@ function buildSnapshot({ days, label, title, url, kind }) {
     const m = +start.slice(5, 7);
     semesters.push({ name: `${m <= 6 ? 'Even' : 'Odd'} semester ${start.slice(0, 4)}`, start, end });
   }
-  if (!semesters.length) notes.push('semester windows not found — set start/end manually in Settings');
+  if (!semesters.length) notes.push('semester windows not found - set start/end manually in Settings');
 
   // Informational observances (not holidays).
   for (const [date, text] of [...joined].sort()) {
@@ -248,7 +248,7 @@ async function main() {
   const matched = days.filter((d) => d.date).length;
   console.log(`fetched ${buffer.length} bytes (${kind}); extracted ${days.length} text items, ${matched} dated`);
   if (kind === 'pdf' && matched === 0) {
-    console.error('No text layer found — this PDF is probably a scan. Run OCR-lite by exporting the page as an image and using the in-app calendar OCR instead.');
+    console.error('No text layer found - this PDF is probably a scan. Run OCR-lite by exporting the page as an image and using the in-app calendar OCR instead.');
     process.exit(1);
   }
 
@@ -262,7 +262,7 @@ async function main() {
     days.filter((d) => d.date).map((d) => `${d.date}  ${d.text}`).join('\n') +
       (snap.notes.length ? `\n\n-- notes --\n${snap.notes.join('\n')}\n` : '\n'),
   );
-  console.log(`wrote ${path.join(outDir, `${label}.json`)} — ${snap.entries.length} entries; review ${path.join(outDir, `${label}.days.txt`)}`);
+  console.log(`wrote ${path.join(outDir, `${label}.json`)} - ${snap.entries.length} entries; review ${path.join(outDir, `${label}.days.txt`)}`);
   console.log(`semesters: ${snap.semesters.map((s) => `${s.name} ${s.start}..${s.end}`).join(' | ') || 'none'}`);
   if (snap.notes.length) console.log(`notes:\n  ${snap.notes.join('\n  ')}`);
 

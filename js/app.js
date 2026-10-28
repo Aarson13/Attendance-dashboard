@@ -1,4 +1,4 @@
-/* app.js — bootstrap and event wiring for the whole page.
+/* app.js - bootstrap and event wiring for the whole page.
  * Views render as full HTML strings (see ui.js/panels.js); this file only decides *when* to render
  * and routes clicks/changes/drops to AD.Ui.actions.
  */
@@ -235,7 +235,7 @@
   let lastPullAt = 0;
 
   /**
-   * Startup order: pull first, then let anything be edited. Nothing is read from this device — the
+   * Startup order: pull first, then let anything be edited. Nothing is read from this device - the
    * one exception is a snapshot an older version left in localStorage, which is folded into the
    * database once and then deleted here.
    */
@@ -244,7 +244,7 @@
     const legacy = Store.localSnapshot();
     // The landing page's "View demo" button. Both forms are accepted because static hosts differ:
     // `?demo=1` survives on GitHub Pages, while a clean-URL server (the project's own `npm run serve`)
-    // answers /app.html?demo=1 with a 301 to /app and drops the query — the fragment is kept.
+    // answers /app.html?demo=1 with a 301 to /app and drops the query - the fragment is kept.
     const wantsDemo = new URLSearchParams(global.location.search).get('demo') === '1' || global.location.hash.replace('#', '') === 'demo';
 
     if (!Sync.isConfigured()) {
@@ -255,7 +255,7 @@
       if (wantsDemo) S.data = A.Sample.build(Ui.todayISO());
       App.applyTheme();
       App.render(true);
-      Ui.toast('Opened from a file — open the hosted site and your attendance is saved automatically.', 'info', 12000);
+      Ui.toast('Opened from a file - open the hosted site and your attendance is saved automatically.', 'info', 12000);
       return;
     }
 
@@ -280,7 +280,7 @@
           Store.clearLocal();
           Ui.toast('Data from the previous version is now in the cloud database, and has been removed from this browser.', 'ok', 10000);
         })
-        .catch(() => Ui.toast('Moved the old local data into memory, but saving it failed — it is still on this device until that succeeds.', 'bad', 15000));
+        .catch(() => Ui.toast('Moved the old local data into memory, but saving it failed - it is still on this device until that succeeds.', 'bad', 15000));
     }
 
     App.applyTheme();
@@ -289,11 +289,11 @@
     if (wantsDemo && !S.readOnly) {
       setTimeout(() => Ui.actions['load-sample'](), 350);
     } else if (!S.data.subjects.length && !S.data.records.length && !S.readOnly) {
-      setTimeout(() => Ui.toast('Saving is live — every tap is stored in the cloud database. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.', 'info', 9000), 700);
+      setTimeout(() => Ui.toast('Saving is live - every tap is stored in the cloud database. Start with <b>Subjects</b>, or load the sample semester from <b>Settings</b>.', 'info', 9000), 700);
     }
   }
 
-  /** Pull (never push) — used when the tab regains focus. */
+  /** Pull (never push) - used when the tab regains focus. */
   App.refresh = async function refresh() {
     const Sync = A.Sync;
     if (S.readOnly || !Sync.isConfigured()) return;
@@ -338,7 +338,7 @@
     }
     chip.className = `sync-chip ${kind}`;
     chip.textContent = label;
-    chip.title = ['cloud database', state.error ? state.error.message : '', state.message].filter(Boolean).join(' — ');
+    chip.title = ['cloud database', state.error ? state.error.message : '', state.message].filter(Boolean).join(' - ');
   }
 
   function timeAgo(iso) {

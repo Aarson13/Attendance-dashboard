@@ -1,5 +1,5 @@
 /* Tests for the home page's data layer: the percentage formula, the configurable 75% minimum, the
- * colour bands and the recovery/safe-miss maths — the numbers the landing page draws.
+ * colour bands and the recovery/safe-miss maths - the numbers the landing page draws.
  * Run: npm test  (node --test)
  */
 import { test } from 'node:test';

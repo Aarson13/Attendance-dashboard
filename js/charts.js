@@ -1,4 +1,4 @@
-/* charts.js — tiny SVG chart renderers (bar, trend line, month heatmap).
+/* charts.js - tiny SVG chart renderers (bar, trend line, month heatmap).
  * Hand-rolled SVG keeps the app dependency-free so it works offline from the first load.
  */
 (function (global) {
@@ -25,7 +25,7 @@
     clear(host);
     const p = (opts && opts.threshold) || 0.75;
     if (!items.length) {
-      host.innerHTML = '<p class="empty">No subjects yet — add a subject and mark some attendance.</p>';
+      host.innerHTML = '<p class="empty">No subjects yet - add a subject and mark some attendance.</p>';
       return;
     }
     const rowH = 34;
@@ -83,7 +83,7 @@
   /**
    * Month heatmap. days: [{date, kind, title}] where kind ∈ present | absent | cancelled | off | unmarked | none.
    * Clicking a day calls opts.onPick(date).
-   * NOTE: built with document.createElement, not the SVG helper above — these are real HTML buttons
+   * NOTE: built with document.createElement, not the SVG helper above - these are real HTML buttons
    * so keyboard focus, Enter/Space activation and screen-reader semantics all work.
    */
   function heatmap(host, { month, days, today, onPick }) {
@@ -110,7 +110,7 @@
       const cell = html('button', `heatmap-day k-${kind}${date === today ? ' is-today' : ''}`, String(d));
       cell.type = 'button';
       cell.dataset.date = date;
-      cell.title = info ? `${date} — ${info.title}` : date;
+      cell.title = info ? `${date} - ${info.title}` : date;
       cell.setAttribute('aria-label', info ? `${date}: ${info.title}` : `${date}: no classes`);
       if (onPick) cell.addEventListener('click', () => onPick(date));
       grid.appendChild(cell);

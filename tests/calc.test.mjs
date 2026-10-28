@@ -207,7 +207,7 @@ test('recovery rounds down the float noise, never up', () => {
   const s = Calc.subjectStats(ctx.data.subjects[0], ctx);
   assert.equal(s.a, 35);
   assert.equal(s.t, 40);
-  // (0.9 × 40 − 35) / 0.1 computes as 10.000000000000036 — ceil() must not report 11
+  // (0.9 × 40 − 35) / 0.1 computes as 10.000000000000036 - ceil() must not report 11
   assert.equal(s.mustAttend, 10, 'binary floating point must not inflate the recovery target');
 });
 

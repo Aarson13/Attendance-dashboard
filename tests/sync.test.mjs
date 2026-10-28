@@ -1,5 +1,5 @@
 /* Tests for the sync client: the tracker talking to this site's own database (worker/api.js).
- * There is nothing to configure — the first save claims a space and keeps the key — so what is
+ * There is nothing to configure - the first save claims a space and keeps the key - so what is
  * pinned here is the transport: claiming a space, carrying the key, the rev that orders the writes,
  * the two document kinds, a lost race that merges and retries, and what a wrong key feels like.
  * Run: npm test  (node --test)
@@ -66,7 +66,7 @@ function database({ failSpaces } = {}) {
   return { spaces, docs, calls, puts: () => calls.filter((c) => c.method === 'PUT'), gets: () => calls.filter((c) => c.method === 'GET') };
 }
 
-/** A first visitor: no space, no key, nothing configured — and nothing needs to be. */
+/** A first visitor: no space, no key, nothing configured - and nothing needs to be. */
 function fresh() {
   Sync.disconnect();
 }

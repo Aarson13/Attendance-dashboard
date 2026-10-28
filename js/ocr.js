@@ -1,4 +1,4 @@
-/* ocr.js — in-browser OCR for academic-calendar notices, plus the fuzzy subject matcher
+/* ocr.js - in-browser OCR for academic-calendar notices, plus the fuzzy subject matcher
  * the timetable quick-add uses.
  *
  * Privacy: images are read with FileReader, preprocessed on a <canvas> and sent to a Tesseract
@@ -15,7 +15,7 @@
   const CDN = 'https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js';
   // Subresource Integrity for that exact file (tesseract.js 6.0.1, dist/tesseract.min.js, 62961 bytes).
   // Pinning the version decides *which* file arrives; this decides that the bytes are the published
-  // ones — the script runs in the app's origin, where the sync token may be. Recompute it when the
+  // ones - the script runs in the app's origin, where the sync token may be. Recompute it when the
   // version is bumped, or the loader refuses to run (which is the honest failure for a changed file):
   //   curl -s <url> | openssl dgst -sha384 -binary | openssl base64 -A
   const CDN_SRI = 'sha384-r1ru3tcf6FhnCFR4B7pIFG+BhFF9LlFtz/P1y4pblWn3AGs9y3lBx5SKLNf4+rED';
@@ -45,7 +45,7 @@
         s.crossOrigin = 'anonymous';
       }
       s.onload = () => (global.Tesseract ? resolve(global.Tesseract) : reject(new Error('Tesseract loaded but the global is missing.')));
-      s.onerror = () => reject(new Error('Could not load tesseract.js from the CDN. Check your connection — OCR needs one online run, then the service worker caches it.'));
+      s.onerror = () => reject(new Error('Could not load tesseract.js from the CDN. Check your connection - OCR needs one online run, then the service worker caches it.'));
       document.head.appendChild(s);
     });
     return loader;
@@ -75,7 +75,7 @@
    * The crop sliders are read off the preview, so they are authored in rotated space; a quarter
    * turn maps that rectangle back to the source with swapped axes. Canvas rotation is clockwise
    * for positive angles, which is what the four cases below assume.
-   * Pure arithmetic — exported so the unit tests can pin down all four rotations.
+   * Pure arithmetic - exported so the unit tests can pin down all four rotations.
    */
   function sourceRect(nw, nh, rot, crop) {
     const r = ((rot % 360) + 360) % 360;
@@ -269,7 +269,7 @@
 
   /* ---------- academic-calendar dates ---------- */
   /**
-   * Pull date ranges out of OCR text. Returns candidate rows for review — always editable, never
+   * Pull date ranges out of OCR text. Returns candidate rows for review - always editable, never
    * applied directly. `year` is the semester's starting year; early months roll into the next year.
    */
   function parseDates(lines, opts) {
@@ -318,7 +318,7 @@
       if (!text) continue;
 
       // "15 August 2026" / "15 Aug - 20 Aug 2026" / "August 15-20, 2026"
-      let m = line.match(/(\d{1,2})\s*(?:st|nd|rd|th)?\s*[-–—to]{1,3}\s*(\d{1,2})\s*(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?\s*(\d{2,4})?/);
+      let m = line.match(/(\d{1,2})\s*(?:st|nd|rd|th)?\s*[-–-to]{1,3}\s*(\d{1,2})\s*(?:st|nd|rd|th)?\s+([A-Za-z]{3,9})\.?\s*(\d{2,4})?/);
       if (m) {
         const mo = monthIndex(m[3]);
         if (mo) {
@@ -327,7 +327,7 @@
           continue;
         }
       }
-      m = line.match(/(\d{1,2})\s+([A-Za-z]{3,9})\.?\s*(?:[-–—to]{1,3})\s*(\d{1,2})\s+([A-Za-z]{3,9})\.?\s*(\d{2,4})?/);
+      m = line.match(/(\d{1,2})\s+([A-Za-z]{3,9})\.?\s*(?:[-–-to]{1,3})\s*(\d{1,2})\s+([A-Za-z]{3,9})\.?\s*(\d{2,4})?/);
       if (m) {
         const mo1 = monthIndex(m[2]);
         const mo2 = monthIndex(m[4]);
@@ -338,7 +338,7 @@
           continue;
         }
       }
-      m = line.match(/([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*(?:[-–—to]{1,3})\s*(\d{1,2})[,\s]*(\d{2,4})?/);
+      m = line.match(/([A-Za-z]{3,9})\.?\s+(\d{1,2})\s*(?:[-–-to]{1,3})\s*(\d{1,2})[,\s]*(\d{2,4})?/);
       if (m) {
         const mo = monthIndex(m[1]);
         if (mo) {

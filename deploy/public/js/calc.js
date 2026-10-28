@@ -1,4 +1,4 @@
-/* calc.js — pure attendance/scheduling engine.
+/* calc.js - pure attendance/scheduling engine.
  * No DOM, no storage: everything here is a function of the data model, which keeps it unit-testable
  * (see tests/calc.test.mjs) and keeps the counting rules in exactly one place.
  *
@@ -275,15 +275,15 @@
       if (s.t === 0) continue;
       if (s.pct < p) {
         const recover = s.mustAttend == null ? `you cannot get back to ${(p * 100).toFixed(0)}% from here` : `attend ${s.mustAttend} in a row to recover`;
-        out.push({ severity: 'red', subjectId: s.subject.id, text: `${name} is below ${(p * 100).toFixed(0)}% (${(s.pct * 100).toFixed(1)}%) — ${recover}.` });
+        out.push({ severity: 'red', subjectId: s.subject.id, text: `${name} is below ${(p * 100).toFixed(0)}% (${(s.pct * 100).toFixed(1)}%) - ${recover}.` });
       } else if (s.buffer === 0) {
-        out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name} is exactly at the line — one more absence drops it below ${(p * 100).toFixed(0)}%.` });
+        out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name} is exactly at the line - one more absence drops it below ${(p * 100).toFixed(0)}%.` });
       } else if (s.buffer <= 1) {
         out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name} can only take ${s.buffer} more absence${s.buffer === 1 ? '' : 's'}.` });
       }
       if (s.TAdjusted) {
         const hint = s.carried.t ? ' If part of that is your existing attendance, keep the semester start at the real first day of classes (or set "Total T" by hand).' : '';
-        out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name}: the semester plan predicts ${s.TPlanned} classes but ${s.t} have been held — check the timetable or T.${hint}` });
+        out.push({ severity: 'yellow', subjectId: s.subject.id, text: `${name}: the semester plan predicts ${s.TPlanned} classes but ${s.t} have been held - check the timetable or T.${hint}` });
       }
     }
     return out;
@@ -291,7 +291,7 @@
 
   /**
    * Most recent past teaching day (within `lookback` days) that had classes but has no records at
-   * all — i.e. the day you forgot to mark. Days with nothing scheduled are ignored on purpose.
+   * all - i.e. the day you forgot to mark. Days with nothing scheduled are ignored on purpose.
    */
   function unmarkedDay(ctx, today, lookback) {
     lookback = lookback == null ? 7 : lookback;

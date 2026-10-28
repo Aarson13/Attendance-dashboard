@@ -1,4 +1,4 @@
-/* sample-data.js — the demo dataset behind Settings → "Load sample data".
+/* sample-data.js - the demo dataset behind Settings → "Load sample data".
  * It is generated from the same engine the app uses (AD.Calc) so the demo exercises real
  * scheduling: holidays from the bundled Manipal calendar, the two swapped "Friday timetable" days,
  * labs counting once, cancellations and medical leave.

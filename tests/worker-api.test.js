@@ -1,4 +1,4 @@
-/* worker-api.test.js — the sync contract, exercised against an in-memory store.
+/* worker-api.test.js - the sync contract, exercised against an in-memory store.
  *
  * The SQL behind the real store (worker/api.js `createStore`) is checked end-to-end by running the
  * Worker under wrangler against a local D1; what is pinned here is everything in front of it: the

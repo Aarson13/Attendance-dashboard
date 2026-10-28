@@ -1,4 +1,4 @@
-/* panels.js — Timetable, Calendar and Settings views + the two OCR flows (with Review & Fix).
+/* panels.js - Timetable, Calendar and Settings views + the two OCR flows (with Review & Fix).
  * Loaded after ui.js; registers itself into AD.Ui.views / AD.Ui.actions.
  */
 (function (global) {
@@ -31,14 +31,14 @@
   /**
    * A calendar source URL as HTML: a real link when it is http(s), otherwise the text with a note,
    * because the value comes from the synced document or an imported snapshot file. Escaping alone
-   * cannot make a URL safe — `javascript:alert(1)` is valid HTML — so the scheme is checked instead.
+   * cannot make a URL safe - `javascript:alert(1)` is valid HTML - so the scheme is checked instead.
    */
   function sourceUrlHtml(url) {
     const raw = String(url == null ? '' : url);
     const safe = A.Store.safeUrl(raw);
     if (safe) return `<a href="${attr(safe)}" target="_blank" rel="noopener noreferrer">${esc(safe)}</a>`;
     if (!raw) return '<span class="muted">no link</span>';
-    return `<span title="Not an http(s) link — shown as text">${esc(raw)} <em>(not a link)</em></span>`;
+    return `<span title="Not an http(s) link - shown as text">${esc(raw)} <em>(not a link)</em></span>`;
   }
 
   function overlayMessage(entries) {
@@ -59,7 +59,7 @@
   /* ================= Quick add (natural language) =================
    * One box that reads plain English into timetable cells, in the shape of the quick entry the
    * expense tracker uses: it parses as you type, shows exactly what it understood (and what it had to
-   * guess), and only the Add button writes anything. Parsing itself is js/magic.js, which is pure —
+   * guess), and only the Add button writes anything. Parsing itself is js/magic.js, which is pure -
    * this part is the live preview and the commit.
    */
   let focusMagic = false;
@@ -80,8 +80,8 @@
   function subjectOptions(selected) {
     const S = U().S;
     return (
-      `<option value="" ${selected ? '' : 'selected'}>— pick a subject —</option>` +
-      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('') +
+      `<option value="" ${selected ? '' : 'selected'}>- pick a subject -</option>` +
+      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</option>`).join('') +
       `<option value="__create__">＋ create a new subject from this text…</option>`
     );
   }
@@ -102,7 +102,7 @@
   function magicPreview() {
     const m = U().S.magic;
     if (!m || !m.draft.trim()) {
-      return '<p class="magic-hint">Start typing — every slot it worked out appears here first. Days, times, periods and labs.</p>';
+      return '<p class="magic-hint">Start typing - every slot it worked out appears here first. Days, times, periods and labs.</p>';
     }
     const counts = { matched: 0, low: 0, unmatched: 0 };
     m.rows.forEach((r) => (counts[r.state] = (counts[r.state] || 0) + 1));
@@ -144,7 +144,7 @@
             </div>`
           : m.error
             ? ''
-            : '<p class="magic-hint">No slot in that yet — name a day (“Mon”, “Mon-Fri”) and a time or period.</p>'
+            : '<p class="magic-hint">No slot in that yet - name a day (“Mon”, “Mon-Fri”) and a time or period.</p>'
       }
       ${
         m.warnings.length
@@ -172,7 +172,7 @@
       <div class="section-head">
         <h2>Quick add</h2>
         <span class="spacer"></span>
-        <span class="muted">type it like you'd say it — nothing is saved until you press Add</span>
+        <span class="muted">type it like you'd say it - nothing is saved until you press Add</span>
       </div>
       <textarea id="magicInput" class="magic-input" data-act="magic-draft" rows="2" placeholder="Try: CS2001 Mon 9-10, Wed 11-12" aria-label="Natural-language timetable entry" spellcheck="false">${esc(draft)}</textarea>
       <div class="chips" id="magicDetect" aria-hidden="true" style="margin-top:8px">${magicDetectChips()}</div>
@@ -188,12 +188,12 @@
       <details style="margin-top:10px">
         <summary class="muted">What it understands</summary>
         <ul class="muted" style="margin:8px 0 0 18px; line-height:1.6">
-          <li><b>Days</b> — <code>Mon</code>, <code>Monday</code>, <code>Tue &amp; Thu</code>, <code>Mon-Fri</code>.</li>
-          <li><b>Times</b> — <code>9-10</code>, <code>2-4</code> (afternoon), <code>3:30</code>, <code>9am</code>; or a period: <code>P2</code>, <code>period 3</code>, or a lone <code>3</code>.</li>
-          <li><b>Labs</b> — the word lab / practical / tutorial, or a subject that already says it is one.</li>
-          <li><b>Subjects</b> — a code (<code>CS2001</code>), a full name or part of one. Anything unsure comes back marked, never guessed silently.</li>
-          <li><b>A whole day at once</b> — <code>Mon: CS2001, MA2002, CS2005</code> fills P1, P2, P3 in order and says that it did.</li>
-          <li><b>Several lines or commas</b> — <code>CS2001 Mon 9-10, Wed 11-12</code>; a line that leaves out the time keeps the one before it.</li>
+          <li><b>Days</b> - <code>Mon</code>, <code>Monday</code>, <code>Tue &amp; Thu</code>, <code>Mon-Fri</code>.</li>
+          <li><b>Times</b> - <code>9-10</code>, <code>2-4</code> (afternoon), <code>3:30</code>, <code>9am</code>; or a period: <code>P2</code>, <code>period 3</code>, or a lone <code>3</code>.</li>
+          <li><b>Labs</b> - the word lab / practical / tutorial, or a subject that already says it is one.</li>
+          <li><b>Subjects</b> - a code (<code>CS2001</code>), a full name or part of one. Anything unsure comes back marked, never guessed silently.</li>
+          <li><b>A whole day at once</b> - <code>Mon: CS2001, MA2002, CS2005</code> fills P1, P2, P3 in order and says that it did.</li>
+          <li><b>Several lines or commas</b> - <code>CS2001 Mon 9-10, Wed 11-12</code>; a line that leaves out the time keeps the one before it.</li>
         </ul>
       </details>
     </div>`;
@@ -214,7 +214,7 @@
         if (canSpan) covered[day] = periods[i + 1].id;
         const content = subject
           ? `<span class="cell-code">${esc(subject.code || subject.name)}</span><span class="cell-sub">${esc(subject.code ? subject.name : '')}</span>${cell.lab ? '<span class="cell-lab-tag">lab · 1 class</span>' : ''}`
-          : '<span class="cell-sub">— free —</span>';
+          : '<span class="cell-sub">- free -</span>';
         return `<td${canSpan ? ' rowspan="2"' : ''}><button class="cell-btn ${subject ? 'filled' : ''} ${cell && cell.lab ? 'lab' : ''}" data-act="cell-edit" data-day="${day}" data-period="${attr(per.id)}" type="button">${content}</button></td>`;
       }).join('');
       return `<tr><td class="time-cell">${esc(per.label)}<br />${esc(per.start)}<br />${per.end ? esc(per.end) : ''}</td>${cells}</tr>`;
@@ -302,7 +302,7 @@
     const settings = o.settings || {};
     return `<div class="card">
       <h3>Screenshot or photo of your timetable (OCR)</h3>
-      <p class="muted">Processed in your browser with Tesseract.js — no image ever leaves your device. First run downloads the OCR engine (~15 MB) once.</p>
+      <p class="muted">Processed in your browser with Tesseract.js - no image ever leaves your device. First run downloads the OCR engine (~15 MB) once.</p>
       <div class="dropzone" id="ocrDrop">
         <strong>Drop an image here</strong> or
         <div class="row" style="justify-content:center;margin-top:8px">
@@ -374,7 +374,7 @@
       }
       ${
         o.error
-          ? `<div class="banner bad"><strong>OCR did not work on that image</strong>${esc(o.error)} You can still fill the timetable in by hand above — the image stays on this screen as a reference.</div>`
+          ? `<div class="banner bad"><strong>OCR did not work on that image</strong>${esc(o.error)} You can still fill the timetable in by hand above - the image stays on this screen as a reference.</div>`
           : ''
       }
       ${
@@ -405,8 +405,8 @@
     const counts = { matched: 0, low: 0, unmatched: 0 };
     o.rows.forEach((r) => (counts[r.state] = (counts[r.state] || 0) + 1));
     const options = (selected) =>
-      `<option value="">— skip this cell —</option>` +
-      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('') +
+      `<option value="">- skip this cell -</option>` +
+      S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${s.id === selected ? 'selected' : ''}>${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</option>`).join('') +
       `<option value="__create__" ${selected === '__create__' ? 'selected' : ''}>＋ create a new subject from this text…</option>`;
     return `<div class="card">
       <div class="section-head">
@@ -418,7 +418,7 @@
           <span class="chip bad">${counts.unmatched || 0} unmatched</span>
         </span>
       </div>
-      <p class="muted">Nothing is saved until you press Confirm. Yellow rows were a rough match, red rows were not recognised — pick a subject for them, or skip the cell.</p>
+      <p class="muted">Nothing is saved until you press Confirm. Yellow rows were a rough match, red rows were not recognised - pick a subject for them, or skip the cell.</p>
       <div class="review-layout">
         <div class="review-image">
           <img src="${attr(o.processed || o.original)}" alt="Timetable image used for OCR" />
@@ -490,7 +490,7 @@
           <label class="field">Start<input type="date" data-act="sem-field" data-field="start" value="${attr(sem.start)}" /></label>
           <label class="field">End<input type="date" data-act="sem-field" data-field="end" value="${attr(sem.end)}" /></label>
         </div>
-        ${sem.start && sem.end && sem.end < sem.start ? '<div class="banner bad"><strong>The end date is before the start date</strong>Fix one of them — nothing can be scheduled until you do.</div>' : ''}
+        ${sem.start && sem.end && sem.end < sem.start ? '<div class="banner bad"><strong>The end date is before the start date</strong>Fix one of them - nothing can be scheduled until you do.</div>' : ''}
         ${
           sem.start && sem.end
             ? `<p class="muted" style="margin-top:8px">${Calc.countTeachingDays(c)} teaching days · ${
@@ -551,7 +551,7 @@
           <label class="field">Title<input id="calTitle" placeholder="Dussehra" /></label>
           <label class="field">Follows which day?
             <select id="calSwapDay">
-              <option value="">— pick —</option>
+              <option value="">- pick -</option>
               ${[1, 2, 3, 4, 5, 6].map((d) => `<option value="${d}">${Calc.DAY_NAMES[d - 1]} timetable</option>`).join('')}
             </select>
           </label>
@@ -572,7 +572,7 @@
       ${
         S.data.calendar.sources.length
           ? `<div class="card"><h3>Sources</h3><ul class="muted">${S.data.calendar.sources
-              .map((s) => `<li>${esc(s.title)} — ${sourceUrlHtml(s.url)} (fetched ${esc(s.fetchedAt || 'n/a')})</li>`)
+              .map((s) => `<li>${esc(s.title)} - ${sourceUrlHtml(s.url)} (fetched ${esc(s.fetchedAt || 'n/a')})</li>`)
               .join('')}</ul></div>`
           : ''
       }`;
@@ -625,7 +625,7 @@
         <button class="primary" data-act="cal-ocr-confirm" type="button">Confirm and add</button>
         <button data-act="cal-ocr-cancel" type="button">Cancel</button>
       </div>
-      <p class="muted">${o.rows.length} dates found. Nothing is added until you confirm — untick anything you don't want.</p>
+      <p class="muted">${o.rows.length} dates found. Nothing is added until you confirm - untick anything you don't want.</p>
       <div class="review-layout">
         <div class="review-image"><img src="${attr(o.image)}" alt="Calendar notice" /></div>
         <div class="table-scroll">
@@ -688,7 +688,7 @@
           </label>
           <hr />
           <h3>Previous attendance</h3>
-          <p class="muted">Joining mid-semester? Enter per-subject attended / held from your portal — it joins every calculation.</p>
+          <p class="muted">Joining mid-semester? Enter per-subject attended / held from your portal - it joins every calculation.</p>
           <button data-act="tab" data-tab="subjects" type="button">Open Subjects → Existing attendance</button>
         </div>
         <div class="card">
@@ -710,7 +710,7 @@
             <button data-act="load-sample" type="button">Load sample semester</button>
             <button class="danger" data-act="reset-all" type="button">Erase everything</button>
           </div>
-          <p class="muted">Every tap is saved automatically to this site's cloud database — status:
+          <p class="muted">Every tap is saved automatically to this site's cloud database - status:
           <b>${esc(sync.status)}</b> · last save: ${esc(lastSync)}.</p>
           ${sync.error ? `<p class="chip bad">${esc(sync.error.message)}</p>` : ''}
           <p class="muted">Document size: ${(bytes / 1024).toFixed(1)} KB, saved to the cloud database.
@@ -720,12 +720,12 @@
         <div class="card">
           <h2>How to use it</h2>
           <ol class="muted" style="padding-left:18px">
-            <li><b>Subjects</b> — add each subject with credits, and if you are joining mid-semester enter the attendance you already have (attended / held) under <b>Existing attendance</b>.</li>
-            <li><b>Timetable</b> — click cells to fill the week, or import CSV / run OCR on a screenshot. Mark a lab; it spans two periods but counts once.</li>
-            <li><b>Calendar</b> — import the scraped Manipal calendar (or CSV/ICS/OCR) so holidays, exams and swapped days are skipped automatically. Set your semester dates.</li>
-            <li><b>Today</b> — tap Present / Absent / Leave / Cancelled per class. Cancelled and off days vanish from every count.</li>
-            <li><b>Dashboard</b> — watch the safety buffer, the 75% marker and the heatmap; use <b>Tools</b> for what-ifs and "can I skip tomorrow?".</li>
-            <li><b>Export</b> a JSON backup now and then — handy for moving semesters or for a manual restore.</li>
+            <li><b>Subjects</b> - add each subject with credits, and if you are joining mid-semester enter the attendance you already have (attended / held) under <b>Existing attendance</b>.</li>
+            <li><b>Timetable</b> - click cells to fill the week, or import CSV / run OCR on a screenshot. Mark a lab; it spans two periods but counts once.</li>
+            <li><b>Calendar</b> - import the scraped Manipal calendar (or CSV/ICS/OCR) so holidays, exams and swapped days are skipped automatically. Set your semester dates.</li>
+            <li><b>Today</b> - tap Present / Absent / Leave / Cancelled per class. Cancelled and off days vanish from every count.</li>
+            <li><b>Dashboard</b> - watch the safety buffer, the 75% marker and the heatmap; use <b>Tools</b> for what-ifs and "can I skip tomorrow?".</li>
+            <li><b>Export</b> a JSON backup now and then - handy for moving semesters or for a manual restore.</li>
           </ol>
         </div>
         <div class="card">
@@ -792,7 +792,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         psm: o.settings.psm || '3',
         onProgress: (m) => {
           o.progress = m.progress;
-          o.statusText = `${m.status}${m.progress ? ` — ${Math.round(m.progress * 100)}%` : ''}`;
+          o.statusText = `${m.status}${m.progress ? ` - ${Math.round(m.progress * 100)}%` : ''}`;
           tick();
         },
       });
@@ -803,7 +803,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         o.error = parsed.reason;
         U().save();
         A.App.render();
-        U().toast('OCR could not find a table in that image — the image stays on screen so you can fill the grid by hand.', 'warn', 8000);
+        U().toast('OCR could not find a table in that image - the image stays on screen so you can fill the grid by hand.', 'warn', 8000);
         return;
       }
       o.rows = parsed.rows;
@@ -815,7 +815,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       o.phase = 'idle';
       o.error = err.message || 'OCR failed.';
       A.App.render();
-      U().toast('OCR failed — see the message in the Timetable tab; nothing was saved.', 'bad', 8000);
+      U().toast('OCR failed - see the message in the Timetable tab; nothing was saved.', 'bad', 8000);
     }
   }
 
@@ -895,7 +895,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         psm: '6',
         onProgress: (m) => {
           o.progress = m.progress;
-          o.statusText = `${m.status}${m.progress ? ` — ${Math.round(m.progress * 100)}%` : ''}`;
+          o.statusText = `${m.status}${m.progress ? ` - ${Math.round(m.progress * 100)}%` : ''}`;
           tick();
         },
       });
@@ -927,7 +927,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     let added = 0;
     for (const r of rows) {
       const end = r.end && r.end >= r.start ? r.end : r.start;
-      // Only skip a row when the *same* entry is already there — re-importing the same notice
+      // Only skip a row when the *same* entry is already there - re-importing the same notice
       // twice should be a no-op, but a different title on the same dates is a new entry.
       if (existing.some((e) => e.type === r.type && e.start === r.start && e.end === end && (e.title || '') === (r.title || ''))) continue;
       existing.push({ id: Store.uid('cal'), type: r.type, start: r.start, end, title: r.title || 'From calendar OCR', swapDay: r.swapDay || null, sourceId: null });
@@ -957,8 +957,8 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         `<div class="field-row">
           <label class="field">Subject
             <select id="cellSubject">
-              <option value="">— free period —</option>
-              ${S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${cell && cell.subjectId === s.id ? 'selected' : ''}>${esc(s.code ? `${s.code} — ${s.name}` : s.name)}</option>`).join('')}
+              <option value="">- free period -</option>
+              ${S.data.subjects.map((s) => `<option value="${attr(s.id)}" ${cell && cell.subjectId === s.id ? 'selected' : ''}>${esc(s.code ? `${s.code} - ${s.name}` : s.name)}</option>`).join('')}
             </select>
           </label>
           <label class="row" style="gap:6px"><input type="checkbox" id="cellLab" ${cell && cell.lab ? 'checked' : ''} /> Lab (spans this period and the next; counts as 1 class)</label>
@@ -989,7 +989,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         const next = ordered[ordered.indexOf(U().periodById(periodId)) + 1];
         if (next && S.data.timetable[day][next.id]) {
           delete S.data.timetable[day][next.id];
-          note = ` ${next.label} was cleared — a lab occupies two periods.`;
+          note = ` ${next.label} was cleared - a lab occupies two periods.`;
         }
       }
       U().save();
@@ -1099,7 +1099,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         row.state = 'matched';
         row.reason = 'created from this line';
         U().save('Add subject from quick add');
-        U().toast(`Created subject “${esc(name)}” with 3 credits — edit it in Subjects.`, 'ok', 7000);
+        U().toast(`Created subject “${esc(name)}” with 3 credits - edit it in Subjects.`, 'ok', 7000);
       } else {
         row.subjectId = el.value || null;
         row.state = el.value ? 'matched' : 'unmatched';
@@ -1128,12 +1128,12 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         return;
       }
       if (!m.rows.length) {
-        U().toast(esc(m.error || 'Nothing to add yet — the preview has to show at least one slot.'), 'warn', 7000);
+        U().toast(esc(m.error || 'Nothing to add yet - the preview has to show at least one slot.'), 'warn', 7000);
         return;
       }
       const missing = m.rows.filter((r) => !r.subjectId).length;
       if (missing) {
-        U().toast(`Pick a subject for the ${missing} marked row${missing === 1 ? '' : 's'} first — nothing was added.`, 'warn', 8000);
+        U().toast(`Pick a subject for the ${missing} marked row${missing === 1 ? '' : 's'} first - nothing was added.`, 'warn', 8000);
         return;
       }
       const labs = m.rows.filter((r) => r.lab).length;
@@ -1183,7 +1183,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
     'ocr-cancel': () => {
       U().S.ocr = null;
       A.App.render();
-      U().toast('OCR result discarded — the timetable was not changed.', 'info');
+      U().toast('OCR result discarded - the timetable was not changed.', 'info');
     },
     'ocr-confirm': () => confirmTimetableOcr(),
     'ocr-row-subject': (el) => {
@@ -1197,7 +1197,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         row.subjectId = created.id;
         U().save();
         A.App.render();
-        U().toast(`Created subject “${esc(name)}” with 3 credits — edit it in Subjects.`, 'ok', 7000);
+        U().toast(`Created subject “${esc(name)}” with 3 credits - edit it in Subjects.`, 'ok', 7000);
         return;
       }
       row.subjectId = el.value || null;
@@ -1263,7 +1263,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
         return;
       }
       if (end < start) {
-        U().toast('The end date is before the start — the entry was not added.', 'bad');
+        U().toast('The end date is before the start - the entry was not added.', 'bad');
         return;
       }
       if (type === 'working-swap' && !swapDay) {
@@ -1454,7 +1454,7 @@ npm run sync:calendar -- --url "&lt;calendar-pdf-url&gt;" --label muj-2026-27 --
       S.date = U().todayISO();
       U().closeModal();
       A.App.render();
-      U().toast('Sample semester loaded — start on the Today tab.', 'ok', 6000);
+      U().toast('Sample semester loaded - start on the Today tab.', 'ok', 6000);
     },
     'reset-all': () => {
       U().openModal(

@@ -1,4 +1,4 @@
-/* build-deploy.mjs — turn dist/ into the folder the Cloudflare Sites deployment uploads.
+/* build-deploy.mjs - turn dist/ into the folder the Cloudflare Sites deployment uploads.
  *
  * The Sites manifest describes a prebuilt Worker (worker/worker.js, copied beside the manifest so
  * every path inside it is relative to the manifest itself) plus a static assets directory. Nothing
@@ -18,7 +18,7 @@ const out = path.join(root, 'deploy');
 const publicDir = path.join(out, 'public');
 
 if (!existsSync(path.join(dist, 'index.html'))) {
-  console.error('dist/ has no index.html — run `npm run build` first.');
+  console.error('dist/ has no index.html - run `npm run build` first.');
   process.exit(1);
 }
 
@@ -32,7 +32,7 @@ await cp(path.join(root, 'worker', 'api.js'), path.join(out, 'api.js'));
 
 const manifest = {
   entrypoint: 'index.js',
-  // Kept in step with wrangler.jsonc — bump both together.
+  // Kept in step with wrangler.jsonc - bump both together.
   compatibilityDate: '2026-09-01',
   // Both modules have to be listed: index.js imports './api.js' by name, and an unlisted import
   // fails the upload with a validation error rather than a build error.
@@ -48,7 +48,7 @@ const manifest = {
 await writeFile(path.join(out, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
 
 const count = (await cpStats(publicDir)) ?? 0;
-console.log(`deploy/ ready for ${pkg.name} — ${count} asset entries, manifest + worker copied.`);
+console.log(`deploy/ ready for ${pkg.name} - ${count} asset entries, manifest + worker copied.`);
 
 /** A cheap file count, so the log says something verifiable about what is about to be uploaded. */
 async function cpStats(dir) {

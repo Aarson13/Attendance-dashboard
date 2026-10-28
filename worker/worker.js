@@ -1,8 +1,8 @@
-/* worker.js — the site's only Worker: the sync API first, the static site after it.
+/* worker.js - the site's only Worker: the sync API first, the static site after it.
  *
  * Before Netlify this was a folder of files; it still is, and env.ASSETS serves exactly those files
- * (index.html, app.html, js/, assets/…). What the Worker adds is (a) /api/* — the D1-backed sync
- * described in api.js — and (b) the headers that used to travel in `_headers`, applied here so they
+ * (index.html, app.html, js/, assets/…). What the Worker adds is (a) /api/* - the D1-backed sync
+ * described in api.js - and (b) the headers that used to travel in `_headers`, applied here so they
  * are sent no matter which asset layer answers. `env.ASSETS.fetch(request)` runs the same asset
  * matching (including the SPA fallback to index.html) that a plain static host would.
  */
@@ -22,7 +22,7 @@ function securityHeaders(pathname, res) {
   headers.set('X-Frame-Options', 'DENY');
   if (!headers.has('Content-Security-Policy') && /text\/html/.test(headers.get('Content-Type') || '')) {
     // `/app.html` answers a 307 to `/app` (the asset layer's clean-URL rule, which the tracker
-    // already expects), so the tracker's policy has to cover both spellings — including the
+    // already expects), so the tracker's policy has to cover both spellings - including the
     // redirect response itself.
     const tracker = pathname.endsWith('/app.html') || /\/app$/.test(pathname);
     headers.set('Content-Security-Policy', tracker ? TRACKER_CSP : LANDING_CSP);

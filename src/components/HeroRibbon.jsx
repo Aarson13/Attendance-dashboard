@@ -1,12 +1,12 @@
 import { useId } from 'react';
 
 /**
- * HeroRibbon — the symmetric "hourglass / bowtie" ribbon behind the hero copy.
+ * HeroRibbon - the symmetric "hourglass / bowtie" ribbon behind the hero copy.
  *
  * Three stacked, blurred copies of the same silhouette (widest to narrowest): violet #6D4AFF,
  * light purple #A78BFA and a near-white lavender #EFE7FF band through the centre, over one heavily
  * blurred ambient glow. The layers composite with `mix-blend-mode: screen`, so the narrow middle
- * where all three overlap is the brightest point — which is what makes the shape read as light
+ * where all three overlap is the brightest point - which is what makes the shape read as light
  * rather than as three flat shapes.
  *
  * Layer blurs, colours and the breathe animation all come from CSS variables (see src/styles/index.css),
@@ -15,7 +15,7 @@ import { useId } from 'react';
 
 /**
  * Concave bowtie outline: thin at the horizontal centre, flaring towards all four corners.
- * Four cubic segments — top-left, top-right, bottom-right, bottom-left — keep it symmetric by
+ * Four cubic segments - top-left, top-right, bottom-right, bottom-left - keep it symmetric by
  * construction: the right half is the left half mirrored, and so is the bottom.
  */
 function bowtie({ width, height, pinch, flare, inset = 0 }) {

@@ -1,4 +1,4 @@
-/* api.js — the sync API the tracker talks to when it is running on this site's own database.
+/* api.js - the sync API the tracker talks to when it is running on this site's own database.
  *
  * The tracker's document is one JSON object (js/sync.js reads and writes it by rev) living as a
  * row in D1: `docs(space, kind, body, rev)`. Every write states the rev it was based on, and a write
@@ -6,7 +6,7 @@
  *
  * A space is one attendance document's home (a person, a class, a semester). It is created by the
  * first device to ask for one and is protected by a random key: the server keeps only the SHA-256
- * of that key, and every read and write must present it. No account, no token from a third party —
+ * of that key, and every read and write must present it. No account, no token from a third party -
  * the link (space + key) is the credential, exactly like the repository+token pair it replaces, but
  * nothing has to be pasted anywhere to start: the first visit provisions one.
  *
@@ -19,7 +19,7 @@ const KINDS = ['doc', 'images'];
 const SPACE_RE = /^[a-z0-9][a-z0-9-]{5,31}$/;
 const KEY_RE = /^[a-f0-9]{32}$/;
 const MAX_BODY_CHARS = 1000000; // the whole JSON document, images included
-const MAX_SPACES_PER_HOUR = 10; // per IP — a space is cheap, but not free
+const MAX_SPACES_PER_HOUR = 10; // per IP - a space is cheap, but not free
 
 /* ---------- small helpers ---------- */
 function json(body, status, extra) {
@@ -82,7 +82,7 @@ export function createStore(db) {
         .run();
     },
 
-    /** false when the space already exists — the INSERT is atomic, so two devices racing cannot both win. */
+    /** false when the space already exists - the INSERT is atomic, so two devices racing cannot both win. */
     async createSpace(space, keyHash, now) {
       const res = await db
         .prepare('INSERT INTO spaces (space, key_hash, created_at) VALUES (?, ?, ?) ON CONFLICT(space) DO NOTHING')
@@ -104,7 +104,7 @@ export function createStore(db) {
      * Conditional write: the UPDATE carries the rev the edit was based on, so two devices that read
      * the same rev cannot both succeed. A missing row is rev 0 and goes through the INSERT, whose
      * primary key settles any race the UPDATE could not see. Returns { rev, updatedAt } or null (a
-     * lost race — the caller reads the winner and reports 409).
+     * lost race - the caller reads the winner and reports 409).
      */
     async putDoc(space, kind, body, baseRev, now) {
       const upd = await db
@@ -144,7 +144,7 @@ async function ensureSchema(store) {
 async function authorize(store, request, space) {
   if (!validSpace(space)) return { error: fail(400, 'bad-space', 'Space must be 6-32 characters of a-z, 0-9 or -.') };
   const key = request.headers.get('x-sync-key') || '';
-  if (!validKey(key)) return { error: fail(401, 'no-key', 'This space is locked — the sync key is missing.') };
+  if (!validKey(key)) return { error: fail(401, 'no-key', 'This space is locked - the sync key is missing.') };
   const hash = await store.keyHashOf(space);
   if (!hash) return { error: fail(404, 'no-space', 'No such space on this site.') };
   if (!(await safeEqual(await sha256Hex(key), hash))) return { error: fail(403, 'bad-key', 'Wrong sync key for this space.') };
@@ -167,8 +167,8 @@ async function createSpace(store, request, url) {
   const keyHash = await sha256Hex(key);
   let space = wanted;
   for (let attempt = 0; !space || !(await store.createSpace(space, keyHash, now)); attempt++) {
-    if (attempt === 0 && wanted) return fail(409, 'space-taken', 'That space name is already in use — pick another or use the key you were given.');
-    if (attempt >= 5) return fail(503, 'busy', 'Could not reserve a space just now — try again in a moment.');
+    if (attempt === 0 && wanted) return fail(409, 'space-taken', 'That space name is already in use - pick another or use the key you were given.');
+    if (attempt >= 5) return fail(503, 'busy', 'Could not reserve a space just now - try again in a moment.');
     space = randomHex(6);
   }
   return json({ space, key, createdAt: now }, 201);
@@ -185,7 +185,7 @@ async function readDoc(store, request, url) {
     try {
       data = JSON.parse(row.body);
     } catch (err) {
-      return fail(500, 'corrupt', 'The stored document is not readable JSON — restore it from a backup export.');
+      return fail(500, 'corrupt', 'The stored document is not readable JSON - restore it from a backup export.');
     }
   }
   return json({ space: auth.space, kind, data, rev: row ? row.rev : 0, updatedAt: row ? row.updated_at : null });
@@ -212,7 +212,7 @@ async function writeDoc(store, request, url) {
     return fail(400, 'bad-data', 'That document is not JSON-serialisable.');
   }
   if (!serialized || serialized.length > MAX_BODY_CHARS) {
-    return fail(413, 'too-big', `A document may be at most ${(MAX_BODY_CHARS / 1000000).toFixed(0)} MB — export the images instead of storing them all.`);
+    return fail(413, 'too-big', `A document may be at most ${(MAX_BODY_CHARS / 1000000).toFixed(0)} MB - export the images instead of storing them all.`);
   }
 
   const baseRev = Number.isInteger(body.baseRev) && body.baseRev >= 0 ? body.baseRev : 0;
@@ -245,7 +245,7 @@ export async function handleApi(request, env, deps) {
   }
   if (request.method === 'POST' && url.pathname === '/api/spaces') {
     if (!sameOrigin(request, url)) return fail(403, 'foreign-origin', 'Spaces are only created from this site itself.');
-    if (env.__noRateLimit !== true && !underRateLimit(request)) return fail(429, 'rate-limited', 'Too many spaces created just now — wait a minute.');
+    if (env.__noRateLimit !== true && !underRateLimit(request)) return fail(429, 'rate-limited', 'Too many spaces created just now - wait a minute.');
     return createSpace(store, request, url);
   }
   if (url.pathname === '/api/doc') {

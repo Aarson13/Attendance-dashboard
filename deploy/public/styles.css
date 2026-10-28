@@ -1,4 +1,4 @@
-/* styles.css — plain, restrained dashboard styling.
+/* styles.css - plain, restrained dashboard styling.
  * Two interface details are adapted from component ideas (reimplemented in plain CSS/JS, credited in
  * README.md): the pointer spotlight on cards (React Bits "Spotlight Card") and the thin scroll
  * progress bar (Rare UI "Scroll Progress").
@@ -87,7 +87,7 @@ hr { border: 0; border-top: 1px solid var(--line); margin: 1rem 0; }
 .brand:hover .brand-mark { background: color-mix(in srgb, var(--accent) 26%, transparent); }
 
 /* What the last change did: saved to GitHub, still saving, or not saved. Small, but it is the only
-   honest place to say so — every tap is a commit, and a failed one has to be visible. */
+   honest place to say so - every tap is a commit, and a failed one has to be visible. */
 .sync-chip {
   display: inline-flex; align-items: center; gap: 6px; margin-right: 4px;
   border: 1px solid var(--line); border-radius: 999px; padding: 4px 11px;

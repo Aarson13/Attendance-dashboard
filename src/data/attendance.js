@@ -2,7 +2,7 @@
  * Placeholder attendance data for the home-page preview.
  *
  * Every percentage on the home page comes from these numbers, never from markup: attendance % is
- * `attended / total × 100`, and the configurable minimum is MIN_ATTENDANCE_PCT (75% — the same
+ * `attended / total × 100`, and the configurable minimum is MIN_ATTENDANCE_PCT (75% - the same
  * default the tracker app uses). Swapping this file for a real API response is the whole wiring job.
  */
 
@@ -34,7 +34,7 @@ export const TODAY_CLASSES = [
   { time: '14:00', code: 'EC2003', name: 'Digital Design', kind: 'Lecture', room: 'AB-301', status: 'upcoming' },
 ];
 
-/** Weekly cumulative attendance %, oldest first — one point per teaching week. */
+/** Weekly cumulative attendance %, oldest first - one point per teaching week. */
 export const TREND = [
   { label: 'W1', pct: 96 },
   { label: 'W2', pct: 92 },
@@ -70,7 +70,7 @@ export function bandOf(value, min = MIN_ATTENDANCE_PCT) {
 
 /**
  * Classes that must be attended in a row for `attended / total` to reach the minimum:
- * ceil((p·t − a) / (1 − p)) — the same formula as the tracker's engine (js/calc.js).
+ * ceil((p·t − a) / (1 − p)) - the same formula as the tracker's engine (js/calc.js).
  * Returns null when the minimum is 100% and a class has already been missed, because no number of
  * future classes can recover it.
  */
@@ -78,7 +78,7 @@ export function classesNeededToReach(attended, total, min = MIN_ATTENDANCE_PCT) 
   const p = min / 100;
   if (pct(attended, total) >= min) return 0;
   if (p >= 1) return null;
-  // Dividing floats can land a hair above an exact integer — 0.9 × 40 − 35 is 1.000000000000004, so
+  // Dividing floats can land a hair above an exact integer - 0.9 × 40 − 35 is 1.000000000000004, so
   // the answer to a 10-class recovery computes as 11. A tiny epsilon keeps "attend 10 in a row" true.
   return Math.ceil((p * total - attended) / (1 - p) - 1e-9);
 }

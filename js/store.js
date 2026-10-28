@@ -1,7 +1,7 @@
-/* store.js — the data model plus import/export (JSON, CSV, ICS).
+/* store.js - the data model plus import/export (JSON, CSV, ICS).
  *
  * The whole app is one JSON document, and that document lives in this site's cloud database
- * (js/sync.js reads and writes it on every interaction) — not on this device. What is left here is
+ * (js/sync.js reads and writes it on every interaction) - not on this device. What is left here is
  * the shape: defaults, normalisation that repairs anything hand-edited, and the importers/exporters.
  * `localSnapshot()` exists only to recover data written by an older version that did store it
  * locally, so it can be saved to the database once and then deleted here.
@@ -23,7 +23,7 @@
   /**
    * A shallow copy of an untrusted object without anything prototype-shaped in it. `JSON.parse`
    * leaves `__proto__` as an ordinary own key, but the moment it is folded into another object with
-   * `Object.assign` the setter runs and the target's prototype becomes the attacker's object — so the
+   * `Object.assign` the setter runs and the target's prototype becomes the attacker's object - so the
    * key is removed before that can happen. Used on every document the app did not write itself.
    */
   function plainObject(input) {
@@ -37,8 +37,8 @@
   }
 
   /**
-   * A URL that is safe to put in an `href`, or '' if it is not one. Escaping cannot make a URL safe —
-   * `javascript:alert(1)` is perfectly valid HTML — the scheme is what has to be checked. Sources come
+   * A URL that is safe to put in an `href`, or '' if it is not one. Escaping cannot make a URL safe -
+   * `javascript:alert(1)` is perfectly valid HTML - the scheme is what has to be checked. Sources come
    * from the synced document and from imported snapshot files, so they are attacker-reachable.
    */
   function safeUrl(value) {
@@ -81,7 +81,7 @@
 
   /* ---------- the legacy on-device snapshot ---------- */
   /**
-   * Reads — but never writes — the localStorage document older versions kept. Returns null when
+   * Reads - but never writes - the localStorage document older versions kept. Returns null when
    * there is nothing there, or when it is unreadable. Used once, to offer pushing it to GitHub.
    */
   function localSnapshot() {
@@ -240,7 +240,7 @@
     if (parsed && parsed.subjects && parsed.records) {
       return { kind: 'backup', data: normalize(parsed), summary: 'raw data object' };
     }
-    throw new Error('Unrecognised JSON — expected an attendance backup or a calendar snapshot.');
+    throw new Error('Unrecognised JSON - expected an attendance backup or a calendar snapshot.');
   }
 
   function snapshotToCalendar(snap) {

@@ -1,7 +1,5 @@
 # Attendance dashboard
 
-**Live:** https://attendance-dashboard.pages.dev
-
 Two pages, one repository:
 
 - **`/` - the home page.** A dark, centred landing hero with a symmetric glowing hourglass ribbon and
